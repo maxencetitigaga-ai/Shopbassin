@@ -1,80 +1,37 @@
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial, Helvetica, sans-serif;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-body{
-background:#050505;
-color:white;
+:root {
+  --bg: #050505;
+  --card: #111214;
+  --card2: #18191c;
+  --blue: #2997ff;
+  --text: #ffffff;
+  --muted: #8e8e93;
+  --border: rgba(255,255,255,.08);
 }
 
-header{
-padding:25px;
-text-align:center;
-border-bottom:1px solid #1e90ff;
+html {
+  scroll-behavior: smooth;
 }
 
-header h1{
-color:#1e90ff;
-font-size:32px;
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+    "Segoe UI", sans-serif;
+  min-height: 100vh;
 }
 
-header p{
-margin-top:10px;
-color:#cfcfcf;
+button {
+  font-family: inherit;
 }
 
-.hero{
-height:70vh;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-text-align:center;
-padding:20px;
-}
-
-.hero h2{
-font-size:40px;
-margin-bottom:20px;
-}
-
-.hero p{
-font-size:18px;
-margin-bottom:30px;
-color:#bdbdbd;
-}
-
-button{
-background:#1e90ff;
-color:white;
-border:none;
-padding:15px 35px;
-border-radius:50px;
-font-size:18px;
-}
-.bottom-nav{
-    position:fixed;
-    bottom:0;
-    left:0;
-    width:100%;
-    background:#101010;
-    border-top:1px solid #1e90ff;
-    display:flex;
-    justify-content:space-around;
-    padding:12px 0;
-}
-
-.bottom-nav button{
-    background:none;
-    border:none;
-    color:white;
-    font-size:14px;
-    cursor:pointer;
-}
-
-.bottom-nav button:hover{
-    color:#1e90ff;
-}
+.app {
+  min-height: 100vh;
+  max-width: 600px;
+  margin: auto;
+  padding-bottom: 
