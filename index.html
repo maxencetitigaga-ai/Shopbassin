@@ -1,40 +1,199 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShopBassin</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShopBassin</title>
 
-    <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
 <body>
 
-<header>
+  <div class="app">
 
-<h1>SHOPBASSIN</h1>
+    <header class="topbar">
+      <div>
+        <p class="mini-title">SHOPBASSIN</p>
+        <h1>Bienvenue 👋</h1>
+      </div>
 
-<p>Qualité • Confiance • Rapidité</p>
+      <button class="cart-top" onclick="showPage('panier')">
+        🛒 <span id="cart-count">0</span>
+      </button>
+    </header>
 
-</header>
 
-<section class="hero">
+    <main>
 
-<h2>Bienvenue chez ShopBassin</h2>
+      <!-- ACCUEIL -->
+      <section id="accueil" class="page active">
 
-<p>Découvrez notre collection.</p>
+        <div class="hero-card">
+          <span class="badge">SHOPBASSIN</span>
 
-<button>Découvrir</button>
+          <h2>
+            Découvre notre
+            <span>collection</span>
+          </h2>
 
-</section>
-<nav class="bottom-nav">
-    <button>🏠<br>Accueil</button>
-    <button>👕<br>Habits</button>
-    <button>🆕<br>Galo</button>
-    <button>🛒<br>Panier</button>
-    <button>📞<br>Contact</button>
-</nav>
-<script src="script.js"></script>
+          <p>
+            Qualité • Confiance • Rapidité
+          </p>
+
+          <button onclick="showPage('habits')" class="primary-btn">
+            Découvrir
+          </button>
+        </div>
+
+
+        <h3 class="section-title">Catégories</h3>
+
+        <div class="categories">
+
+          <button class="category-card" onclick="showPage('habits')">
+            <div class="category-icon">👕</div>
+            <div>
+              <strong>Habits</strong>
+              <p>Voir la collection</p>
+            </div>
+            <span>›</span>
+          </button>
+
+          <button class="category-card" onclick="showPage('galo')">
+            <div class="category-icon">✨</div>
+            <div>
+              <strong>Galo</strong>
+              <p>Découvrir</p>
+            </div>
+            <span>›</span>
+          </button>
+
+        </div>
+
+
+        <div class="info-card">
+          <p>⚡ Commande rapide</p>
+          <p>💬 Support Telegram</p>
+          <p>✨ Nouveautés régulièrement</p>
+        </div>
+
+      </section>
+
+
+      <!-- HABITS -->
+      <section id="habits" class="page">
+
+        <div class="page-heading">
+          <p>SHOPBASSIN</p>
+          <h2>Habits</h2>
+        </div>
+
+        <div id="habits-products" class="products-grid"></div>
+
+      </section>
+
+
+      <!-- GALO -->
+      <section id="galo" class="page">
+
+        <div class="page-heading">
+          <p>SHOPBASSIN</p>
+          <h2>Galo</h2>
+        </div>
+
+        <div class="empty-card">
+          <div class="empty-icon">📸</div>
+          <h3>Galo arrive bientôt</h3>
+          <p>Ta photo et tes produits seront ajoutés ici.</p>
+        </div>
+
+      </section>
+
+
+      <!-- PANIER -->
+      <section id="panier" class="page">
+
+        <div class="page-heading">
+          <p>SHOPBASSIN</p>
+          <h2>Ton panier</h2>
+        </div>
+
+        <div id="cart-items"></div>
+
+        <div class="cart-total">
+          <span>Total</span>
+          <strong id="cart-total">0 €</strong>
+        </div>
+
+        <button class="primary-btn full" onclick="prepareOrder()">
+          Commander sur Telegram
+        </button>
+
+      </section>
+
+
+      <!-- CONTACT -->
+      <section id="contact" class="page">
+
+        <div class="page-heading">
+          <p>SHOPBASSIN</p>
+          <h2>Contact</h2>
+        </div>
+
+        <div class="contact-card">
+          <div class="contact-icon">💬</div>
+
+          <h3>Une question ?</h3>
+
+          <p>
+            Contacte-nous directement sur Telegram.
+          </p>
+
+          <button class="primary-btn full">
+            Telegram
+          </button>
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <nav class="bottom-nav">
+
+      <button class="nav-item active" onclick="showPage('accueil', this)">
+        <span>⌂</span>
+        Accueil
+      </button>
+
+      <button class="nav-item" onclick="showPage('habits', this)">
+        <span>♟</span>
+        Habits
+      </button>
+
+      <button class="nav-item" onclick="showPage('galo', this)">
+        <span>✦</span>
+        Galo
+      </button>
+
+      <button class="nav-item" onclick="showPage('panier', this)">
+        <span>🛒</span>
+        Panier
+      </button>
+
+      <button class="nav-item" onclick="showPage('contact', this)">
+        <span>●</span>
+        Contact
+      </button>
+
+    </nav>
+
+  </div>
+
+  <script src="script.js"></script>
 
 </body>
 </html>
