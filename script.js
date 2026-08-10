@@ -35,3 +35,20 @@ button {
   max-width: 600px;
   margin: auto;
   padding-bottom: 
+
+// Écran de chargement ShopBassin
+window.addEventListener("load", () => {
+  const loader = document.getElementById("loader");
+
+  setTimeout(() => {
+    if (loader) {
+      loader.classList.add("loader-hidden");
+    }
+  }, 3000);
+
+  setTimeout(() => {
+    if (loader) {
+      loader.remove();
+    }
+  }, 4000);
+});
