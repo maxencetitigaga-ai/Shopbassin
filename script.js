@@ -1,306 +1,216 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#050505" />
-  <title>ShopBassin</title>
-
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-</head>
-
-<body>
-
-  <!-- ÉCRAN DE CHARGEMENT -->
-  <div id="loader">
-    <div class="loader-inner">
-      <div class="logo-orbit">
-        <img src="IMG_0438.png" alt="ShopBassin" class="loader-logo" />
-      </div>
-
-      <div class="loading-line">
-        <div class="loading-progress"></div>
-      </div>
-
-      <p class="loader-tagline">
-        PREMIUM • QUALITÉ • RAPIDITÉ
-      </p>
-    </div>
-  </div>
-
-
-  <!-- APPLICATION -->
-  <div id="app" class="app">
-
-    <!-- HEADER -->
-    <header class="topbar">
-      <div class="brand">
-        <img src="IMG_0438.png" alt="ShopBassin" class="brand-logo" />
-
-        <div>
-          <p class="eyebrow">SHOPBASSIN</p>
-          <h1>Bienvenue</h1>
-        </div>
-      </div>
-
-      <button class="cart-button" onclick="showPage('panier')">
-        <span>🛒</span>
-        <span id="cart-count">0</span>
-      </button>
-    </header>
-
-
-    <main>
-
-      <!-- ACCUEIL -->
-      <section id="accueil" class="page active">
-
-        <div class="hero-card">
-          <div class="hero-glow"></div>
-
-          <div class="hero-content">
-
-            <span class="premium-pill">
-              COLLECTION PREMIUM
-            </span>
-
-            <h2>
-              Le style,
-              <span>autrement.</span>
-            </h2>
-
-            <p>
-              Une sélection moderne pensée pour ceux qui aiment
-              la qualité, le style et la simplicité.
-            </p>
+// =====================================
+// SHOPBASSIN MINI APP
+// =====================================
 
-            <div class="hero-actions">
-              <button class="btn-primary" onclick="showPage('habits')">
-                Découvrir
-              </button>
-
-              <button class="btn-secondary" onclick="showPage('galo')">
-                Voir Galo
-              </button>
-            </div>
 
-          </div>
-        </div>
-
+// TELEGRAM
+const tg = window.Telegram?.WebApp;
 
-        <!-- CATÉGORIES -->
-        <div class="section-header">
-          <div>
-            <p class="eyebrow">SHOPBASSIN</p>
-            <h3>Nos univers</h3>
-          </div>
-        </div>
+if (tg) {
+  tg.ready();
+  tg.expand();
+}
 
-        <div class="category-grid">
 
-          <button class="category-card" onclick="showPage('habits')">
-            <div class="category-top">
-              <span class="category-icon">👕</span>
-              <span class="arrow">↗</span>
-            </div>
+// =====================================
+// CHARGEMENT
+// =====================================
 
-            <div>
-              <h4>Habits</h4>
-              <p>Découvre la collection</p>
-            </div>
-          </button>
+function closeLoader() {
 
+  const loader = document.getElementById("loader");
 
-          <button class="category-card" onclick="showPage('galo')">
-            <div class="category-top">
-              <span class="category-icon">✦</span>
-              <span class="arrow">↗</span>
-            </div>
+  if (!loader) {
+    return;
+  }
 
-            <div>
-              <h4>Galo</h4>
-              <p>Notre sélection spéciale</p>
-            </div>
-          </button>
+  loader.style.opacity = "0";
+  loader.style.pointerEvents = "none";
 
-        </div>
+  setTimeout(function () {
 
+    if (loader) {
+      loader.style.display = "none";
+    }
 
-        <!-- AVANTAGES -->
-        <div class="features">
+  }, 700);
+}
 
-          <div class="feature">
-            <span>⚡</span>
-            <div>
-              <strong>Rapide</strong>
-              <p>Commande simple</p>
-            </div>
-          </div>
 
-          <div class="feature">
-            <span>✓</span>
-            <div>
-              <strong>Qualité</strong>
-              <p>Produits sélectionnés</p>
-            </div>
-          </div>
+// Dès que la page est prête
+document.addEventListener(
+  "DOMContentLoaded",
+  function () {
 
-          <div class="feature">
-            <span>💬</span>
-            <div>
-              <strong>Telegram</strong>
-              <p>Contact direct</p>
-            </div>
-          </div>
+    setTimeout(
+      closeLoader,
+      3000
+    );
 
-        </div>
+  }
+);
 
-      </section>
 
+// SÉCURITÉ : même si quelque chose bloque,
+// le loader disparaît quand même.
+setTimeout(
+  closeLoader,
+  4500
+);
 
-      <!-- HABITS -->
-      <section id="habits" class="page">
 
-        <div class="page-title">
-          <p class="eyebrow">COLLECTION</p>
-          <h2>Habits</h2>
-          <p>Découvre les articles disponibles.</p>
-        </div>
+// =====================================
+// NAVIGATION
+// =====================================
 
-        <div id="habits-products" class="product-grid"></div>
+function showPage(pageId, clickedButton) {
 
-      </section>
+  const pages =
+    document.querySelectorAll(".page");
 
 
-      <!-- GALO -->
-      <section id="galo" class="page">
+  pages.forEach(function (page) {
 
-        <div class="page-title">
-          <p class="eyebrow">SHOPBASSIN</p>
-          <h2>Galo</h2>
-          <p>Une sélection spéciale ShopBassin.</p>
-        </div>
+    page.classList.remove("active");
 
-        <div class="galo-card">
+  });
 
-          <div class="galo-visual">
-            <img src="IMG_0438.png" alt="Galo ShopBassin" />
-          </div>
 
-          <div class="galo-content">
-            <span class="premium-pill">GALO</span>
+  const selectedPage =
+    document.getElementById(pageId);
 
-            <h3>Une expérience différente.</h3>
 
-            <p>
-              Tes produits Galo apparaîtront ici avec leurs photos,
-              descriptions et prix.
-            </p>
-          </div>
+  if (selectedPage) {
 
-        </div>
+    selectedPage.classList.add("active");
 
-      </section>
+  }
 
 
-      <!-- PANIER -->
-      <section id="panier" class="page">
+  // MENU DU BAS
 
-        <div class="page-title">
-          <p class="eyebrow">SHOPBASSIN</p>
-          <h2>Ton panier</h2>
-          <p>Retrouve ici tous tes articles.</p>
-        </div>
+  const navButtons =
+    document.querySelectorAll(
+      ".bottom-nav button"
+    );
 
-        <div id="cart-items" class="cart-list"></div>
 
-        <div class="checkout-card">
+  navButtons.forEach(function (button) {
 
-          <div class="checkout-line">
-            <span>Total</span>
-            <strong id="cart-total">0 €</strong>
-          </div>
+    button.classList.remove("active");
 
-          <button class="btn-primary full" onclick="prepareOrder()">
-            Commander sur Telegram
-          </button>
+  });
 
-        </div>
 
-      </section>
+  // Si le bouton vient du menu
+  if (clickedButton) {
 
+    clickedButton.classList.add("active");
 
-      <!-- CONTACT -->
-      <section id="contact" class="page">
+  }
 
-        <div class="page-title">
-          <p class="eyebrow">CONTACT</p>
-          <h2>Besoin d'aide ?</h2>
-          <p>Nous sommes disponibles directement sur Telegram.</p>
-        </div>
+  // Si on vient d'un bouton ailleurs
+  else {
 
-        <div class="contact-card">
+    const matchingButton =
+      document.querySelector(
+        '.bottom-nav button[data-page="' +
+        pageId +
+        '"]'
+      );
 
-          <div class="contact-icon">💬</div>
 
-          <h3>ShopBassin</h3>
+    if (matchingButton) {
 
-          <p>
-            Une question sur un produit ou une commande ?
-            Contacte-nous directement.
-          </p>
+      matchingButton.classList.add(
+        "active"
+      );
 
-          <button class="btn-primary full" onclick="openTelegram()">
-            Ouvrir Telegram
-          </button>
+    }
 
-        </div>
+  }
 
-      </section>
 
-    </main>
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 
 
-    <!-- NAVIGATION -->
-    <nav class="bottom-nav">
+  // Vibration légère dans Telegram
+  if (
+    tg &&
+    tg.HapticFeedback
+  ) {
 
-      <button class="nav-item active"
-        onclick="showPage('accueil', this)">
-        <span>⌂</span>
-        <small>Accueil</small>
-      </button>
+    try {
 
-      <button class="nav-item"
-        onclick="showPage('habits', this)">
-        <span>👕</span>
-        <small>Habits</small>
-      </button>
+      tg.HapticFeedback
+        .selectionChanged();
 
-      <button class="nav-item"
-        onclick="showPage('galo', this)">
-        <span>✦</span>
-        <small>Galo</small>
-      </button>
+    } catch (error) {
 
-      <button class="nav-item"
-        onclick="showPage('panier', this)">
-        <span>🛒</span>
-        <small>Panier</small>
-      </button>
+      console.log(
+        "Haptic indisponible"
+      );
 
-      <button class="nav-item"
-        onclick="showPage('contact', this)">
-        <span>●</span>
-        <small>Contact</small>
-      </button>
+    }
 
-    </nav>
+  }
 
-  </div>
+}
 
 
-  <script src="script.js"></script>
+// =====================================
+// CONTACT TELEGRAM
+// =====================================
 
-</body>
-</html>
+function openTelegram() {
+
+  const telegramUrl =
+    "https://t.me/shopbassinstore_bot";
+
+
+  if (
+    tg &&
+    typeof tg.openTelegramLink ===
+    "function"
+  ) {
+
+    tg.openTelegramLink(
+      telegramUrl
+    );
+
+    return;
+  }
+
+
+  window.location.href =
+    telegramUrl;
+}
+
+
+// =====================================
+// COMPTEUR PANIER
+// =====================================
+
+function updateCartCount(number) {
+
+  const counter =
+    document.getElementById(
+      "cart-count"
+    );
+
+
+  if (counter) {
+
+    counter.textContent =
+      number || 0;
+
+  }
+
+}
+
+
+// DÉMARRAGE
+updateCartCount(0);
