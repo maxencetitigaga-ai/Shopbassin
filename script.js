@@ -1,115 +1,130 @@
-// ======================================
-// SHOPBASSIN MINI APP
-// SCRIPT COMPLET
-// ======================================
-
-
-// ======================================
-// TELEGRAM
-// ======================================
-
 const tg = window.Telegram?.WebApp;
 
 if (tg) {
   try {
     tg.ready();
     tg.expand();
-  } catch (error) {
-    console.log("Telegram WebApp indisponible");
+  } catch (error) {}
+}
+
+
+// ================================
+// PRODUITS
+// ================================
+//
+// POUR AJOUTER UN PRODUIT :
+// copie un bloc et change les informations.
+//
+// POUR METTRE UNE PHOTO :
+// ajoute l'image dans GitHub
+// puis écris son nom dans "image".
+//
+// Exemple : "tshirt-noir.jpg"
+//
+
+const products = [
+
+  {
+    id: 1,
+    name: "T-shirt ShopBassin",
+    price: 25,
+    image: ""
+  },
+
+  {
+    id: 2,
+    name: "Ensemble Premium",
+    price: 39.90,
+    image: ""
+  },
+
+  {
+    id: 3,
+    name: "T-shirt Oversize",
+    price: 29.90,
+    image: ""
+  },
+
+  {
+    id: 4,
+    name: "Nouveauté ShopBassin",
+    price: 34.90,
+    image: ""
   }
+
+];
+
+
+// ================================
+// PANIER
+// ================================
+
+let cart = [];
+
+try {
+
+  const saved =
+    localStorage.getItem("shopbassin-cart");
+
+  if (saved) {
+    cart = JSON.parse(saved);
+  }
+
+} catch (error) {
+  cart = [];
 }
 
 
-// ======================================
-// ÉCRAN DE CHARGEMENT
-// ======================================
-
-function removeLoader() {
-
-  const loader = document.getElementById("loader");
-
-  if (!loader) return;
-
-  loader.style.opacity = "0";
-  loader.style.pointerEvents = "none";
-
-  setTimeout(function () {
-    loader.style.display = "none";
-  }, 750);
-}
-
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  setTimeout(removeLoader, 3000);
-
-  loadCart();
-
-  renderProducts();
-
-  updateCartCount();
-
-});
-
-
-// Sécurité : le loader disparaît toujours
-setTimeout(removeLoader, 5000);
-
-
-// ======================================
+// ================================
 // NAVIGATION
-// ======================================
+// ================================
 
-function showPage(pageId, clickedButton = null) {
+function showPage(pageId, button = null) {
 
-  const pages = document.querySelectorAll(".page");
+  document
+    .querySelectorAll(".page")
+    .forEach(function(page) {
 
-  pages.forEach(function (page) {
-    page.classList.remove("active");
-  });
+      page.classList.remove("active");
+
+    });
 
 
-  const selectedPage =
+  const page =
     document.getElementById(pageId);
 
-
-  if (selectedPage) {
-    selectedPage.classList.add("active");
+  if (page) {
+    page.classList.add("active");
   }
 
 
-  // Navigation du bas
-  const navButtons =
-    document.querySelectorAll(".nav-button");
+  document
+    .querySelectorAll(".nav-button")
+    .forEach(function(nav) {
+
+      nav.classList.remove("active");
+
+    });
 
 
-  navButtons.forEach(function (button) {
-    button.classList.remove("active");
-  });
+  if (button) {
 
-
-  if (clickedButton) {
-
-    clickedButton.classList.add("active");
+    button.classList.add("active");
 
   } else {
 
-    const matchingButton =
+    const nav =
       document.querySelector(
-        '.nav-button[data-page="' +
-        pageId +
-        '"]'
+        '[data-page="' + pageId + '"]'
       );
 
-
-    if (matchingButton) {
-      matchingButton.classList.add("active");
+    if (nav) {
+      nav.classList.add("active");
     }
 
   }
 
 
-  // Actualiser panier
   if (pageId === "panier") {
     renderCart();
   }
@@ -120,86 +135,71 @@ function showPage(pageId, clickedButton = null) {
     behavior: "smooth"
   });
 
-
-  // Petite vibration Telegram
-  if (tg?.HapticFeedback) {
-
-    try {
-      tg.HapticFeedback.selectionChanged();
-    } catch (error) {}
-
-  }
 }
 
 
-// ======================================
-// PRODUITS
-// ======================================
-
-// Tu pourras changer ici :
-// nom, prix, image, etc.
-
-const products = [
-
-  {
-    id: 1,
-    name: "T-shirt Premium",
-    price: 29.90,
-    icon: "👕"
-  },
-
-  {
-    id: 2,
-    name: "Sweat ShopBassin",
-    price: 49.90,
-    icon: "🧥"
-  },
-
-  {
-    id: 3,
-    name: "T-shirt Oversize",
-    price: 34.90,
-    icon: "👕"
-  },
-
-  {
-    id: 4,
-    name: "Ensemble Premium",
-    price: 69.90,
-    icon: "✨"
-  }
-
-];
-
-
-// ======================================
-// AFFICHER LES PRODUITS
-// ======================================
+// ================================
+// CATALOGUE
+// ================================
 
 function renderProducts() {
 
   const container =
-    document.getElementById("products-container");
+    document.getElementById(
+      "products-container"
+    );
+
+
+  const count =
+    document.getElementById(
+      "product-count"
+    );
+
+
+  if (count) {
+    count.textContent = products.length;
+  }
 
 
   if (!container) return;
 
 
   container.innerHTML =
-    products.map(function (product) {
+    products.map(function(product) {
+
+
+      let imageHTML;
+
+
+      if (product.image) {
+
+        imageHTML =
+          '<img src="./' +
+          product.image +
+          '" alt="' +
+          product.name +
+          '">';
+
+      } else {
+
+        imageHTML =
+          '<div class="no-product-image">👕</div>';
+
+      }
+
 
       return `
 
-        <div class="product-card">
+        <article class="product-card">
 
           <div class="product-image">
 
-            ${product.icon}
+            ${imageHTML}
 
           </div>
 
 
-          <div class="product-content">
+          <div class="product-info">
 
             <h3>
               ${product.name}
@@ -214,15 +214,15 @@ function renderProducts() {
 
 
             <button
-              class="btn-primary full"
+              class="add-button"
               onclick="addToCart(${product.id})"
             >
-              Ajouter
+              Ajouter au panier
             </button>
 
           </div>
 
-        </div>
+        </article>
 
       `;
 
@@ -231,71 +231,17 @@ function renderProducts() {
 }
 
 
-// ======================================
-// PANIER
-// ======================================
-
-let cart = [];
-
-
-// ======================================
-// CHARGER LE PANIER
-// ======================================
-
-function loadCart() {
-
-  try {
-
-    const saved =
-      localStorage.getItem("shopbassin-cart");
-
-
-    if (saved) {
-      cart = JSON.parse(saved);
-    }
-
-  } catch (error) {
-
-    cart = [];
-
-  }
-
-
-  updateCartCount();
-
-}
-
-
-// ======================================
-// SAUVEGARDER PANIER
-// ======================================
-
-function saveCart() {
-
-  try {
-
-    localStorage.setItem(
-      "shopbassin-cart",
-      JSON.stringify(cart)
-    );
-
-  } catch (error) {}
-
-
-  updateCartCount();
-
-}
-
-
-// ======================================
+// ================================
 // AJOUTER AU PANIER
-// ======================================
+// ================================
 
-function addToCart(productId) {
+function addToCart(id) {
 
   const product =
-    products.find(function (item) {
-      return item.id === productId;
+    products.find(function(product) {
+
+      return product.id === id;
+
     });
 
 
@@ -303,27 +249,22 @@ function addToCart(productId) {
 
 
   const existing =
-    cart.find(function (item) {
-      return item.id === productId;
+    cart.find(function(item) {
+
+      return item.id === id;
+
     });
 
 
   if (existing) {
 
-    existing.quantity += 1;
+    existing.quantity++;
 
   } else {
 
     cart.push({
 
-      id: product.id,
-
-      name: product.name,
-
-      price: product.price,
-
-      icon: product.icon,
-
+      ...product,
       quantity: 1
 
     });
@@ -337,155 +278,27 @@ function addToCart(productId) {
   if (tg?.HapticFeedback) {
 
     try {
-      tg.HapticFeedback.impactOccurred("light");
+
+      tg.HapticFeedback
+        .impactOccurred("light");
+
     } catch (error) {}
 
   }
 
-
-  if (tg?.showAlert) {
-
-    tg.showAlert(
-      product.name +
-      " ajouté au panier ✅"
-    );
-
-  }
-
 }
 
 
-// ======================================
-// COMPTEUR PANIER
-// ======================================
-
-function updateCartCount() {
-
-  const counter =
-    document.getElementById("cart-count");
-
-
-  if (!counter) return;
-
-
-  const count =
-    cart.reduce(
-      function (total, item) {
-
-        return total + item.quantity;
-
-      },
-      0
-    );
-
-
-  counter.textContent = count;
-
-}
-
-
-// ======================================
-// AFFICHER LE PANIER
-// ======================================
-
-function renderCart() {
-
-  const container =
-    document.getElementById("cart-items");
-
-
-  if (!container) return;
-
-
-  if (cart.length === 0) {
-
-    container.innerHTML = `
-
-      <div class="empty-cart">
-
-        <span>
-          🛒
-        </span>
-
-        <h3>
-          Ton panier est vide
-        </h3>
-
-        <p>
-          Ajoute des articles
-          depuis Habits.
-        </p>
-
-      </div>
-
-    `;
-
-  } else {
-
-    container.innerHTML =
-      cart.map(function (item) {
-
-        return `
-
-          <div class="cart-item">
-
-            <div class="cart-item-image">
-
-              ${item.icon}
-
-            </div>
-
-
-            <div>
-
-              <strong>
-                ${item.name}
-              </strong>
-
-              <p>
-
-                ${item.quantity}
-
-                ×
-
-                ${formatPrice(item.price)}
-
-              </p>
-
-            </div>
-
-
-            <button
-              class="remove-button"
-              onclick="removeFromCart(${item.id})"
-            >
-              ×
-            </button>
-
-          </div>
-
-        `;
-
-      }).join("");
-
-  }
-
-
-  updateTotal();
-
-}
-
-
-// ======================================
+// ================================
 // RETIRER DU PANIER
-// ======================================
+// ================================
 
-function removeFromCart(productId) {
+function removeFromCart(id) {
 
   const item =
-    cart.find(function (product) {
+    cart.find(function(item) {
 
-      return product.id === productId;
+      return item.id === id;
 
     });
 
@@ -495,14 +308,14 @@ function removeFromCart(productId) {
 
   if (item.quantity > 1) {
 
-    item.quantity -= 1;
+    item.quantity--;
 
   } else {
 
     cart =
-      cart.filter(function (product) {
+      cart.filter(function(item) {
 
-        return product.id !== productId;
+        return item.id !== id;
 
       });
 
@@ -516,17 +329,170 @@ function removeFromCart(productId) {
 }
 
 
-// ======================================
-// CALCUL SOUS-TOTAL
-// ======================================
+// ================================
+// SAUVEGARDE
+// ================================
+
+function saveCart() {
+
+  localStorage.setItem(
+    "shopbassin-cart",
+    JSON.stringify(cart)
+  );
+
+
+  updateCartCount();
+
+}
+
+
+// ================================
+// COMPTEUR
+// ================================
+
+function updateCartCount() {
+
+  const counter =
+    document.getElementById(
+      "cart-count"
+    );
+
+
+  if (!counter) return;
+
+
+  const total =
+    cart.reduce(
+      function(sum, item) {
+
+        return sum + item.quantity;
+
+      },
+      0
+    );
+
+
+  counter.textContent = total;
+
+}
+
+
+// ================================
+// PANIER
+// ================================
+
+function renderCart() {
+
+  const container =
+    document.getElementById(
+      "cart-items"
+    );
+
+
+  if (!container) return;
+
+
+  if (cart.length === 0) {
+
+    container.innerHTML = `
+
+      <div class="empty-cart">
+
+        <span>🛒</span>
+
+        <h3>
+          Ton panier est vide
+        </h3>
+
+        <p>
+          Ajoute un produit depuis le catalogue.
+        </p>
+
+      </div>
+
+    `;
+
+  } else {
+
+    container.innerHTML =
+      cart.map(function(item) {
+
+
+        let thumb;
+
+
+        if (item.image) {
+
+          thumb =
+            '<img src="./' +
+            item.image +
+            '" alt="">';
+
+        } else {
+
+          thumb = "👕";
+
+        }
+
+
+        return `
+
+          <div class="cart-item">
+
+            <div class="cart-thumb">
+
+              ${thumb}
+
+            </div>
+
+
+            <div class="cart-info">
+
+              <strong>
+                ${item.name}
+              </strong>
+
+              <p>
+                ${item.quantity}
+                ×
+                ${formatPrice(item.price)}
+              </p>
+
+            </div>
+
+
+            <button
+              class="remove-button"
+              onclick="removeFromCart(${item.id})"
+            >
+              −
+            </button>
+
+          </div>
+
+        `;
+
+      }).join("");
+
+  }
+
+
+  updateTotals();
+
+}
+
+
+// ================================
+// PRIX
+// ================================
 
 function getSubtotal() {
 
   return cart.reduce(
-    function (sum, item) {
+    function(total, item) {
 
       return (
-        sum +
+        total +
         item.price * item.quantity
       );
 
@@ -537,65 +503,69 @@ function getSubtotal() {
 }
 
 
-// ======================================
-// FRAIS DE LIVRAISON
-// ======================================
-
-// 30 € ou plus = livraison gratuite
-// Moins de 30 € = +5 €
-// Panier vide = 0 €
-
-function getDeliveryPrice(subtotal) {
+function getDelivery(subtotal) {
 
   if (subtotal === 0) {
     return 0;
   }
 
-
   if (subtotal < 30) {
     return 5;
   }
-
 
   return 0;
 
 }
 
 
-// ======================================
-// TOTAL
-// ======================================
-
-function updateTotal() {
-
-  const element =
-    document.getElementById("cart-total");
-
-
-  if (!element) return;
-
+function updateTotals() {
 
   const subtotal =
     getSubtotal();
 
 
   const delivery =
-    getDeliveryPrice(subtotal);
+    getDelivery(subtotal);
 
 
   const total =
     subtotal + delivery;
 
 
-  element.textContent =
-    formatPrice(total);
+  setText(
+    "cart-subtotal",
+    formatPrice(subtotal)
+  );
+
+
+  setText(
+    "delivery-price",
+    delivery === 0 && subtotal > 0
+      ? "GRATUITE"
+      : formatPrice(delivery)
+  );
+
+
+  setText(
+    "cart-total",
+    formatPrice(total)
+  );
 
 }
 
 
-// ======================================
-// FORMAT PRIX
-// ======================================
+function setText(id, text) {
+
+  const element =
+    document.getElementById(id);
+
+
+  if (element) {
+    element.textContent = text;
+  }
+
+}
+
 
 function formatPrice(price) {
 
@@ -610,30 +580,20 @@ function formatPrice(price) {
 }
 
 
-// ======================================
-// PRÉPARER LA COMMANDE
-// ======================================
+// ================================
+// COMMANDE
+// ================================
 
 function prepareOrder() {
 
   if (cart.length === 0) {
 
-    if (tg?.showAlert) {
-
-      tg.showAlert(
-        "Ton panier est vide."
-      );
-
-    } else {
-
-      alert(
-        "Ton panier est vide."
-      );
-
-    }
-
+    alert(
+      "Ton panier est vide."
+    );
 
     return;
+
   }
 
 
@@ -642,7 +602,7 @@ function prepareOrder() {
 
 
   const delivery =
-    getDeliveryPrice(subtotal);
+    getDelivery(subtotal);
 
 
   const total =
@@ -650,76 +610,51 @@ function prepareOrder() {
 
 
   let message =
-
-`🛍 COMMANDE SHOPBASSIN
-
-Articles :
-`;
+    "🛍 COMMANDE SHOPBASSIN\n\n";
 
 
-  cart.forEach(function (item) {
+  cart.forEach(function(item) {
 
     message +=
-
-`
-• ${item.name}
-  ${item.quantity} × ${formatPrice(item.price)}
-`;
+      "• " +
+      item.name +
+      " — " +
+      item.quantity +
+      " × " +
+      formatPrice(item.price) +
+      "\n";
 
   });
 
 
   message +=
-`
-Sous-total : ${formatPrice(subtotal)}
-`;
-
-
-  if (delivery === 0) {
-
-    message +=
-`Livraison : GRATUITE ✅
-`;
-
-  } else {
-
-    message +=
-`Livraison : ${formatPrice(delivery)}
-`;
-
-  }
+    "\nSous-total : " +
+    formatPrice(subtotal);
 
 
   message +=
+    "\nLivraison : " +
+    (
+      delivery === 0
+        ? "GRATUITE"
+        : formatPrice(delivery)
+    );
 
-`
-TOTAL : ${formatPrice(total)}
 
-Merci de confirmer ma commande.`;
+  message +=
+    "\nTOTAL : " +
+    formatPrice(total);
 
-
-
-  // Copier le bon de commande
 
   if (navigator.clipboard) {
 
     navigator.clipboard
       .writeText(message)
-      .then(function () {
+      .then(function() {
 
-        if (tg?.showAlert) {
-
-          tg.showAlert(
-            "Bon de commande copié ✅"
-          );
-
-        } else {
-
-          alert(
-            "Bon de commande copié ✅"
-          );
-
-        }
+        alert(
+          "Commande copiée ✅"
+        );
 
       });
 
@@ -732,28 +667,19 @@ Merci de confirmer ma commande.`;
 }
 
 
-// ======================================
-// TELEGRAM
-// ======================================
+// ================================
+// DÉMARRAGE
+// ================================
 
-function openTelegram() {
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
 
-  const url =
-    "https://t.me/shopbassinstore_bot";
+    renderProducts();
 
+    updateCartCount();
 
-  if (
-    tg &&
-    typeof tg.openTelegramLink ===
-    "function"
-  ) {
-
-    tg.openTelegramLink(url);
-
-  } else {
-
-    window.location.href = url;
+    renderCart();
 
   }
-
-}
+);
