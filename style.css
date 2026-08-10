@@ -215,3 +215,103 @@ section p {
     gap: 8px;
   }
 }
+
+/* ===== ÉCRAN DE CHARGEMENT SHOPBASSIN ===== */
+
+#loader {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease, visibility 0.8s ease;
+}
+
+.loader-content {
+  width: 100%;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loader-logo {
+  width: min(78vw, 360px);
+  height: auto;
+  display: block;
+  border-radius: 50%;
+  filter:
+    drop-shadow(0 0 12px rgba(41, 151, 255, 0.8))
+    drop-shadow(0 0 35px rgba(41, 151, 255, 0.45));
+  animation: shopbassin-spin 3s ease-in-out infinite;
+}
+
+.loader-bar {
+  width: min(70vw, 300px);
+  height: 3px;
+  margin-top: 35px;
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.loader-progress {
+  width: 0%;
+  height: 100%;
+  background: #2997ff;
+  border-radius: 20px;
+  box-shadow: 0 0 15px rgba(41, 151, 255, 0.9);
+  animation: shopbassin-loading 3s ease forwards;
+}
+
+.loader-text {
+  margin-top: 20px;
+  color: #8e8e93;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-align: center;
+}
+
+#loader.loader-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+@keyframes shopbassin-spin {
+  0% {
+    transform: scale(0.82) rotate(-8deg);
+    opacity: 0;
+  }
+
+  25% {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+
+  75% {
+    transform: scale(1.03) rotate(360deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.96) rotate(360deg);
+    opacity: 0.9;
+  }
+}
+
+@keyframes shopbassin-loading {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
+}
