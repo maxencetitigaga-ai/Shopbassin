@@ -248,7 +248,7 @@ section p {
   filter:
     drop-shadow(0 0 12px rgba(41, 151, 255, 0.8))
     drop-shadow(0 0 35px rgba(41, 151, 255, 0.45));
-  animation: shopbassin-spin 3s ease-in-out infinite;
+  animation: shopbassin-spin 3s ease-in-out forwards;
 }
 
 .loader-bar {
