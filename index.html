@@ -3,7 +3,12 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
+
   <meta name="theme-color" content="#050505">
 
   <title>ShopBassin</title>
@@ -13,24 +18,32 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
+
 <body>
 
-  <!-- LOADER -->
+  <!-- =========================
+       ÉCRAN DE CHARGEMENT
+  ========================== -->
+
   <div id="loader">
 
     <div class="loader-inner">
 
       <div class="logo-orbit">
+
         <img
           src="IMG_0438.png"
           alt="ShopBassin"
           class="loader-logo"
         >
+
       </div>
+
 
       <div class="loading-line">
         <div class="loading-progress"></div>
       </div>
+
 
       <p class="loader-tagline">
         PREMIUM • QUALITÉ • RAPIDITÉ
@@ -41,10 +54,16 @@
   </div>
 
 
-  <!-- APPLICATION -->
+
+  <!-- =========================
+       APPLICATION
+  ========================== -->
+
   <div class="app">
 
+
     <!-- HEADER -->
+
     <header class="topbar">
 
       <div class="brand">
@@ -56,8 +75,13 @@
         >
 
         <div>
-          <p class="eyebrow">SHOPBASSIN</p>
+
+          <p class="eyebrow">
+            SHOPBASSIN
+          </p>
+
           <h1>Bienvenue</h1>
+
         </div>
 
       </div>
@@ -67,38 +91,59 @@
         class="cart-button"
         onclick="showPage('panier')"
       >
+
         🛒
-        <span id="cart-count">0</span>
+
+        <span id="cart-count">
+          0
+        </span>
+
       </button>
 
     </header>
 
 
+
     <main>
 
-      <!-- ACCUEIL -->
+
+      <!-- =========================
+           ACCUEIL
+      ========================== -->
+
       <section
         id="accueil"
         class="page active"
       >
 
+
         <div class="hero-card">
+
+          <div class="hero-shine"></div>
+
 
           <div class="hero-content">
 
             <span class="premium-pill">
-              COLLECTION PREMIUM
+              SHOPBASSIN PREMIUM
             </span>
 
+
             <h2>
+
               Le style,
               <span>autrement.</span>
+
             </h2>
 
+
             <p>
-              Une sélection moderne pensée pour la qualité,
-              le style et la simplicité.
+
+              Une expérience simple, rapide et moderne
+              directement depuis Telegram.
+
             </p>
+
 
             <div class="hero-actions">
 
@@ -106,14 +151,15 @@
                 class="btn-primary"
                 onclick="showPage('habits')"
               >
-                Découvrir
+                Voir les habits
               </button>
+
 
               <button
                 class="btn-secondary"
                 onclick="showPage('galo')"
               >
-                Voir Galo
+                Galo
               </button>
 
             </div>
@@ -123,35 +169,43 @@
         </div>
 
 
-        <!-- UNIVERS -->
+
+        <!-- NOS ESPACES -->
+
         <div class="section-head">
 
           <span class="section-label">
             SHOPBASSIN
           </span>
 
-          <h3>Nos univers</h3>
+          <h3>
+            Découvrir
+          </h3>
 
         </div>
 
 
+
         <div class="category-grid">
+
+
+          <!-- HABITS -->
 
           <button
             class="category-card"
             onclick="showPage('habits')"
           >
 
-            <span class="category-icon">
+            <div class="category-icon">
               👕
-            </span>
+            </div>
 
             <strong>
               Habits
             </strong>
 
             <span>
-              Découvre notre collection
+              Voir les articles disponibles
             </span>
 
             <span class="arrow">
@@ -161,21 +215,24 @@
           </button>
 
 
+
+          <!-- GALO -->
+
           <button
-            class="category-card"
+            class="category-card galo-home"
             onclick="showPage('galo')"
           >
 
-            <span class="category-icon">
+            <div class="category-icon">
               ✦
-            </span>
+            </div>
 
             <strong>
               Galo
             </strong>
 
             <span>
-              Notre sélection spéciale
+              Accéder à l'espace Galo
             </span>
 
             <span class="arrow">
@@ -187,59 +244,87 @@
         </div>
 
 
+
         <!-- AVANTAGES -->
+
         <div class="features">
 
+
           <div class="feature">
 
-            <span class="feature-icon">
+            <div class="feature-icon">
               ⚡
-            </span>
+            </div>
 
-            <strong>Rapide</strong>
+            <div>
 
-            <p>
-              Commande simple
-            </p>
+              <strong>
+                Rapide
+              </strong>
+
+              <p>
+                Navigation instantanée
+              </p>
+
+            </div>
 
           </div>
 
 
+
           <div class="feature">
 
-            <span class="feature-icon">
+            <div class="feature-icon">
               ✓
-            </span>
+            </div>
 
-            <strong>Qualité</strong>
+            <div>
 
-            <p>
-              Produits sélectionnés
-            </p>
+              <strong>
+                Qualité
+              </strong>
+
+              <p>
+                Sélection ShopBassin
+              </p>
+
+            </div>
 
           </div>
+
 
 
           <div class="feature">
 
-            <span class="feature-icon">
+            <div class="feature-icon">
               💬
-            </span>
+            </div>
 
-            <strong>Telegram</strong>
+            <div>
 
-            <p>
-              Contact direct
-            </p>
+              <strong>
+                Telegram
+              </strong>
+
+              <p>
+                Contact direct
+              </p>
+
+            </div>
 
           </div>
+
 
         </div>
 
       </section>
 
 
-      <!-- HABITS -->
+
+      <!-- =========================
+           HABITS
+      ========================== -->
+
       <section
         id="habits"
         class="page"
@@ -248,10 +333,12 @@
         <div class="page-title">
 
           <span class="section-label">
-            COLLECTION
+            SHOPBASSIN
           </span>
 
-          <h2>Habits</h2>
+          <h2>
+            Habits
+          </h2>
 
           <p>
             Découvre les articles disponibles.
@@ -260,22 +347,20 @@
         </div>
 
 
-        <div class="empty-card">
-
-          <h3>
-            👕 Collection ShopBassin
-          </h3>
-
-          <p>
-            Tes produits et leurs photos seront ajoutés ici.
-          </p>
-
+        <div
+          id="products-container"
+          class="products-grid"
+        >
         </div>
 
       </section>
 
 
-      <!-- GALO -->
+
+      <!-- =========================
+           GALO
+      ========================== -->
+
       <section
         id="galo"
         class="page"
@@ -287,38 +372,69 @@
             SHOPBASSIN
           </span>
 
-          <h2>Galo</h2>
+          <h2>
+            Galo
+          </h2>
 
           <p>
-            Découvre l'univers Galo.
+            Ton espace Galo.
           </p>
 
         </div>
 
 
-        <div class="galo-card">
+        <div class="galo-panel">
 
-          <img
-            src="IMG_0438.png"
-            alt="ShopBassin"
-            class="galo-logo"
-          >
+          <div class="galo-symbol">
+
+            <span>
+              ✦
+            </span>
+
+          </div>
+
 
           <h3>
             Galo
           </h3>
 
+
           <p>
-            Les photos, produits, descriptions et prix
-            seront ajoutés ici.
+
+            Cet espace est indépendant de la boutique Habits.
+
+            Tu pourras mettre ici ta photo,
+            ton texte et les informations que tu souhaites.
+
           </p>
+
+
+          <div class="galo-placeholder">
+
+            <span>
+              📷
+            </span>
+
+            <strong>
+              Photo Galo
+            </strong>
+
+            <small>
+              Nous l'ajouterons ici
+            </small>
+
+          </div>
 
         </div>
 
       </section>
 
 
-      <!-- PANIER -->
+
+      <!-- =========================
+           PANIER
+      ========================== -->
+
       <section
         id="panier"
         class="page"
@@ -330,44 +446,56 @@
             SHOPBASSIN
           </span>
 
-          <h2>Ton panier</h2>
+          <h2>
+            Ton panier
+          </h2>
 
           <p>
-            Retrouve ici les articles que tu souhaites commander.
+            Vérifie tes articles avant ta commande.
           </p>
 
         </div>
 
 
-        <div class="cart-card">
-
-          <h3>
-            🛒 Ton panier est vide
-          </h3>
-
-          <p>
-            Ajoute des articles depuis la boutique.
-          </p>
+        <div
+          id="cart-items"
+          class="cart-items"
+        >
+        </div>
 
 
-          <div class="cart-total">
+        <div class="checkout-card">
+
+          <div class="checkout-row">
 
             <span>
               Total
             </span>
 
-            <span id="cart-total">
+            <strong id="cart-total">
               0,00 €
-            </span>
+            </strong>
 
           </div>
+
+
+          <button
+            class="btn-primary full"
+            onclick="prepareOrder()"
+          >
+            Préparer ma commande
+          </button>
 
         </div>
 
       </section>
 
 
-      <!-- CONTACT -->
+
+      <!-- =========================
+           CONTACT
+      ========================== -->
+
       <section
         id="contact"
         class="page"
@@ -376,13 +504,15 @@
         <div class="page-title">
 
           <span class="section-label">
-            CONTACT
+            SHOPBASSIN
           </span>
 
-          <h2>Besoin d'aide ?</h2>
+          <h2>
+            Contact
+          </h2>
 
           <p>
-            Contacte ShopBassin directement sur Telegram.
+            Une question ? Contacte-nous directement.
           </p>
 
         </div>
@@ -393,19 +523,20 @@
           <img
             src="IMG_0438.png"
             alt="ShopBassin"
-            class="page-logo"
+            class="contact-logo"
           >
+
 
           <h3>
             ShopBassin
           </h3>
 
+
           <p>
-            Une question concernant un produit
-            ou une commande ?
+            Besoin d'une information ?
+            Nous sommes disponibles directement sur Telegram.
           </p>
 
-          <br>
 
           <button
             class="btn-primary full"
@@ -418,64 +549,116 @@
 
       </section>
 
+
     </main>
 
 
-    <!-- NAVIGATION -->
+
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
+
     <nav class="bottom-nav">
 
+
       <button
-        class="active"
+        class="nav-button active"
         data-page="accueil"
         onclick="showPage('accueil', this)"
       >
-        <span>⌂</span>
-        Accueil
+
+        <span class="nav-icon">
+          ⌂
+        </span>
+
+        <span>
+          Accueil
+        </span>
+
       </button>
 
 
+
       <button
+        class="nav-button"
         data-page="habits"
         onclick="showPage('habits', this)"
       >
-        <span>👕</span>
-        Habits
+
+        <span class="nav-icon">
+          👕
+        </span>
+
+        <span>
+          Habits
+        </span>
+
       </button>
 
 
+
       <button
+        class="nav-button"
         data-page="galo"
         onclick="showPage('galo', this)"
       >
-        <span>✦</span>
-        Galo
+
+        <span class="nav-icon">
+          ✦
+        </span>
+
+        <span>
+          Galo
+        </span>
+
       </button>
 
 
+
       <button
+        class="nav-button"
         data-page="panier"
         onclick="showPage('panier', this)"
       >
-        <span>🛒</span>
-        Panier
+
+        <span class="nav-icon">
+          🛒
+        </span>
+
+        <span>
+          Panier
+        </span>
+
       </button>
+
 
 
       <button
+        class="nav-button"
         data-page="contact"
         onclick="showPage('contact', this)"
       >
-        <span>●</span>
-        Contact
+
+        <span class="nav-icon">
+          ●
+        </span>
+
+        <span>
+          Contact
+        </span>
+
       </button>
 
+
     </nav>
+
 
   </div>
 
 
-  <!-- IMPORTANT : script à la toute fin -->
+
   <script src="script.js"></script>
 
 </body>
+
 </html>
