@@ -1,89 +1,151 @@
+const LOGO =
+  "6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png";
+
+
+// ==============================
+// TELEGRAM
+// ==============================
+
 const tg = window.Telegram?.WebApp;
 
 if (tg) {
+
   try {
+
     tg.ready();
     tg.expand();
+
   } catch (error) {}
+
 }
 
 
-// ================================
+// ==============================
+// ÉCRAN DE CHARGEMENT
+// ==============================
+
+window.addEventListener(
+  "load",
+  function () {
+
+    const loader =
+      document.getElementById("loader");
+
+    const app =
+      document.getElementById("app");
+
+
+    /*
+      Temps d'affichage du logo :
+      2000 = 2 secondes
+    */
+
+    setTimeout(
+      function () {
+
+        if (loader) {
+          loader.classList.add("hide");
+        }
+
+        if (app) {
+          app.classList.remove("app-loading");
+        }
+
+      },
+      2000
+    );
+
+  }
+);
+
+
+// ==============================
 // PRODUITS
-// ================================
+// ==============================
 //
-// POUR AJOUTER UN PRODUIT :
-// copie un bloc et change les informations.
+// Pour mettre une vraie photo :
 //
-// POUR METTRE UNE PHOTO :
-// ajoute l'image dans GitHub
-// puis écris son nom dans "image".
+// 1. ajoute la photo sur GitHub
 //
-// Exemple : "tshirt-noir.jpg"
+// 2. change :
+// image: ""
+//
+// en :
+// image: "photo-produit.jpg"
 //
 
 const products = [
 
   {
     id: 1,
-    name: "T-shirt ShopBassin",
+    name: "Produit ShopBassin",
     price: 25,
     image: ""
   },
 
   {
     id: 2,
-    name: "Ensemble Premium",
-    price: 39.90,
-    image: ""
-  },
-
-  {
-    id: 3,
-    name: "T-shirt Oversize",
+    name: "Produit Premium",
     price: 29.90,
     image: ""
   },
 
   {
-    id: 4,
+    id: 3,
     name: "Nouveauté ShopBassin",
     price: 34.90,
+    image: ""
+  },
+
+  {
+    id: 4,
+    name: "Sélection ShopBassin",
+    price: 39.90,
     image: ""
   }
 
 ];
 
 
-// ================================
+// ==============================
 // PANIER
-// ================================
+// ==============================
 
 let cart = [];
 
 try {
 
   const saved =
-    localStorage.getItem("shopbassin-cart");
+    localStorage.getItem(
+      "shopbassin-cart"
+    );
 
   if (saved) {
-    cart = JSON.parse(saved);
+
+    cart =
+      JSON.parse(saved);
+
   }
 
 } catch (error) {
+
   cart = [];
+
 }
 
 
-// ================================
+// ==============================
 // NAVIGATION
-// ================================
+// ==============================
 
-function showPage(pageId, button = null) {
+function showPage(
+  pageId,
+  button = null
+) {
 
   document
     .querySelectorAll(".page")
-    .forEach(function(page) {
+    .forEach(function (page) {
 
       page.classList.remove("active");
 
@@ -93,14 +155,17 @@ function showPage(pageId, button = null) {
   const page =
     document.getElementById(pageId);
 
+
   if (page) {
+
     page.classList.add("active");
+
   }
 
 
   document
     .querySelectorAll(".nav-button")
-    .forEach(function(nav) {
+    .forEach(function (nav) {
 
       nav.classList.remove("active");
 
@@ -115,18 +180,25 @@ function showPage(pageId, button = null) {
 
     const nav =
       document.querySelector(
-        '[data-page="' + pageId + '"]'
+        '[data-page="' +
+        pageId +
+        '"]'
       );
 
+
     if (nav) {
+
       nav.classList.add("active");
+
     }
 
   }
 
 
   if (pageId === "panier") {
+
     renderCart();
+
   }
 
 
@@ -138,9 +210,9 @@ function showPage(pageId, button = null) {
 }
 
 
-// ================================
-// CATALOGUE
-// ================================
+// ==============================
+// AFFICHAGE PRODUITS
+// ==============================
 
 function renderProducts() {
 
@@ -157,7 +229,10 @@ function renderProducts() {
 
 
   if (count) {
-    count.textContent = products.length;
+
+    count.textContent =
+      products.length;
+
   }
 
 
@@ -165,95 +240,117 @@ function renderProducts() {
 
 
   container.innerHTML =
-    products.map(function(product) {
+    products
+      .map(function (product) {
 
 
-      let imageHTML;
+        let imageHTML;
 
 
-      if (product.image) {
+        if (product.image) {
 
-        imageHTML =
-          '<img src="./' +
-          product.image +
-          '" alt="' +
-          product.name +
-          '">';
+          imageHTML = `
 
-      } else {
+            <img
+              src="./${product.image}"
+              alt="${product.name}"
+            >
 
-        imageHTML =
-          '<div class="no-product-image">👕</div>';
+          `;
 
-      }
+        } else {
 
+          /*
+            PLUS D'EMOJI 👕
+            Ton logo apparaît à la place.
+          */
 
-      return `
+          imageHTML = `
 
-        <article class="product-card">
+            <img
+              src="./${LOGO}"
+              class="product-placeholder"
+              alt="ShopBassin"
+            >
 
-          <div class="product-image">
+          `;
 
-            ${imageHTML}
-
-          </div>
-
-
-          <div class="product-info">
-
-            <h3>
-              ${product.name}
-            </h3>
+        }
 
 
-            <div class="product-price">
+        return `
 
-              ${formatPrice(product.price)}
+          <article class="product-card">
+
+            <div class="product-image">
+
+              ${imageHTML}
 
             </div>
 
 
-            <button
-              class="add-button"
-              onclick="addToCart(${product.id})"
-            >
-              Ajouter au panier
-            </button>
+            <div class="product-info">
 
-          </div>
+              <h3>
+                ${product.name}
+              </h3>
 
-        </article>
 
-      `;
+              <div class="product-price">
 
-    }).join("");
+                ${formatPrice(product.price)}
+
+              </div>
+
+
+              <button
+                class="add-button"
+                onclick="addToCart(${product.id})"
+              >
+
+                Ajouter au panier
+
+              </button>
+
+            </div>
+
+          </article>
+
+        `;
+
+      })
+      .join("");
 
 }
 
 
-// ================================
+// ==============================
 // AJOUTER AU PANIER
-// ================================
+// ==============================
 
 function addToCart(id) {
 
   const product =
-    products.find(function(product) {
+    products.find(
+      function (product) {
 
-      return product.id === id;
+        return product.id === id;
 
-    });
+      }
+    );
 
 
   if (!product) return;
 
 
   const existing =
-    cart.find(function(item) {
+    cart.find(
+      function (item) {
 
-      return item.id === id;
+        return item.id === id;
 
-    });
+      }
+    );
 
 
   if (existing) {
@@ -265,6 +362,7 @@ function addToCart(id) {
     cart.push({
 
       ...product,
+
       quantity: 1
 
     });
@@ -289,18 +387,20 @@ function addToCart(id) {
 }
 
 
-// ================================
-// RETIRER DU PANIER
-// ================================
+// ==============================
+// RETIRER
+// ==============================
 
 function removeFromCart(id) {
 
   const item =
-    cart.find(function(item) {
+    cart.find(
+      function (item) {
 
-      return item.id === id;
+        return item.id === id;
 
-    });
+      }
+    );
 
 
   if (!item) return;
@@ -313,11 +413,13 @@ function removeFromCart(id) {
   } else {
 
     cart =
-      cart.filter(function(item) {
+      cart.filter(
+        function (item) {
 
-        return item.id !== id;
+          return item.id !== id;
 
-      });
+        }
+      );
 
   }
 
@@ -329,16 +431,20 @@ function removeFromCart(id) {
 }
 
 
-// ================================
-// SAUVEGARDE
-// ================================
+// ==============================
+// SAUVEGARDE PANIER
+// ==============================
 
 function saveCart() {
 
-  localStorage.setItem(
-    "shopbassin-cart",
-    JSON.stringify(cart)
-  );
+  try {
+
+    localStorage.setItem(
+      "shopbassin-cart",
+      JSON.stringify(cart)
+    );
+
+  } catch (error) {}
 
 
   updateCartCount();
@@ -346,9 +452,9 @@ function saveCart() {
 }
 
 
-// ================================
+// ==============================
 // COMPTEUR
-// ================================
+// ==============================
 
 function updateCartCount() {
 
@@ -363,23 +469,27 @@ function updateCartCount() {
 
   const total =
     cart.reduce(
-      function(sum, item) {
+      function (sum, item) {
 
-        return sum + item.quantity;
+        return (
+          sum +
+          item.quantity
+        );
 
       },
       0
     );
 
 
-  counter.textContent = total;
+  counter.textContent =
+    total;
 
 }
 
 
-// ================================
-// PANIER
-// ================================
+// ==============================
+// AFFICHAGE PANIER
+// ==============================
 
 function renderCart() {
 
@@ -398,14 +508,18 @@ function renderCart() {
 
       <div class="empty-cart">
 
-        <span>🛒</span>
+        <img
+          src="./${LOGO}"
+          alt="ShopBassin"
+        >
 
         <h3>
           Ton panier est vide
         </h3>
 
         <p>
-          Ajoute un produit depuis le catalogue.
+          Ajoute un produit depuis
+          le catalogue.
         </p>
 
       </div>
@@ -415,64 +529,60 @@ function renderCart() {
   } else {
 
     container.innerHTML =
-      cart.map(function(item) {
+      cart
+        .map(function (item) {
 
 
-        let thumb;
+          const image =
+            item.image
+              ? item.image
+              : LOGO;
 
 
-        if (item.image) {
+          return `
 
-          thumb =
-            '<img src="./' +
-            item.image +
-            '" alt="">';
+            <div class="cart-item">
 
-        } else {
+              <div class="cart-thumb">
 
-          thumb = "👕";
+                <img
+                  src="./${image}"
+                  alt="${item.name}"
+                >
 
-        }
+              </div>
 
 
-        return `
+              <div class="cart-info">
 
-          <div class="cart-item">
+                <strong>
+                  ${item.name}
+                </strong>
 
-            <div class="cart-thumb">
+                <p>
 
-              ${thumb}
+                  ${item.quantity}
+                  ×
+                  ${formatPrice(item.price)}
+
+                </p>
+
+              </div>
+
+
+              <button
+                class="remove-button"
+                onclick="removeFromCart(${item.id})"
+              >
+                −
+              </button>
 
             </div>
 
+          `;
 
-            <div class="cart-info">
-
-              <strong>
-                ${item.name}
-              </strong>
-
-              <p>
-                ${item.quantity}
-                ×
-                ${formatPrice(item.price)}
-              </p>
-
-            </div>
-
-
-            <button
-              class="remove-button"
-              onclick="removeFromCart(${item.id})"
-            >
-              −
-            </button>
-
-          </div>
-
-        `;
-
-      }).join("");
+        })
+        .join("");
 
   }
 
@@ -482,18 +592,19 @@ function renderCart() {
 }
 
 
-// ================================
-// PRIX
-// ================================
+// ==============================
+// CALCUL PRIX
+// ==============================
 
 function getSubtotal() {
 
   return cart.reduce(
-    function(total, item) {
+    function (total, item) {
 
       return (
         total +
-        item.price * item.quantity
+        item.price *
+        item.quantity
       );
 
     },
@@ -505,13 +616,26 @@ function getSubtotal() {
 
 function getDelivery(subtotal) {
 
+  /*
+    0 € de livraison
+    à partir de 30 €.
+
+    Sinon 5 €.
+  */
+
   if (subtotal === 0) {
+
     return 0;
+
   }
 
+
   if (subtotal < 30) {
+
     return 5;
+
   }
+
 
   return 0;
 
@@ -540,8 +664,12 @@ function updateTotals() {
 
   setText(
     "delivery-price",
-    delivery === 0 && subtotal > 0
+
+    delivery === 0 &&
+    subtotal > 0
+
       ? "GRATUITE"
+
       : formatPrice(delivery)
   );
 
@@ -561,7 +689,10 @@ function setText(id, text) {
 
 
   if (element) {
-    element.textContent = text;
+
+    element.textContent =
+      text;
+
   }
 
 }
@@ -580,9 +711,9 @@ function formatPrice(price) {
 }
 
 
-// ================================
+// ==============================
 // COMMANDE
-// ================================
+// ==============================
 
 function prepareOrder() {
 
@@ -610,21 +741,23 @@ function prepareOrder() {
 
 
   let message =
-    "🛍 COMMANDE SHOPBASSIN\n\n";
+    "COMMANDE SHOPBASSIN\n\n";
 
 
-  cart.forEach(function(item) {
+  cart.forEach(
+    function (item) {
 
-    message +=
-      "• " +
-      item.name +
-      " — " +
-      item.quantity +
-      " × " +
-      formatPrice(item.price) +
-      "\n";
+      message +=
+        "• " +
+        item.name +
+        " — " +
+        item.quantity +
+        " × " +
+        formatPrice(item.price) +
+        "\n";
 
-  });
+    }
+  );
 
 
   message +=
@@ -650,13 +783,22 @@ function prepareOrder() {
 
     navigator.clipboard
       .writeText(message)
-      .then(function() {
+      .then(
+        function () {
 
-        alert(
-          "Commande copiée ✅"
-        );
+          alert(
+            "Commande copiée ✅"
+          );
 
-      });
+        }
+      )
+      .catch(
+        function () {
+
+          alert(message);
+
+        }
+      );
 
   } else {
 
@@ -667,13 +809,13 @@ function prepareOrder() {
 }
 
 
-// ================================
+// ==============================
 // DÉMARRAGE
-// ================================
+// ==============================
 
 document.addEventListener(
   "DOMContentLoaded",
-  function() {
+  function () {
 
     renderProducts();
 
