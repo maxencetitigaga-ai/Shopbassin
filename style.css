@@ -1,317 +1,306 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050505" />
+  <title>ShopBassin</title>
 
-:root {
-  --bg: #050505;
-  --card: #111214;
-  --card2: #18191c;
-  --blue: #2997ff;
-  --text: #ffffff;
-  --muted: #8e8e93;
-  --border: rgba(255, 255, 255, 0.08);
-}
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
 
-html {
-  scroll-behavior: smooth;
-}
+<body>
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  min-height: 100vh;
-}
+  <!-- ÉCRAN DE CHARGEMENT -->
+  <div id="loader">
+    <div class="loader-inner">
+      <div class="logo-orbit">
+        <img src="IMG_0438.png" alt="ShopBassin" class="loader-logo" />
+      </div>
 
-button {
-  font-family: inherit;
-}
+      <div class="loading-line">
+        <div class="loading-progress"></div>
+      </div>
 
-.app {
-  min-height: 100vh;
-  max-width: 600px;
-  margin: auto;
-  padding-bottom: 180px;
-} 
+      <p class="loader-tagline">
+        PREMIUM • QUALITÉ • RAPIDITÉ
+      </p>
+    </div>
+  </div>
 
-/* EN-TÊTE */
 
-header {
-  padding: 28px 20px 22px;
-  border-bottom: 1px solid rgba(41, 151, 255, 0.35);
-}
+  <!-- APPLICATION -->
+  <div id="app" class="app">
 
-header h1 {
-  color: var(--blue);
-  font-size: 25px;
-  font-weight: 800;
-  letter-spacing: 1px;
-}
+    <!-- HEADER -->
+    <header class="topbar">
+      <div class="brand">
+        <img src="IMG_0438.png" alt="ShopBassin" class="brand-logo" />
 
-header p {
-  color: var(--muted);
-  margin-top: 6px;
-  font-size: 14px;
-}
+        <div>
+          <p class="eyebrow">SHOPBASSIN</p>
+          <h1>Bienvenue</h1>
+        </div>
+      </div>
 
-/* ACCUEIL */
+      <button class="cart-button" onclick="showPage('panier')">
+        <span>🛒</span>
+        <span id="cart-count">0</span>
+      </button>
+    </header>
 
-.hero {
-  padding: 45px 20px 25px;
-}
 
-.hero h2 {
-  font-size: 36px;
-  line-height: 1.05;
-  margin-bottom: 14px;
-}
+    <main>
 
-.hero p {
-  color: var(--muted);
-  font-size: 17px;
-  margin-bottom: 22px;
-}
+      <!-- ACCUEIL -->
+      <section id="accueil" class="page active">
 
-.hero button,
-section button {
-  background: var(--blue);
-  color: white;
-  border: none;
-  padding: 13px 24px;
-  border-radius: 14px;
-  font-size: 16px;
-  font-weight: 700;
-}
+        <div class="hero-card">
+          <div class="hero-glow"></div>
 
-/* SECTIONS */
+          <div class="hero-content">
 
-section {
-  padding: 28px 20px;
-}
+            <span class="premium-pill">
+              COLLECTION PREMIUM
+            </span>
 
-section h2 {
-  font-size: 28px;
-  margin-bottom: 14px;
-}
+            <h2>
+              Le style,
+              <span>autrement.</span>
+            </h2>
 
-section h3 {
-  font-size: 20px;
-  margin-bottom: 8px;
-}
+            <p>
+              Une sélection moderne pensée pour ceux qui aiment
+              la qualité, le style et la simplicité.
+            </p>
 
-section p {
-  color: var(--muted);
-  line-height: 1.5;
-}
+            <div class="hero-actions">
+              <button class="btn-primary" onclick="showPage('habits')">
+                Découvrir
+              </button>
 
-/* CATÉGORIES */
+              <button class="btn-secondary" onclick="showPage('galo')">
+                Voir Galo
+              </button>
+            </div>
 
-.categories {
-  padding: 20px;
-}
+          </div>
+        </div>
 
-.categories h2 {
-  margin-bottom: 15px;
-}
 
-.category-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
+        <!-- CATÉGORIES -->
+        <div class="section-header">
+          <div>
+            <p class="eyebrow">SHOPBASSIN</p>
+            <h3>Nos univers</h3>
+          </div>
+        </div>
 
-.category-card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 20px 15px;
-  color: white;
-  text-align: left;
-}
+        <div class="category-grid">
 
-.category-card strong {
-  display: block;
-  font-size: 19px;
-  margin-bottom: 5px;
-}
+          <button class="category-card" onclick="showPage('habits')">
+            <div class="category-top">
+              <span class="category-icon">👕</span>
+              <span class="arrow">↗</span>
+            </div>
 
-.category-card span {
-  color: var(--muted);
-}
+            <div>
+              <h4>Habits</h4>
+              <p>Découvre la collection</p>
+            </div>
+          </button>
 
-/* GALO */
 
-#galo {
-  background: var(--card);
-  margin: 12px;
-  border-radius: 22px;
-}
+          <button class="category-card" onclick="showPage('galo')">
+            <div class="category-top">
+              <span class="category-icon">✦</span>
+              <span class="arrow">↗</span>
+            </div>
 
-#galo h2 {
-  color: var(--blue);
-}
+            <div>
+              <h4>Galo</h4>
+              <p>Notre sélection spéciale</p>
+            </div>
+          </button>
 
-/* PANIER */
+        </div>
 
-#panier {
-  background: var(--card2);
-  margin: 12px;
-  border-radius: 22px;
-}
 
-/* CONTACT */
+        <!-- AVANTAGES -->
+        <div class="features">
 
-#contact {
-  margin-bottom: 30px;
-}
+          <div class="feature">
+            <span>⚡</span>
+            <div>
+              <strong>Rapide</strong>
+              <p>Commande simple</p>
+            </div>
+          </div>
 
-/* NAVIGATION DU BAS */
+          <div class="feature">
+            <span>✓</span>
+            <div>
+              <strong>Qualité</strong>
+              <p>Produits sélectionnés</p>
+            </div>
+          </div>
 
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 100%;
-  max-width: 600px;
-  background: rgba(17, 18, 20, 0.96);
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-around;
-  padding: 10px 4px 18px;
-  z-index: 1000;
-}
+          <div class="feature">
+            <span>💬</span>
+            <div>
+              <strong>Telegram</strong>
+              <p>Contact direct</p>
+            </div>
+          </div>
 
-.bottom-nav button {
-  flex: 1;
-  background: transparent;
-  color: var(--muted);
-  border: none;
-  padding: 7px 2px;
-  font-size: 12px;
-  font-weight: 600;
-}
+        </div>
 
-.bottom-nav button:hover,
-.bottom-nav button:active {
-  color: var(--blue);
-}
+      </section>
 
-/* MOBILE */
 
-@media (max-width: 400px) {
-  .hero h2 {
-    font-size: 32px;
-  }
+      <!-- HABITS -->
+      <section id="habits" class="page">
 
-  section {
-    padding-left: 16px;
-    padding-right: 16px;
-  }
+        <div class="page-title">
+          <p class="eyebrow">COLLECTION</p>
+          <h2>Habits</h2>
+          <p>Découvre les articles disponibles.</p>
+        </div>
 
-  .category-grid {
-    gap: 8px;
-  }
-}
+        <div id="habits-products" class="product-grid"></div>
 
-/* ===== ÉCRAN DE CHARGEMENT SHOPBASSIN ===== */
+      </section>
 
-#loader {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  z-index: 99999;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
-}
 
-.loader-content {
-  width: 100%;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
+      <!-- GALO -->
+      <section id="galo" class="page">
 
-.loader-logo {
-  width: min(78vw, 360px);
-  height: auto;
-  display: block;
-  border-radius: 50%;
-  filter:
-    drop-shadow(0 0 12px rgba(41, 151, 255, 0.8))
-    drop-shadow(0 0 35px rgba(41, 151, 255, 0.45));
-  animation: shopbassin-spin 3s ease-in-out forwards;
-}
+        <div class="page-title">
+          <p class="eyebrow">SHOPBASSIN</p>
+          <h2>Galo</h2>
+          <p>Une sélection spéciale ShopBassin.</p>
+        </div>
 
-.loader-bar {
-  width: min(70vw, 300px);
-  height: 3px;
-  margin-top: 35px;
-  background: rgba(255, 255, 255, 0.12);
-  border-radius: 20px;
-  overflow: hidden;
-}
+        <div class="galo-card">
 
-.loader-progress {
-  width: 0%;
-  height: 100%;
-  background: #2997ff;
-  border-radius: 20px;
-  box-shadow: 0 0 15px rgba(41, 151, 255, 0.9);
-  animation: shopbassin-loading 3s ease forwards;
-}
+          <div class="galo-visual">
+            <img src="IMG_0438.png" alt="Galo ShopBassin" />
+          </div>
 
-.loader-text {
-  margin-top: 20px;
-  color: #8e8e93;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 3px;
-  text-align: center;
-}
+          <div class="galo-content">
+            <span class="premium-pill">GALO</span>
 
-#loader.loader-hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
+            <h3>Une expérience différente.</h3>
 
-@keyframes shopbassin-spin {
-  0% {
-    transform: scale(0.82) rotate(-8deg);
-    opacity: 0;
-  }
+            <p>
+              Tes produits Galo apparaîtront ici avec leurs photos,
+              descriptions et prix.
+            </p>
+          </div>
 
-  25% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
-  }
+        </div>
 
-  75% {
-    transform: scale(1.03) rotate(360deg);
-    opacity: 1;
-  }
+      </section>
 
-  100% {
-    transform: scale(0.96) rotate(360deg);
-    opacity: 0.9;
-  }
-}
 
-@keyframes shopbassin-loading {
-  from {
-    width: 0%;
-  }
+      <!-- PANIER -->
+      <section id="panier" class="page">
 
-  to {
-    width: 100%;
-  }
-}
+        <div class="page-title">
+          <p class="eyebrow">SHOPBASSIN</p>
+          <h2>Ton panier</h2>
+          <p>Retrouve ici tous tes articles.</p>
+        </div>
+
+        <div id="cart-items" class="cart-list"></div>
+
+        <div class="checkout-card">
+
+          <div class="checkout-line">
+            <span>Total</span>
+            <strong id="cart-total">0 €</strong>
+          </div>
+
+          <button class="btn-primary full" onclick="prepareOrder()">
+            Commander sur Telegram
+          </button>
+
+        </div>
+
+      </section>
+
+
+      <!-- CONTACT -->
+      <section id="contact" class="page">
+
+        <div class="page-title">
+          <p class="eyebrow">CONTACT</p>
+          <h2>Besoin d'aide ?</h2>
+          <p>Nous sommes disponibles directement sur Telegram.</p>
+        </div>
+
+        <div class="contact-card">
+
+          <div class="contact-icon">💬</div>
+
+          <h3>ShopBassin</h3>
+
+          <p>
+            Une question sur un produit ou une commande ?
+            Contacte-nous directement.
+          </p>
+
+          <button class="btn-primary full" onclick="openTelegram()">
+            Ouvrir Telegram
+          </button>
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+    <!-- NAVIGATION -->
+    <nav class="bottom-nav">
+
+      <button class="nav-item active"
+        onclick="showPage('accueil', this)">
+        <span>⌂</span>
+        <small>Accueil</small>
+      </button>
+
+      <button class="nav-item"
+        onclick="showPage('habits', this)">
+        <span>👕</span>
+        <small>Habits</small>
+      </button>
+
+      <button class="nav-item"
+        onclick="showPage('galo', this)">
+        <span>✦</span>
+        <small>Galo</small>
+      </button>
+
+      <button class="nav-item"
+        onclick="showPage('panier', this)">
+        <span>🛒</span>
+        <small>Panier</small>
+      </button>
+
+      <button class="nav-item"
+        onclick="showPage('contact', this)">
+        <span>●</span>
+        <small>Contact</small>
+      </button>
+
+    </nav>
+
+  </div>
+
+
+  <script src="script.js"></script>
+
+</body>
+</html>
