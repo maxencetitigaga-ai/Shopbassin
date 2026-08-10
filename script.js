@@ -1,128 +1,178 @@
-// =====================================
+// ======================================
 // SHOPBASSIN MINI APP
-// =====================================
+// ======================================
+
+
+const tg =
+  window.Telegram?.WebApp;
 
 
 // TELEGRAM
-const tg = window.Telegram?.WebApp;
 
 if (tg) {
-  tg.ready();
-  tg.expand();
-}
 
+  try {
 
-// =====================================
-// CHARGEMENT
-// =====================================
+    tg.ready();
 
-function closeLoader() {
+    tg.expand();
 
-  const loader = document.getElementById("loader");
+  } catch (error) {
 
-  if (!loader) {
-    return;
-  }
-
-  loader.style.opacity = "0";
-  loader.style.pointerEvents = "none";
-
-  setTimeout(function () {
-
-    if (loader) {
-      loader.style.display = "none";
-    }
-
-  }, 700);
-}
-
-
-// Dès que la page est prête
-document.addEventListener(
-  "DOMContentLoaded",
-  function () {
-
-    setTimeout(
-      closeLoader,
-      3000
+    console.log(
+      "Telegram WebApp"
     );
 
   }
+
+}
+
+
+
+// ======================================
+// LOADER
+// ======================================
+
+function removeLoader() {
+
+  const loader =
+    document.getElementById(
+      "loader"
+    );
+
+
+  if (!loader) return;
+
+
+  loader.style.opacity =
+    "0";
+
+
+  loader.style.pointerEvents =
+    "none";
+
+
+  setTimeout(
+    function () {
+
+      loader.style.display =
+        "none";
+
+    },
+
+    750
+  );
+
+}
+
+
+document.addEventListener(
+
+  "DOMContentLoaded",
+
+  function () {
+
+    setTimeout(
+      removeLoader,
+      3000
+    );
+
+
+    renderProducts();
+
+    loadCart();
+
+  }
+
 );
 
 
-// SÉCURITÉ : même si quelque chose bloque,
-// le loader disparaît quand même.
+// SÉCURITÉ
+
 setTimeout(
-  closeLoader,
-  4500
+  removeLoader,
+  5000
 );
 
 
-// =====================================
+
+// ======================================
 // NAVIGATION
-// =====================================
+// ======================================
 
-function showPage(pageId, clickedButton) {
+function showPage(
+  pageId,
+  clickedButton
+) {
 
-  const pages =
-    document.querySelectorAll(".page");
 
+  document
+    .querySelectorAll(".page")
+    .forEach(
+      function (page) {
 
-  pages.forEach(function (page) {
+        page.classList.remove(
+          "active"
+        );
 
-    page.classList.remove("active");
-
-  });
+      }
+    );
 
 
   const selectedPage =
-    document.getElementById(pageId);
+    document.getElementById(
+      pageId
+    );
 
 
   if (selectedPage) {
 
-    selectedPage.classList.add("active");
+    selectedPage.classList.add(
+      "active"
+    );
 
   }
 
 
-  // MENU DU BAS
 
-  const navButtons =
-    document.querySelectorAll(
-      ".bottom-nav button"
+  document
+    .querySelectorAll(
+      ".nav-button"
+    )
+    .forEach(
+      function (button) {
+
+        button.classList.remove(
+          "active"
+        );
+
+      }
     );
 
 
-  navButtons.forEach(function (button) {
 
-    button.classList.remove("active");
-
-  });
-
-
-  // Si le bouton vient du menu
   if (clickedButton) {
 
-    clickedButton.classList.add("active");
+    clickedButton.classList.add(
+      "active"
+    );
 
   }
 
-  // Si on vient d'un bouton ailleurs
+
   else {
 
-    const matchingButton =
+    const navButton =
       document.querySelector(
-        '.bottom-nav button[data-page="' +
+        '.nav-button[data-page="' +
         pageId +
         '"]'
       );
 
 
-    if (matchingButton) {
+    if (navButton) {
 
-      matchingButton.classList.add(
+      navButton.classList.add(
         "active"
       );
 
@@ -131,13 +181,28 @@ function showPage(pageId, clickedButton) {
   }
 
 
+
+  if (
+    pageId ===
+    "panier"
+  ) {
+
+    renderCart();
+
+  }
+
+
+
   window.scrollTo({
+
     top: 0,
+
     behavior: "smooth"
+
   });
 
 
-  // Vibration légère dans Telegram
+
   if (
     tg &&
     tg.HapticFeedback
@@ -148,26 +213,801 @@ function showPage(pageId, clickedButton) {
       tg.HapticFeedback
         .selectionChanged();
 
-    } catch (error) {
-
-      console.log(
-        "Haptic indisponible"
-      );
-
     }
+
+    catch (error) {}
 
   }
 
 }
 
 
-// =====================================
-// CONTACT TELEGRAM
-// =====================================
+
+// ======================================
+// PRODUITS HABITS
+// ======================================
+
+// PLUS TARD :
+// tu pourras remplacer
+// facilement les noms,
+// prix et photos ici.
+
+
+const products = [
+
+  {
+
+    id: 1,
+
+    name:
+      "T-shirt Premium",
+
+    price:
+      29.90,
+
+    icon:
+      "👕"
+
+  },
+
+
+  {
+
+    id: 2,
+
+    name:
+      "Sweat ShopBassin",
+
+    price:
+      49.90,
+
+    icon:
+      "🧥"
+
+  },
+
+
+  {
+
+    id: 3,
+
+    name:
+      "T-shirt Oversize",
+
+    price:
+      34.90,
+
+    icon:
+      "👕"
+
+  },
+
+
+  {
+
+    id: 4,
+
+    name:
+      "Ensemble Premium",
+
+    price:
+      69.90,
+
+    icon:
+      "✨"
+
+  }
+
+];
+
+
+
+// ======================================
+// AFFICHAGE PRODUITS
+// ======================================
+
+function renderProducts() {
+
+
+  const container =
+    document.getElementById(
+      "products-container"
+    );
+
+
+  if (!container) return;
+
+
+
+  container.innerHTML =
+    products
+      .map(
+        function (product) {
+
+          return `
+
+            <div class="product-card">
+
+              <div class="product-image">
+
+                ${product.icon}
+
+              </div>
+
+
+              <div class="product-content">
+
+                <h3>
+
+                  ${product.name}
+
+                </h3>
+
+
+                <div class="product-price">
+
+                  ${formatPrice(
+                    product.price
+                  )}
+
+                </div>
+
+
+                <button
+                  class="btn-primary full"
+                  onclick="addToCart(${product.id})"
+                >
+
+                  Ajouter
+
+                </button>
+
+              </div>
+
+            </div>
+
+          `;
+
+        }
+
+      )
+      .join("");
+
+}
+
+
+
+// ======================================
+// PANIER
+// ======================================
+
+let cart = [];
+
+
+
+function loadCart() {
+
+
+  try {
+
+    const saved =
+      localStorage.getItem(
+        "shopbassin-cart"
+      );
+
+
+    if (saved) {
+
+      cart =
+        JSON.parse(saved);
+
+    }
+
+  }
+
+  catch (error) {
+
+    cart = [];
+
+  }
+
+
+  updateCartCount();
+
+}
+
+
+
+function saveCart() {
+
+
+  try {
+
+    localStorage.setItem(
+
+      "shopbassin-cart",
+
+      JSON.stringify(
+        cart
+      )
+
+    );
+
+  }
+
+  catch (error) {}
+
+
+  updateCartCount();
+
+}
+
+
+
+// ======================================
+// AJOUTER
+// ======================================
+
+function addToCart(
+  productId
+) {
+
+
+  const product =
+    products.find(
+      function (item) {
+
+        return (
+          item.id ===
+          productId
+        );
+
+      }
+    );
+
+
+  if (!product) return;
+
+
+
+  const existing =
+    cart.find(
+      function (item) {
+
+        return (
+          item.id ===
+          productId
+        );
+
+      }
+    );
+
+
+
+  if (existing) {
+
+    existing.quantity += 1;
+
+  }
+
+
+  else {
+
+    cart.push({
+
+      id:
+        product.id,
+
+      name:
+        product.name,
+
+      price:
+        product.price,
+
+      icon:
+        product.icon,
+
+      quantity:
+        1
+
+    });
+
+  }
+
+
+
+  saveCart();
+
+
+
+  if (
+    tg &&
+    tg.HapticFeedback
+  ) {
+
+    try {
+
+      tg.HapticFeedback
+        .impactOccurred(
+          "light"
+        );
+
+    }
+
+    catch (error) {}
+
+  }
+
+}
+
+
+
+// ======================================
+// COMPTEUR
+// ======================================
+
+function updateCartCount() {
+
+
+  const counter =
+    document.getElementById(
+      "cart-count"
+    );
+
+
+  if (!counter) return;
+
+
+
+  const count =
+    cart.reduce(
+
+      function (
+        total,
+        item
+      ) {
+
+        return (
+
+          total +
+          item.quantity
+
+        );
+
+      },
+
+      0
+
+    );
+
+
+  counter.textContent =
+    count;
+
+}
+
+
+
+// ======================================
+// AFFICHER PANIER
+// ======================================
+
+function renderCart() {
+
+
+  const container =
+    document.getElementById(
+      "cart-items"
+    );
+
+
+  if (!container) return;
+
+
+
+  if (
+    cart.length === 0
+  ) {
+
+
+    container.innerHTML = `
+
+      <div class="empty-cart">
+
+        <span>
+          🛒
+        </span>
+
+        <h3>
+          Ton panier est vide
+        </h3>
+
+        <p>
+          Ajoute des articles
+          depuis Habits.
+        </p>
+
+      </div>
+
+    `;
+
+  }
+
+
+  else {
+
+
+    container.innerHTML =
+      cart
+        .map(
+          function (item) {
+
+            return `
+
+              <div class="cart-item">
+
+                <div class="cart-item-image">
+
+                  ${item.icon}
+
+                </div>
+
+
+                <div>
+
+                  <strong>
+
+                    ${item.name}
+
+                  </strong>
+
+                  <p>
+
+                    ${item.quantity}
+
+                    ×
+
+                    ${formatPrice(
+                      item.price
+                    )}
+
+                  </p>
+
+                </div>
+
+
+                <button
+                  class="remove-button"
+                  onclick="removeFromCart(${item.id})"
+                >
+
+                  ×
+
+                </button>
+
+              </div>
+
+            `;
+
+          }
+
+        )
+        .join("");
+
+  }
+
+
+  updateTotal();
+
+}
+
+
+
+// ======================================
+// RETIRER
+// ======================================
+
+function removeFromCart(
+  productId
+) {
+
+
+  const item =
+    cart.find(
+      function (product) {
+
+        return (
+          product.id ===
+          productId
+        );
+
+      }
+    );
+
+
+  if (!item) return;
+
+
+
+  if (
+    item.quantity > 1
+  ) {
+
+    item.quantity -= 1;
+
+  }
+
+
+  else {
+
+    cart =
+      cart.filter(
+        function (product) {
+
+          return (
+            product.id !==
+            productId
+          );
+
+        }
+      );
+
+  }
+
+
+  saveCart();
+
+  renderCart();
+
+}
+
+
+
+// ======================================
+// TOTAL
+// ======================================
+
+function updateTotal() {
+
+
+  const element =
+    document.getElementById(
+      "cart-total"
+    );
+
+
+  if (!element) return;
+
+
+
+  const total =
+    cart.reduce(
+
+      function (
+        sum,
+        item
+      ) {
+
+        return (
+
+          sum +
+
+          (
+            item.price *
+            item.quantity
+          )
+
+        );
+
+      },
+
+      0
+
+    );
+
+
+  element.textContent =
+    formatPrice(total);
+
+}
+
+
+
+// ======================================
+// PRIX
+// ======================================
+
+function formatPrice(
+  price
+) {
+
+
+  return new Intl
+    .NumberFormat(
+
+      "fr-FR",
+
+      {
+
+        style:
+          "currency",
+
+        currency:
+          "EUR"
+
+      }
+
+    )
+    .format(price);
+
+}
+
+
+
+// ======================================
+// COMMANDE
+// ======================================
+
+function prepareOrder() {
+
+
+  if (
+    cart.length === 0
+  ) {
+
+
+    if (
+      tg &&
+      tg.showAlert
+    ) {
+
+      tg.showAlert(
+        "Ton panier est vide."
+      );
+
+    }
+
+
+    else {
+
+      alert(
+        "Ton panier est vide."
+      );
+
+    }
+
+
+    return;
+
+  }
+
+
+
+  let message =
+
+`🛍 COMMANDE SHOPBASSIN
+
+Articles :
+`;
+
+
+
+  cart.forEach(
+    function (item) {
+
+
+      message +=
+
+`
+• ${item.name}
+  ${item.quantity} × ${formatPrice(item.price)}
+`;
+
+    }
+  );
+
+
+
+  const total =
+    cart.reduce(
+
+      function (
+        sum,
+        item
+      ) {
+
+        return (
+
+          sum +
+
+          item.price *
+          item.quantity
+
+        );
+
+      },
+
+      0
+
+    );
+
+
+
+  message +=
+
+`
+Total : ${formatPrice(total)}
+
+Merci de confirmer ma commande.`;
+
+
+
+  if (
+    navigator.clipboard
+  ) {
+
+
+    navigator.clipboard
+      .writeText(
+        message
+      )
+      .then(
+        function () {
+
+
+          if (
+            tg &&
+            tg.showAlert
+          ) {
+
+            tg.showAlert(
+
+              "Bon de commande copié ✅"
+
+            );
+
+          }
+
+
+          else {
+
+            alert(
+
+              "Bon de commande copié ✅"
+
+            );
+
+          }
+
+        }
+
+      );
+
+
+  }
+
+
+  else {
+
+    alert(
+      message
+    );
+
+  }
+
+}
+
+
+
+// ======================================
+// TELEGRAM
+// ======================================
 
 function openTelegram() {
 
-  const telegramUrl =
+
+  const url =
+
     "https://t.me/shopbassinstore_bot";
 
 
@@ -177,40 +1017,22 @@ function openTelegram() {
     "function"
   ) {
 
+
     tg.openTelegramLink(
-      telegramUrl
+      url
     );
 
-    return;
+
   }
 
 
-  window.location.href =
-    telegramUrl;
-}
+  else {
 
 
-// =====================================
-// COMPTEUR PANIER
-// =====================================
+    window.location.href =
+      url;
 
-function updateCartCount(number) {
-
-  const counter =
-    document.getElementById(
-      "cart-count"
-    );
-
-
-  if (counter) {
-
-    counter.textContent =
-      number || 0;
 
   }
 
 }
-
-
-// DÉMARRAGE
-updateCartCount(0);
