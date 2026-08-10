@@ -1,28 +1,410 @@
-<div class="hero-content">
+<!DOCTYPE html>
+<html lang="fr">
 
-  <span class="premium-pill">
-    SHOPBASSIN PREMIUM
-  </span>
+<head>
+  <meta charset="UTF-8">
 
-  <h2>
-    Unique sur
-    <span>le Bassin.</span>
-  </h2>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  >
 
-  <p>
-    Livraison gratuite dès 30 € d'achat.
-    En dessous de 30 €, 5 € de livraison sont ajoutés.
-  </p>
+  <meta name="theme-color" content="#050505">
 
-  <div class="hero-actions">
+  <title>ShopBassin</title>
 
-    <button
-      class="btn-primary"
-      onclick="showPage('habits')"
+  <link rel="stylesheet" href="./style.css">
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+
+<body>
+
+  <div class="app">
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+      <div class="brand">
+
+        <img
+          src="./logo-shopbassin.png"
+          class="brand-logo"
+          alt="ShopBassin"
+        >
+
+        <div>
+          <span>SHOPBASSIN</span>
+          <strong>Premium</strong>
+        </div>
+
+      </div>
+
+
+      <button
+        class="cart-top"
+        onclick="showPage('panier')"
+      >
+        🛒
+        <span id="cart-count">0</span>
+      </button>
+
+    </header>
+
+
+
+    <!-- ACCUEIL / CATALOGUE -->
+
+    <main
+      id="catalogue"
+      class="page active"
     >
-      Voir les habits
-    </button>
+
+      <section class="intro">
+
+        <span class="premium">
+          SHOPBASSIN
+        </span>
+
+        <h1>
+          Unique sur<br>
+          <span>le Bassin.</span>
+        </h1>
+
+        <p>
+          Livraison gratuite dès 30 € d'achat.
+          En dessous de 30 €, 5 € de livraison.
+        </p>
+
+      </section>
+
+
+      <section class="catalogue-section">
+
+        <div class="section-title">
+
+          <div>
+            <span class="mini-title">
+              SHOPBASSIN
+            </span>
+
+            <h2>Catalogue</h2>
+          </div>
+
+
+          <div class="product-counter">
+            <strong id="product-count">0</strong>
+            <span>produits</span>
+          </div>
+
+        </div>
+
+
+        <div
+          id="products-container"
+          class="products-grid"
+        ></div>
+
+      </section>
+
+    </main>
+
+
+
+    <!-- PANIER -->
+
+    <main
+      id="panier"
+      class="page"
+    >
+
+      <div class="page-header">
+
+        <span class="mini-title">
+          SHOPBASSIN
+        </span>
+
+        <h2>Ton panier</h2>
+
+        <p>
+          Vérifie ta commande avant de continuer.
+        </p>
+
+      </div>
+
+
+      <div id="cart-items"></div>
+
+
+      <div class="order-summary">
+
+        <div class="summary-line">
+          <span>Sous-total</span>
+          <strong id="cart-subtotal">0,00 €</strong>
+        </div>
+
+
+        <div class="summary-line">
+          <span>Livraison</span>
+          <strong id="delivery-price">0,00 €</strong>
+        </div>
+
+
+        <div class="free-delivery">
+          Livraison gratuite dès 30 €
+        </div>
+
+
+        <div class="summary-line total-line">
+          <span>Total</span>
+          <strong id="cart-total">0,00 €</strong>
+        </div>
+
+
+        <button
+          class="main-button"
+          onclick="prepareOrder()"
+        >
+          Commander
+        </button>
+
+      </div>
+
+    </main>
+
+
+
+    <!-- CONTACT -->
+
+    <main
+      id="contact"
+      class="page"
+    >
+
+      <div class="page-header">
+
+        <span class="mini-title">
+          SHOPBASSIN
+        </span>
+
+        <h2>Contact</h2>
+
+        <p>
+          Retrouve ShopBassin sur les réseaux.
+        </p>
+
+      </div>
+
+
+      <div class="contact-list">
+
+
+        <div class="contact-item">
+
+          <div class="social-icon">
+            👻
+          </div>
+
+          <div>
+            <span>Snapchat</span>
+
+            <!-- CHANGE TON CONTACT ICI -->
+            <strong>Ton Snapchat</strong>
+          </div>
+
+        </div>
+
+
+
+        <div class="contact-item">
+
+          <div class="social-icon">
+            ◎
+          </div>
+
+          <div>
+            <span>Instagram</span>
+
+            <!-- CHANGE TON CONTACT ICI -->
+            <strong>@toninstagram</strong>
+          </div>
+
+        </div>
+
+
+
+        <div class="contact-item">
+
+          <div class="social-icon">
+            ✈️
+          </div>
+
+          <div>
+            <span>Telegram</span>
+
+            <!-- CHANGE TON CONTACT ICI -->
+            <strong>@tontelegram</strong>
+          </div>
+
+        </div>
+
+
+      </div>
+
+    </main>
+
+
+
+    <!-- INFOS -->
+
+    <main
+      id="infos"
+      class="page"
+    >
+
+      <div class="page-header">
+
+        <span class="mini-title">
+          SHOPBASSIN
+        </span>
+
+        <h2>Infos</h2>
+
+        <p>
+          Informations de la boutique.
+        </p>
+
+      </div>
+
+
+
+      <div class="status-card">
+
+        <div class="status-top">
+
+          <div>
+
+            <span class="status-label">
+              ÉTAT ACTUEL
+            </span>
+
+            <h3>ShopBassin</h3>
+
+          </div>
+
+
+          <!--
+          POUR FERMER LA BOUTIQUE :
+          remplace OUVERT par FERMÉ
+          et class="open" par class="closed"
+          -->
+
+          <div
+            id="shop-status"
+            class="shop-status open"
+          >
+            <span></span>
+            OUVERT
+          </div>
+
+        </div>
+
+
+        <p>
+          Les commandes sont actuellement disponibles.
+        </p>
+
+      </div>
+
+
+
+      <div class="info-card">
+
+        <span>🚚</span>
+
+        <div>
+          <strong>Livraison</strong>
+
+          <p>
+            Gratuite dès 30 € d'achat.
+            Sinon 5 € de frais de livraison.
+          </p>
+        </div>
+
+      </div>
+
+
+
+      <div class="info-card">
+
+        <span>💎</span>
+
+        <div>
+          <strong>ShopBassin Premium</strong>
+
+          <p>
+            Une sélection pensée pour le Bassin.
+          </p>
+        </div>
+
+      </div>
+
+    </main>
+
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-button active"
+        data-page="catalogue"
+        onclick="showPage('catalogue', this)"
+      >
+        <span>⌂</span>
+        Catalogue
+      </button>
+
+
+      <button
+        class="nav-button"
+        data-page="panier"
+        onclick="showPage('panier', this)"
+      >
+        <span>🛒</span>
+        Panier
+      </button>
+
+
+      <button
+        class="nav-button"
+        data-page="contact"
+        onclick="showPage('contact', this)"
+      >
+        <span>●</span>
+        Contact
+      </button>
+
+
+      <button
+        class="nav-button"
+        data-page="infos"
+        onclick="showPage('infos', this)"
+      >
+        <span>ⓘ</span>
+        Infos
+      </button>
+
+    </nav>
 
   </div>
 
-</div>
+
+  <script src="./script.js"></script>
+
+</body>
+
+</html>
