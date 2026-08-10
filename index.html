@@ -18,10 +18,42 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
-
 <body>
 
-  <div class="app">
+  <!-- =========================
+       ÉCRAN DE CHARGEMENT
+  ========================== -->
+
+  <div id="loader">
+
+    <div class="loader-content">
+
+      <div class="loader-logo">
+
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt="ShopBassin"
+        >
+
+      </div>
+
+      <div class="loading-bar">
+        <div class="loading-progress"></div>
+      </div>
+
+      <p>SHOPBASSIN PREMIUM</p>
+
+    </div>
+
+  </div>
+
+
+  <!-- =========================
+       APPLICATION
+  ========================== -->
+
+  <div id="app" class="app app-loading">
+
 
     <!-- HEADER -->
 
@@ -30,7 +62,7 @@
       <div class="brand">
 
         <img
-          src="./logo-shopbassin.png"
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
           class="brand-logo"
           alt="ShopBassin"
         >
@@ -47,7 +79,11 @@
         class="cart-top"
         onclick="showPage('panier')"
       >
-        🛒
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
         <span id="cart-count">0</span>
       </button>
 
@@ -55,23 +91,17 @@
 
 
 
-    <!-- ACCUEIL / CATALOGUE -->
+    <!-- =========================
+         CATALOGUE
+    ========================== -->
 
-    <main
-      id="catalogue"
-      class="page active"
-    >
+    <main id="catalogue" class="page active">
 
       <section class="intro">
 
         <span class="premium">
-          SHOPBASSIN
+          SHOPBASSIN PREMIUM
         </span>
-
-        <h1>
-          Unique sur<br>
-          <span>le Bassin.</span>
-        </h1>
 
         <p>
           Livraison gratuite dès 30 € d'achat.
@@ -86,17 +116,22 @@
         <div class="section-title">
 
           <div>
+
             <span class="mini-title">
               SHOPBASSIN
             </span>
 
-            <h2>Catalogue</h2>
+            <h1>Catalogue</h1>
+
           </div>
 
 
           <div class="product-counter">
+
             <strong id="product-count">0</strong>
+
             <span>produits</span>
+
           </div>
 
         </div>
@@ -113,14 +148,19 @@
 
 
 
-    <!-- PANIER -->
+    <!-- =========================
+         PANIER
+    ========================== -->
 
-    <main
-      id="panier"
-      class="page"
-    >
+    <main id="panier" class="page">
 
       <div class="page-header">
+
+        <img
+          class="page-logo"
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
         <span class="mini-title">
           SHOPBASSIN
@@ -141,14 +181,24 @@
       <div class="order-summary">
 
         <div class="summary-line">
+
           <span>Sous-total</span>
-          <strong id="cart-subtotal">0,00 €</strong>
+
+          <strong id="cart-subtotal">
+            0,00 €
+          </strong>
+
         </div>
 
 
         <div class="summary-line">
+
           <span>Livraison</span>
-          <strong id="delivery-price">0,00 €</strong>
+
+          <strong id="delivery-price">
+            0,00 €
+          </strong>
+
         </div>
 
 
@@ -158,8 +208,13 @@
 
 
         <div class="summary-line total-line">
+
           <span>Total</span>
-          <strong id="cart-total">0,00 €</strong>
+
+          <strong id="cart-total">
+            0,00 €
+          </strong>
+
         </div>
 
 
@@ -176,14 +231,19 @@
 
 
 
-    <!-- CONTACT -->
+    <!-- =========================
+         CONTACT
+    ========================== -->
 
-    <main
-      id="contact"
-      class="page"
-    >
+    <main id="contact" class="page">
 
       <div class="page-header">
+
+        <img
+          class="page-logo"
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
         <span class="mini-title">
           SHOPBASSIN
@@ -203,53 +263,62 @@
 
         <div class="contact-item">
 
-          <div class="social-icon">
-            👻
-          </div>
+          <img
+            src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+            class="contact-logo"
+            alt=""
+          >
 
           <div>
+
             <span>Snapchat</span>
 
-            <!-- CHANGE TON CONTACT ICI -->
+            <!-- TON SNAPCHAT ICI -->
             <strong>Ton Snapchat</strong>
+
           </div>
 
         </div>
 
 
-
         <div class="contact-item">
 
-          <div class="social-icon">
-            ◎
-          </div>
+          <img
+            src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+            class="contact-logo"
+            alt=""
+          >
 
           <div>
+
             <span>Instagram</span>
 
-            <!-- CHANGE TON CONTACT ICI -->
+            <!-- TON INSTAGRAM ICI -->
             <strong>@toninstagram</strong>
+
           </div>
 
         </div>
-
 
 
         <div class="contact-item">
 
-          <div class="social-icon">
-            ✈️
-          </div>
+          <img
+            src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+            class="contact-logo"
+            alt=""
+          >
 
           <div>
+
             <span>Telegram</span>
 
-            <!-- CHANGE TON CONTACT ICI -->
+            <!-- TON TELEGRAM ICI -->
             <strong>@tontelegram</strong>
+
           </div>
 
         </div>
-
 
       </div>
 
@@ -257,14 +326,19 @@
 
 
 
-    <!-- INFOS -->
+    <!-- =========================
+         INFOS
+    ========================== -->
 
-    <main
-      id="infos"
-      class="page"
-    >
+    <main id="infos" class="page">
 
       <div class="page-header">
+
+        <img
+          class="page-logo"
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
         <span class="mini-title">
           SHOPBASSIN
@@ -277,7 +351,6 @@
         </p>
 
       </div>
-
 
 
       <div class="status-card">
@@ -296,9 +369,14 @@
 
 
           <!--
-          POUR FERMER LA BOUTIQUE :
-          remplace OUVERT par FERMÉ
-          et class="open" par class="closed"
+          POUR FERMER :
+
+          remplace :
+          class="shop-status open"
+          par :
+          class="shop-status closed"
+
+          et remplace OUVERT par FERMÉ
           -->
 
           <div
@@ -306,6 +384,7 @@
             class="shop-status open"
           >
             <span></span>
+
             OUVERT
           </div>
 
@@ -319,34 +398,42 @@
       </div>
 
 
-
       <div class="info-card">
 
-        <span>🚚</span>
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
         <div>
+
           <strong>Livraison</strong>
 
           <p>
             Gratuite dès 30 € d'achat.
             Sinon 5 € de frais de livraison.
           </p>
+
         </div>
 
       </div>
 
 
-
       <div class="info-card">
 
-        <span>💎</span>
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
         <div>
+
           <strong>ShopBassin Premium</strong>
 
           <p>
-            Une sélection pensée pour le Bassin.
+            Qualité • Premium • Rapidité
           </p>
+
         </div>
 
       </div>
@@ -355,17 +442,26 @@
 
 
 
-    <!-- NAVIGATION -->
+    <!-- =========================
+         MENU DU BAS
+    ========================== -->
 
     <nav class="bottom-nav">
+
 
       <button
         class="nav-button active"
         data-page="catalogue"
         onclick="showPage('catalogue', this)"
       >
-        <span>⌂</span>
+
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
         Catalogue
+
       </button>
 
 
@@ -374,8 +470,14 @@
         data-page="panier"
         onclick="showPage('panier', this)"
       >
-        <span>🛒</span>
+
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
         Panier
+
       </button>
 
 
@@ -384,8 +486,14 @@
         data-page="contact"
         onclick="showPage('contact', this)"
       >
-        <span>●</span>
+
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
         Contact
+
       </button>
 
 
@@ -394,9 +502,16 @@
         data-page="infos"
         onclick="showPage('infos', this)"
       >
-        <span>ⓘ</span>
+
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
         Infos
+
       </button>
+
 
     </nav>
 
