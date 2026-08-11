@@ -1,47 +1,41 @@
 // ==========================================
-// SHOPBASSIN — SCRIPT COMPLET
+// SHOPBASSIN
 // ==========================================
 
 const LOGO =
   "6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png";
 
 
-// ==========================================
-// CODE ADMIN TEMPORAIRE
-// ==========================================
-//
-// Change 2580 par le code que tu veux.
-//
-// ATTENTION :
-// ceci protège seulement de manière simple.
-// Pour une vraie sécurité, on utilisera Supabase.
-//
-const ADMIN_CODE = "2580";
+// CHANGE TON CODE ADMIN ICI
+const ADMIN_CODE = "483726";
 
-let adminUnlocked = false;
+
+const tg =
+  window.Telegram?.WebApp;
 
 
 // ==========================================
 // TELEGRAM
 // ==========================================
 
-const tg = window.Telegram?.WebApp;
-
 if (tg) {
+
   try {
+
     tg.ready();
     tg.expand();
-  } catch (error) {
-    console.log("Telegram WebApp indisponible");
-  }
+
+  } catch (error) {}
+
 }
 
 
 // ==========================================
-// PRODUITS PAR DÉFAUT
+// DEFAULT DATA
 // ==========================================
 
 const DEFAULT_PRODUCTS = [
+
   {
     id: 1,
     name: "Produit ShopBassin",
@@ -58,7 +52,7 @@ const DEFAULT_PRODUCTS = [
 
   {
     id: 3,
-    name: "Nouveauté ShopBassin",
+    name: "Nouveauté",
     price: 34.90,
     image: ""
   },
@@ -69,22 +63,26 @@ const DEFAULT_PRODUCTS = [
     price: 39.90,
     image: ""
   }
+
 ];
 
 
-// ==========================================
-// CONTACTS PAR DÉFAUT
-// ==========================================
-
 const DEFAULT_CONTACTS = {
-  snapchat: "ton_snapchat",
-  instagram: "@toninstagram",
-  telegram: "@shopbassinstore_bot"
+
+  snapchat:
+    "ton_snapchat",
+
+  instagram:
+    "@toninstagram",
+
+  telegram:
+    "@shopbassinstore_bot"
+
 };
 
 
 // ==========================================
-// VARIABLES
+// STATE
 // ==========================================
 
 let products = [];
@@ -95,57 +93,98 @@ let contacts = {};
 
 let shopOpen = true;
 
+let pickupAvailable = true;
+
+let deliveryAvailable = true;
+
+let orderMode = "pickup";
+
+let adminUnlocked = false;
+
+let logoTapCount = 0;
+
+let logoTapTimer = null;
+
 
 // ==========================================
-// ÉCRAN DE CHARGEMENT
+// LOADER
 // ==========================================
 
-window.addEventListener("load", function () {
+window.addEventListener(
+  "load",
+  function () {
 
-  const loader =
-    document.getElementById("loader");
+    const loader =
+      document.getElementById(
+        "loader"
+      );
 
-  const app =
-    document.getElementById("app");
+    const app =
+      document.getElementById(
+        "app"
+      );
 
 
-  setTimeout(function () {
+    setTimeout(
+      function () {
+
+        if (loader) {
+
+          loader.classList.add(
+            "hide"
+          );
+
+        }
+
+
+        if (app) {
+
+          app.classList.remove(
+            "app-loading"
+          );
+
+        }
+
+      },
+      2200
+    );
+
+  }
+);
+
+
+// Sécurité loader
+
+setTimeout(
+  function () {
+
+    const loader =
+      document.getElementById(
+        "loader"
+      );
+
+    const app =
+      document.getElementById(
+        "app"
+      );
+
 
     if (loader) {
       loader.classList.add("hide");
     }
 
+
     if (app) {
       app.classList.remove("app-loading");
     }
 
-  }, 2000);
-
-});
-
-
-// Sécurité : même si quelque chose bloque
-setTimeout(function () {
-
-  const loader =
-    document.getElementById("loader");
-
-  const app =
-    document.getElementById("app");
-
-  if (loader) {
-    loader.classList.add("hide");
-  }
-
-  if (app) {
-    app.classList.remove("app-loading");
-  }
-
-}, 4000);
+  },
+  4500
+);
 
 
 // ==========================================
-// DÉMARRAGE
+// START
 // ==========================================
 
 document.addEventListener(
@@ -158,106 +197,205 @@ document.addEventListener(
 
     loadContacts();
 
-    loadShopStatus();
+    loadAvailability();
 
     renderProducts();
 
     renderCart();
 
-    renderAdminProducts();
+    updateContacts();
+
+    updateAvailabilityUI();
 
     updateCartCount();
 
-    updateContactsDisplay();
+    updateOrderMode();
 
-    updateShopStatusDisplay();
-
-    fillAdminContacts();
+    setupSecretAdmin();
 
   }
 );
 
 
 // ==========================================
+// SECRET ADMIN
+// ==========================================
+//
+// APPUIE 5 FOIS RAPIDEMENT
+// SUR TON LOGO EN HAUT
+//
+
+function setupSecretAdmin() {
+
+  const logo =
+    document.getElementById(
+      "admin-secret-trigger"
+    );
+
+
+  if (!logo) return;
+
+
+  logo.addEventListener(
+    "click",
+    function () {
+
+      logoTapCount++;
+
+
+      clearTimeout(
+        logoTapTimer
+      );
+
+
+      logoTapTimer =
+        setTimeout(
+          function () {
+
+            logoTapCount = 0;
+
+          },
+          2500
+        );
+
+
+      if (
+        logoTapCount >= 5
+      ) {
+
+        logoTapCount = 0;
+
+        unlockAdmin();
+
+      }
+
+    }
+  );
+
+}
+
+
+function unlockAdmin() {
+
+  if (!adminUnlocked) {
+
+    const code =
+      prompt(
+        "Code administrateur ShopBassin"
+      );
+
+
+    if (
+      code !== ADMIN_CODE
+    ) {
+
+      alert(
+        "Code incorrect."
+      );
+
+      return;
+
+    }
+
+
+    adminUnlocked = true;
+
+  }
+
+
+  fillAdminContacts();
+
+  renderAdminProducts();
+
+  showPage("gestion");
+
+}
+
+
+// ==========================================
 // NAVIGATION
 // ==========================================
 
-function showPage(pageId, button = null) {
-
-  // Protection simple de Gestion
-  if (pageId === "gestion" && !adminUnlocked) {
-
-    const enteredCode =
-      prompt("Code administrateur ShopBassin :");
-
-    if (enteredCode !== ADMIN_CODE) {
-
-      alert("Code incorrect.");
-
-      return;
-    }
-
-    adminUnlocked = true;
-  }
-
+function showPage(
+  pageId,
+  button = null
+) {
 
   document
     .querySelectorAll(".page")
-    .forEach(function (page) {
+    .forEach(
+      function (page) {
 
-      page.classList.remove("active");
+        page.classList.remove(
+          "active"
+        );
 
-    });
+      }
+    );
 
 
-  const selectedPage =
-    document.getElementById(pageId);
+  const page =
+    document.getElementById(
+      pageId
+    );
 
 
-  if (selectedPage) {
-    selectedPage.classList.add("active");
+  if (page) {
+
+    page.classList.add(
+      "active"
+    );
+
   }
 
 
   document
-    .querySelectorAll(".nav-button")
-    .forEach(function (nav) {
+    .querySelectorAll(
+      ".nav-button"
+    )
+    .forEach(
+      function (nav) {
 
-      nav.classList.remove("active");
+        nav.classList.remove(
+          "active"
+        );
 
-    });
+      }
+    );
 
 
   if (button) {
 
-    button.classList.add("active");
+    button.classList.add(
+      "active"
+    );
 
   } else {
 
-    const matchingButton =
+    const nav =
       document.querySelector(
-        '[data-page="' + pageId + '"]'
+        '[data-page="' +
+        pageId +
+        '"]'
       );
 
-    if (matchingButton) {
-      matchingButton.classList.add("active");
+
+    if (nav) {
+
+      nav.classList.add(
+        "active"
+      );
+
     }
 
   }
 
 
-  if (pageId === "panier") {
+  if (
+    pageId === "panier"
+  ) {
 
     renderCart();
-
-  }
-
-
-  if (pageId === "gestion") {
-
-    renderAdminProducts();
-
-    fillAdminContacts();
 
   }
 
@@ -267,20 +405,11 @@ function showPage(pageId, button = null) {
     behavior: "smooth"
   });
 
-
-  if (tg?.HapticFeedback) {
-
-    try {
-      tg.HapticFeedback.selectionChanged();
-    } catch (error) {}
-
-  }
-
 }
 
 
 // ==========================================
-// PRODUITS — CHARGER
+// PRODUCTS STORAGE
 // ==========================================
 
 function loadProducts() {
@@ -289,27 +418,20 @@ function loadProducts() {
 
     const saved =
       localStorage.getItem(
-        "shopbassin-products"
+        "sb-products"
       );
 
 
-    if (saved) {
+    products =
+      saved
+        ? JSON.parse(saved)
+        : JSON.parse(
+            JSON.stringify(
+              DEFAULT_PRODUCTS
+            )
+          );
 
-      products =
-        JSON.parse(saved);
-
-    } else {
-
-      products =
-        JSON.parse(
-          JSON.stringify(
-            DEFAULT_PRODUCTS
-          )
-        );
-
-    }
-
-  } catch (error) {
+  } catch {
 
     products =
       JSON.parse(
@@ -323,20 +445,12 @@ function loadProducts() {
 }
 
 
-// ==========================================
-// PRODUITS — SAUVEGARDER
-// ==========================================
-
 function saveProducts() {
 
-  try {
-
-    localStorage.setItem(
-      "shopbassin-products",
-      JSON.stringify(products)
-    );
-
-  } catch (error) {}
+  localStorage.setItem(
+    "sb-products",
+    JSON.stringify(products)
+  );
 
 
   renderProducts();
@@ -347,7 +461,7 @@ function saveProducts() {
 
 
 // ==========================================
-// AFFICHER LE CATALOGUE
+// PRODUCT CATALOGUE
 // ==========================================
 
 function renderProducts() {
@@ -364,16 +478,44 @@ function renderProducts() {
     );
 
 
-  if (counter) {
-    counter.textContent =
-      products.length;
-  }
-
-
   if (!container) return;
 
 
-  if (products.length === 0) {
+  const search =
+    (
+      document
+        .getElementById(
+          "product-search"
+        )
+        ?.value || ""
+    )
+    .toLowerCase()
+    .trim();
+
+
+  const filtered =
+    products.filter(
+      function (product) {
+
+        return product.name
+          .toLowerCase()
+          .includes(search);
+
+      }
+    );
+
+
+  if (counter) {
+
+    counter.textContent =
+      products.length;
+
+  }
+
+
+  if (
+    filtered.length === 0
+  ) {
 
     container.innerHTML = `
 
@@ -381,7 +523,7 @@ function renderProducts() {
 
         <img
           src="./${LOGO}"
-          alt="ShopBassin"
+          alt=""
         >
 
         <h3>
@@ -389,7 +531,7 @@ function renderProducts() {
         </h3>
 
         <p>
-          Les produits seront bientôt disponibles.
+          Aucun résultat trouvé.
         </p>
 
       </div>
@@ -397,475 +539,96 @@ function renderProducts() {
     `;
 
     return;
+
   }
 
 
   container.innerHTML =
-    products
-      .map(function (product) {
+    filtered
+      .map(
+        function (product) {
 
-        let imageHTML;
-
-
-        if (product.image) {
-
-          imageHTML = `
-
-            <img
-              src="./${escapeHTML(product.image)}"
-              alt="${escapeHTML(product.name)}"
-              onerror="
-                this.src='./${LOGO}';
-                this.classList.add('product-placeholder');
-              "
-            >
-
-          `;
-
-        } else {
-
-          imageHTML = `
-
-            <img
-              src="./${LOGO}"
-              class="product-placeholder"
-              alt="ShopBassin"
-            >
-
-          `;
-
-        }
+          const image =
+            product.image
+              ? product.image
+              : LOGO;
 
 
-        return `
-
-          <article class="product-card">
-
-            <div class="product-image">
-
-              ${imageHTML}
-
-            </div>
+          const placeholderClass =
+            product.image
+              ? ""
+              : "product-placeholder";
 
 
-            <div class="product-info">
+          return `
 
-              <h3>
-                ${escapeHTML(product.name)}
-              </h3>
+            <article class="product-card">
 
+              <div class="product-image">
 
-              <div class="product-price">
-
-                ${formatPrice(product.price)}
+                <img
+                  src="${image}"
+                  class="${placeholderClass}"
+                  alt="${escapeHTML(product.name)}"
+                  onerror="
+                    this.src='./${LOGO}';
+                    this.classList.add('product-placeholder');
+                  "
+                >
 
               </div>
 
 
-              <button
-                class="add-button"
-                onclick="addToCart(${product.id})"
-              >
-                Ajouter au panier
-              </button>
+              <div class="product-info">
 
-            </div>
+                <h3>
+                  ${escapeHTML(product.name)}
+                </h3>
 
-          </article>
 
-        `;
+                <div class="product-price">
 
-      })
+                  ${formatPrice(product.price)}
+
+                </div>
+
+
+                <button
+                  class="add-button"
+                  onclick="addToCart(${product.id})"
+                >
+                  Ajouter au panier
+                </button>
+
+              </div>
+
+            </article>
+
+          `;
+
+        }
+      )
       .join("");
 
 }
 
 
 // ==========================================
-// ADMIN — LISTE DES PRODUITS
-// ==========================================
-
-function renderAdminProducts() {
-
-  const container =
-    document.getElementById(
-      "admin-products"
-    );
-
-
-  if (!container) return;
-
-
-  if (products.length === 0) {
-
-    container.innerHTML =
-      "<p>Aucun produit.</p>";
-
-    return;
-  }
-
-
-  container.innerHTML =
-    products.map(function (product) {
-
-      return `
-
-        <div class="admin-product">
-
-          <div class="admin-product-header">
-
-            <strong>
-              ${escapeHTML(product.name)}
-            </strong>
-
-
-            <button
-              class="admin-delete"
-              onclick="deleteProduct(${product.id})"
-            >
-              ×
-            </button>
-
-          </div>
-
-
-          <label>
-            Nom
-          </label>
-
-          <input
-            id="product-name-${product.id}"
-            type="text"
-            value="${escapeAttribute(product.name)}"
-          >
-
-
-          <label>
-            Prix
-          </label>
-
-          <input
-            id="product-price-${product.id}"
-            type="number"
-            step="0.01"
-            value="${product.price}"
-          >
-
-
-          <label>
-            Photo
-          </label>
-
-          <input
-            id="product-image-${product.id}"
-            type="text"
-            value="${escapeAttribute(product.image || "")}"
-            placeholder="photo.jpg"
-          >
-
-
-          <button
-            class="main-button"
-            onclick="updateAdminProduct(${product.id})"
-          >
-            Enregistrer
-          </button>
-
-        </div>
-
-      `;
-
-    }).join("");
-
-}
-
-
-// ==========================================
-// ADMIN — MODIFIER UN PRODUIT
-// ==========================================
-
-function updateAdminProduct(id) {
-
-  const product =
-    products.find(function (item) {
-
-      return item.id === id;
-
-    });
-
-
-  if (!product) return;
-
-
-  const nameInput =
-    document.getElementById(
-      "product-name-" + id
-    );
-
-
-  const priceInput =
-    document.getElementById(
-      "product-price-" + id
-    );
-
-
-  const imageInput =
-    document.getElementById(
-      "product-image-" + id
-    );
-
-
-  const name =
-    nameInput
-      ? nameInput.value.trim()
-      : product.name;
-
-
-  const price =
-    priceInput
-      ? Number(priceInput.value)
-      : product.price;
-
-
-  const image =
-    imageInput
-      ? imageInput.value.trim()
-      : product.image;
-
-
-  if (!name) {
-
-    alert(
-      "Entre un nom de produit."
-    );
-
-    return;
-  }
-
-
-  if (
-    !Number.isFinite(price) ||
-    price < 0
-  ) {
-
-    alert(
-      "Entre un prix valide."
-    );
-
-    return;
-  }
-
-
-  product.name = name;
-
-  product.price = price;
-
-  product.image = image;
-
-
-  saveProducts();
-
-
-  alert(
-    "Produit modifié ✅"
-  );
-
-}
-
-
-// ==========================================
-// ADMIN — AJOUTER UN PRODUIT
-// ==========================================
-
-function addAdminProduct() {
-
-  const nameInput =
-    document.getElementById(
-      "new-product-name"
-    );
-
-
-  const priceInput =
-    document.getElementById(
-      "new-product-price"
-    );
-
-
-  const imageInput =
-    document.getElementById(
-      "new-product-image"
-    );
-
-
-  const name =
-    nameInput
-      ? nameInput.value.trim()
-      : "";
-
-
-  const price =
-    priceInput
-      ? Number(priceInput.value)
-      : NaN;
-
-
-  const image =
-    imageInput
-      ? imageInput.value.trim()
-      : "";
-
-
-  if (!name) {
-
-    alert(
-      "Entre le nom du produit."
-    );
-
-    return;
-  }
-
-
-  if (
-    !Number.isFinite(price) ||
-    price < 0
-  ) {
-
-    alert(
-      "Entre un prix valide."
-    );
-
-    return;
-  }
-
-
-  const newProduct = {
-
-    id:
-      Date.now(),
-
-    name:
-      name,
-
-    price:
-      price,
-
-    image:
-      image
-
-  };
-
-
-  products.push(
-    newProduct
-  );
-
-
-  saveProducts();
-
-
-  if (nameInput) {
-    nameInput.value = "";
-  }
-
-  if (priceInput) {
-    priceInput.value = "";
-  }
-
-  if (imageInput) {
-    imageInput.value = "";
-  }
-
-
-  alert(
-    "Produit ajouté ✅"
-  );
-
-}
-
-
-// ==========================================
-// ADMIN — SUPPRIMER UN PRODUIT
-// ==========================================
-
-function deleteProduct(id) {
-
-  const product =
-    products.find(function (item) {
-
-      return item.id === id;
-
-    });
-
-
-  if (!product) return;
-
-
-  const confirmation =
-    confirm(
-      "Supprimer " +
-      product.name +
-      " ?"
-    );
-
-
-  if (!confirmation) return;
-
-
-  products =
-    products.filter(
-      function (item) {
-
-        return item.id !== id;
-
-      }
-    );
-
-
-  cart =
-    cart.filter(
-      function (item) {
-
-        return item.id !== id;
-
-      }
-    );
-
-
-  saveProducts();
-
-  saveCart();
-
-  renderCart();
-
-}
-
-
-// ==========================================
-// PANIER — CHARGER
+// CART
 // ==========================================
 
 function loadCart() {
 
   try {
 
-    const saved =
-      localStorage.getItem(
-        "shopbassin-cart"
-      );
+    cart =
+      JSON.parse(
+        localStorage.getItem(
+          "sb-cart"
+        )
+      ) || [];
 
-
-    if (saved) {
-
-      cart =
-        JSON.parse(saved);
-
-    } else {
-
-      cart = [];
-
-    }
-
-  } catch (error) {
+  } catch {
 
     cart = [];
 
@@ -874,20 +637,12 @@ function loadCart() {
 }
 
 
-// ==========================================
-// PANIER — SAUVEGARDER
-// ==========================================
-
 function saveCart() {
 
-  try {
-
-    localStorage.setItem(
-      "shopbassin-cart",
-      JSON.stringify(cart)
-    );
-
-  } catch (error) {}
+  localStorage.setItem(
+    "sb-cart",
+    JSON.stringify(cart)
+  );
 
 
   updateCartCount();
@@ -895,62 +650,36 @@ function saveCart() {
 }
 
 
-// ==========================================
-// AJOUTER AU PANIER
-// ==========================================
-
 function addToCart(id) {
 
   const product =
-    products.find(function (item) {
-
-      return item.id === id;
-
-    });
+    products.find(
+      product =>
+        product.id === id
+    );
 
 
   if (!product) return;
 
 
   const existing =
-    cart.find(function (item) {
-
-      return item.id === id;
-
-    });
+    cart.find(
+      item =>
+        item.id === id
+    );
 
 
   if (existing) {
 
     existing.quantity++;
 
-    existing.name =
-      product.name;
-
-    existing.price =
-      product.price;
-
-    existing.image =
-      product.image;
-
   } else {
 
     cart.push({
 
-      id:
-        product.id,
+      ...product,
 
-      name:
-        product.name,
-
-      price:
-        product.price,
-
-      image:
-        product.image,
-
-      quantity:
-        1
+      quantity: 1
 
     });
 
@@ -965,44 +694,42 @@ function addToCart(id) {
     try {
 
       tg.HapticFeedback
-        .impactOccurred("light");
+        .impactOccurred(
+          "light"
+        );
 
-    } catch (error) {}
+    } catch {}
 
   }
 
 }
 
 
-// ==========================================
-// RETIRER DU PANIER
-// ==========================================
-
 function removeFromCart(id) {
 
   const item =
-    cart.find(function (item) {
-
-      return item.id === id;
-
-    });
+    cart.find(
+      item =>
+        item.id === id
+    );
 
 
   if (!item) return;
 
 
-  if (item.quantity > 1) {
+  if (
+    item.quantity > 1
+  ) {
 
     item.quantity--;
 
   } else {
 
     cart =
-      cart.filter(function (item) {
-
-        return item.id !== id;
-
-      });
+      cart.filter(
+        item =>
+          item.id !== id
+      );
 
   }
 
@@ -1013,10 +740,6 @@ function removeFromCart(id) {
 
 }
 
-
-// ==========================================
-// COMPTEUR DU PANIER
-// ==========================================
 
 function updateCartCount() {
 
@@ -1029,28 +752,22 @@ function updateCartCount() {
   if (!counter) return;
 
 
-  const total =
+  counter.textContent =
     cart.reduce(
-      function (sum, item) {
-
-        return (
-          sum +
-          item.quantity
-        );
-
-      },
+      (
+        total,
+        item
+      ) =>
+        total +
+        item.quantity,
       0
     );
-
-
-  counter.textContent =
-    total;
 
 }
 
 
 // ==========================================
-// AFFICHER PANIER
+// RENDER CART
 // ==========================================
 
 function renderCart() {
@@ -1064,7 +781,9 @@ function renderCart() {
   if (!container) return;
 
 
-  if (cart.length === 0) {
+  if (
+    cart.length === 0
+  ) {
 
     container.innerHTML = `
 
@@ -1072,11 +791,11 @@ function renderCart() {
 
         <img
           src="./${LOGO}"
-          alt="ShopBassin"
+          alt=""
         >
 
         <h3>
-          Ton panier est vide
+          Panier vide
         </h3>
 
         <p>
@@ -1090,56 +809,58 @@ function renderCart() {
   } else {
 
     container.innerHTML =
-      cart.map(function (item) {
+      cart
+        .map(
+          function (item) {
 
-        const image =
-          item.image
-            ? item.image
-            : LOGO;
-
-
-        return `
-
-          <div class="cart-item">
-
-            <div class="cart-thumb">
-
-              <img
-                src="./${escapeHTML(image)}"
-                alt="${escapeHTML(item.name)}"
-                onerror="this.src='./${LOGO}'"
-              >
-
-            </div>
+            const image =
+              item.image ||
+              LOGO;
 
 
-            <div class="cart-info">
+            return `
 
-              <strong>
-                ${escapeHTML(item.name)}
-              </strong>
+              <div class="cart-item">
 
-              <p>
-                ${item.quantity}
-                ×
-                ${formatPrice(item.price)}
-              </p>
+                <div class="cart-thumb">
 
-            </div>
+                  <img
+                    src="${image}"
+                    onerror="this.src='./${LOGO}'"
+                  >
+
+                </div>
 
 
-            <button
-              class="remove-button"
-              onclick="removeFromCart(${item.id})"
-            >
-              −
-            </button>
+                <div class="cart-info">
 
-          </div>
+                  <strong>
+                    ${escapeHTML(item.name)}
+                  </strong>
 
-        `;
+                  <p>
+                    ${item.quantity}
+                    ×
+                    ${formatPrice(item.price)}
+                  </p>
 
-      }).join("");
+                </div>
+
+
+                <button
+                  class="remove-button"
+                  onclick="removeFromCart(${item.id})"
+                >
+                  −
+                </button>
+
+              </div>
+
+            `;
+
+          }
+        )
+        .join("");
 
   }
 
@@ -1150,40 +871,142 @@ function renderCart() {
 
 
 // ==========================================
-// PRIX
+// ORDER MODE
+// ==========================================
+
+function setOrderMode(
+  mode
+) {
+
+  orderMode = mode;
+
+  updateOrderMode();
+
+  updateTotals();
+
+}
+
+
+function updateOrderMode() {
+
+  const pickupButton =
+    document.getElementById(
+      "pickup-choice"
+    );
+
+
+  const deliveryButton =
+    document.getElementById(
+      "delivery-choice"
+    );
+
+
+  const deliveryFields =
+    document.getElementById(
+      "delivery-fields"
+    );
+
+
+  pickupButton
+    ?.classList.remove(
+      "active"
+    );
+
+
+  deliveryButton
+    ?.classList.remove(
+      "active"
+    );
+
+
+  if (
+    orderMode === "pickup"
+  ) {
+
+    pickupButton
+      ?.classList.add(
+        "active"
+      );
+
+
+    if (deliveryFields) {
+
+      deliveryFields.style.display =
+        "none";
+
+    }
+
+  } else {
+
+    deliveryButton
+      ?.classList.add(
+        "active"
+      );
+
+
+    if (deliveryFields) {
+
+      deliveryFields.style.display =
+        "block";
+
+    }
+
+  }
+
+}
+
+
+// ==========================================
+// DELIVERY PRICES
 // ==========================================
 
 function getSubtotal() {
 
   return cart.reduce(
-    function (total, item) {
+    (
+      total,
+      item
+    ) =>
 
-      return (
-        total +
-        item.price *
-        item.quantity
-      );
+      total +
+      item.price *
+      item.quantity,
 
-    },
     0
   );
 
 }
 
 
-function getDelivery(subtotal) {
+function getDeliveryPrice() {
 
-  if (subtotal === 0) {
+  if (
+    orderMode === "pickup"
+  ) {
+
     return 0;
+
   }
 
 
-  if (subtotal < 30) {
-    return 5;
+  const city =
+    document
+      .getElementById(
+        "delivery-city"
+      )
+      ?.value;
+
+
+  if (
+    city === "outside"
+  ) {
+
+    return 10;
+
   }
 
 
-  return 0;
+  return 5;
 
 }
 
@@ -1195,11 +1018,14 @@ function updateTotals() {
 
 
   const delivery =
-    getDelivery(subtotal);
+    cart.length
+      ? getDeliveryPrice()
+      : 0;
 
 
   const total =
-    subtotal + delivery;
+    subtotal +
+    delivery;
 
 
   setText(
@@ -1210,13 +1036,7 @@ function updateTotals() {
 
   setText(
     "delivery-price",
-
-    delivery === 0 &&
-    subtotal > 0
-
-      ? "GRATUITE"
-
-      : formatPrice(delivery)
+    formatPrice(delivery)
   );
 
 
@@ -1228,50 +1048,11 @@ function updateTotals() {
 }
 
 
-function formatPrice(price) {
-
-  return new Intl.NumberFormat(
-    "fr-FR",
-    {
-      style: "currency",
-      currency: "EUR"
-    }
-  ).format(price);
-
-}
-
-
-function setText(id, text) {
-
-  const element =
-    document.getElementById(id);
-
-
-  if (element) {
-
-    element.textContent =
-      text;
-
-  }
-
-}
-
-
 // ==========================================
-// COMMANDE
+// ORDER
 // ==========================================
 
-function prepareOrder() {
-
-  if (cart.length === 0) {
-
-    alert(
-      "Ton panier est vide."
-    );
-
-    return;
-  }
-
+async function prepareOrder() {
 
   if (!shopOpen) {
 
@@ -1280,6 +1061,161 @@ function prepareOrder() {
     );
 
     return;
+
+  }
+
+
+  if (
+    cart.length === 0
+  ) {
+
+    alert(
+      "Ton panier est vide."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    orderMode === "pickup" &&
+    !pickupAvailable
+  ) {
+
+    alert(
+      "Le retrait sur place est actuellement indisponible."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    orderMode === "delivery" &&
+    !deliveryAvailable
+  ) {
+
+    alert(
+      "La livraison est actuellement indisponible."
+    );
+
+    return;
+
+  }
+
+
+  const name =
+    document
+      .getElementById(
+        "customer-name"
+      )
+      ?.value
+      .trim();
+
+
+  const phone =
+    document
+      .getElementById(
+        "customer-phone"
+      )
+      ?.value
+      .trim();
+
+
+  if (!name || !phone) {
+
+    alert(
+      "Entre ton nom et ton numéro de téléphone."
+    );
+
+    return;
+
+  }
+
+
+  let address = "";
+
+  let cityLabel =
+    "Arcachon";
+
+
+  if (
+    orderMode === "delivery"
+  ) {
+
+    const addressInput =
+      document
+        .getElementById(
+          "delivery-address"
+        )
+        ?.value
+        .trim();
+
+
+    const extra =
+      document
+        .getElementById(
+          "delivery-extra"
+        )
+        ?.value
+        .trim();
+
+
+    if (!addressInput) {
+
+      alert(
+        "Entre ton adresse de livraison."
+      );
+
+      return;
+
+    }
+
+
+    const city =
+      document
+        .getElementById(
+          "delivery-city"
+        )
+        ?.value;
+
+
+    const cities = {
+
+      arcachon:
+        "Arcachon",
+
+      "la-teste":
+        "La Teste-de-Buch",
+
+      gujan:
+        "Gujan-Mestras",
+
+      outside:
+        "Plus loin sur le Bassin"
+
+    };
+
+
+    cityLabel =
+      cities[city] ||
+      city;
+
+
+    address =
+      addressInput;
+
+
+    if (extra) {
+
+      address +=
+        " — " +
+        extra;
+
+    }
+
   }
 
 
@@ -1287,64 +1223,335 @@ function prepareOrder() {
     getSubtotal();
 
 
-  const delivery =
-    getDelivery(subtotal);
+  const deliveryFee =
+    getDeliveryPrice();
 
 
   const total =
-    subtotal + delivery;
+    subtotal +
+    deliveryFee;
 
 
   let message =
+
 `🛍 COMMANDE SHOPBASSIN
+
+👤 Client : ${name}
+📞 Téléphone : ${phone}
 
 `;
 
 
-  cart.forEach(function (item) {
+  if (
+    orderMode === "pickup"
+  ) {
 
     message +=
+
+`🏠 Récupération :
+Sur place à Arcachon
+
+`;
+
+  } else {
+
+    message +=
+
+`🚚 Livraison
+
+📍 Ville : ${cityLabel}
+🏡 Adresse : ${address}
+
+`;
+
+  }
+
+
+  message +=
+`🛒 Articles :
+
+`;
+
+
+  cart.forEach(
+    function (item) {
+
+      message +=
 `• ${item.name}
   ${item.quantity} × ${formatPrice(item.price)}
 
 `;
 
-  });
+    }
+  );
 
 
   message +=
 `Sous-total : ${formatPrice(subtotal)}
-Livraison : ${
-  delivery === 0
-    ? "GRATUITE"
-    : formatPrice(delivery)
-}
+Livraison : ${formatPrice(deliveryFee)}
 TOTAL : ${formatPrice(total)}
-`;
+
+Merci de confirmer ma commande.`;
 
 
-  if (navigator.clipboard) {
 
-    navigator.clipboard
-      .writeText(message)
-      .then(function () {
+  try {
 
-        alert(
-          "Bon de commande copié ✅"
-        );
+    await navigator
+      .clipboard
+      .writeText(
+        message
+      );
 
-      })
-      .catch(function () {
 
-        alert(message);
+    alert(
+      "Commande prête ✅\nLe message a été copié. Telegram va s'ouvrir."
+    );
 
-      });
 
-  } else {
+    openOrderTelegram();
+
+  } catch {
 
     alert(message);
 
   }
+
+}
+
+
+// ==========================================
+// OPEN TELEGRAM
+// ==========================================
+
+function openOrderTelegram() {
+
+  let username =
+    contacts.telegram ||
+    "@shopbassinstore_bot";
+
+
+  username =
+    username.replace(
+      "@",
+      ""
+    );
+
+
+  const url =
+    "https://t.me/" +
+    username;
+
+
+  if (
+    tg &&
+    typeof tg.openTelegramLink ===
+    "function"
+  ) {
+
+    tg.openTelegramLink(url);
+
+  } else {
+
+    window.location.href =
+      url;
+
+  }
+
+}
+
+
+// ==========================================
+// AVAILABILITY
+// ==========================================
+
+function loadAvailability() {
+
+  shopOpen =
+    readBoolean(
+      "sb-shop-open",
+      true
+    );
+
+
+  pickupAvailable =
+    readBoolean(
+      "sb-pickup",
+      true
+    );
+
+
+  deliveryAvailable =
+    readBoolean(
+      "sb-delivery",
+      true
+    );
+
+}
+
+
+function readBoolean(
+  key,
+  fallback
+) {
+
+  const value =
+    localStorage.getItem(
+      key
+    );
+
+
+  if (
+    value === null
+  ) {
+
+    return fallback;
+
+  }
+
+
+  return value === "true";
+
+}
+
+
+function setShopOpen(value) {
+
+  shopOpen = value;
+
+
+  localStorage.setItem(
+    "sb-shop-open",
+    String(value)
+  );
+
+
+  updateAvailabilityUI();
+
+}
+
+
+function setPickupAvailable(value) {
+
+  pickupAvailable = value;
+
+
+  localStorage.setItem(
+    "sb-pickup",
+    String(value)
+  );
+
+
+  updateAvailabilityUI();
+
+}
+
+
+function setDeliveryAvailable(value) {
+
+  deliveryAvailable =
+    value;
+
+
+  localStorage.setItem(
+    "sb-delivery",
+    String(value)
+  );
+
+
+  updateAvailabilityUI();
+
+}
+
+
+function updateAvailabilityUI() {
+
+  setAvailability(
+    "shop-status",
+    shopOpen,
+    "OUVERT",
+    "FERMÉ"
+  );
+
+
+  setAvailability(
+    "pickup-status",
+    pickupAvailable,
+    "DISPONIBLE",
+    "INDISPONIBLE"
+  );
+
+
+  setAvailability(
+    "delivery-status",
+    deliveryAvailable,
+    "DISPONIBLE",
+    "INDISPONIBLE"
+  );
+
+
+  const header =
+    document.getElementById(
+      "header-status"
+    );
+
+
+  if (header) {
+
+    header.textContent =
+      shopOpen
+        ? "OUVERT"
+        : "FERMÉ";
+
+
+    header.classList.toggle(
+      "open",
+      shopOpen
+    );
+
+
+    header.classList.toggle(
+      "closed",
+      !shopOpen
+    );
+
+  }
+
+}
+
+
+function setAvailability(
+  id,
+  value,
+  yes,
+  no
+) {
+
+  const element =
+    document.getElementById(
+      id
+    );
+
+
+  if (!element) return;
+
+
+  element.textContent =
+    value
+      ? yes
+      : no;
+
+
+  element.classList.toggle(
+    "available",
+    value
+  );
+
+
+  element.classList.toggle(
+    "unavailable",
+    !value
+  );
 
 }
 
@@ -1357,83 +1564,103 @@ function loadContacts() {
 
   try {
 
-    const saved =
-      localStorage.getItem(
-        "shopbassin-contacts"
-      );
-
-
-    if (saved) {
-
-      contacts =
-        JSON.parse(saved);
-
-    } else {
-
-      contacts = {
+    contacts =
+      JSON.parse(
+        localStorage.getItem(
+          "sb-contacts"
+        )
+      ) ||
+      {
         ...DEFAULT_CONTACTS
       };
 
-    }
+  } catch {
 
-  } catch (error) {
-
-    contacts = {
-      ...DEFAULT_CONTACTS
-    };
+    contacts =
+      {
+        ...DEFAULT_CONTACTS
+      };
 
   }
 
 }
 
 
+function updateContacts() {
+
+  setText(
+    "snapchat-contact",
+    contacts.snapchat
+  );
+
+
+  setText(
+    "instagram-contact",
+    contacts.instagram
+  );
+
+
+  setText(
+    "telegram-contact",
+    contacts.telegram
+  );
+
+}
+
+
+function fillAdminContacts() {
+
+  setInput(
+    "admin-snapchat",
+    contacts.snapchat
+  );
+
+
+  setInput(
+    "admin-instagram",
+    contacts.instagram
+  );
+
+
+  setInput(
+    "admin-telegram",
+    contacts.telegram
+  );
+
+}
+
+
 function saveContacts() {
-
-  const snapchatInput =
-    document.getElementById(
-      "admin-snapchat"
-    );
-
-
-  const instagramInput =
-    document.getElementById(
-      "admin-instagram"
-    );
-
-
-  const telegramInput =
-    document.getElementById(
-      "admin-telegram"
-    );
-
 
   contacts = {
 
     snapchat:
-      snapchatInput
-        ? snapchatInput.value.trim()
-        : contacts.snapchat,
+      getInput(
+        "admin-snapchat"
+      ),
 
     instagram:
-      instagramInput
-        ? instagramInput.value.trim()
-        : contacts.instagram,
+      getInput(
+        "admin-instagram"
+      ),
 
     telegram:
-      telegramInput
-        ? telegramInput.value.trim()
-        : contacts.telegram
+      getInput(
+        "admin-telegram"
+      )
 
   };
 
 
   localStorage.setItem(
-    "shopbassin-contacts",
-    JSON.stringify(contacts)
+    "sb-contacts",
+    JSON.stringify(
+      contacts
+    )
   );
 
 
-  updateContactsDisplay();
+  updateContacts();
 
 
   alert(
@@ -1443,219 +1670,452 @@ function saveContacts() {
 }
 
 
-function fillAdminContacts() {
-
-  const snapchat =
-    document.getElementById(
-      "admin-snapchat"
-    );
-
-
-  const instagram =
-    document.getElementById(
-      "admin-instagram"
-    );
-
-
-  const telegram =
-    document.getElementById(
-      "admin-telegram"
-    );
-
-
-  if (snapchat) {
-    snapchat.value =
-      contacts.snapchat || "";
-  }
-
-
-  if (instagram) {
-    instagram.value =
-      contacts.instagram || "";
-  }
-
-
-  if (telegram) {
-    telegram.value =
-      contacts.telegram || "";
-  }
-
-}
-
-
-function updateContactsDisplay() {
-
-  setText(
-    "snapchat-contact",
-    contacts.snapchat ||
-    "Snapchat"
-  );
-
-
-  setText(
-    "instagram-contact",
-    contacts.instagram ||
-    "Instagram"
-  );
-
-
-  setText(
-    "telegram-contact",
-    contacts.telegram ||
-    "Telegram"
-  );
-
-}
-
-
 // ==========================================
-// OUVERT / FERMÉ
+// ADMIN PRODUCTS
 // ==========================================
 
-function loadShopStatus() {
+function renderAdminProducts() {
 
-  const saved =
-    localStorage.getItem(
-      "shopbassin-open"
+  const container =
+    document.getElementById(
+      "admin-products"
     );
 
 
-  if (saved === null) {
+  if (!container) return;
 
-    shopOpen = true;
 
-  } else {
+  container.innerHTML =
+    products
+      .map(
+        function (product) {
 
-    shopOpen =
-      saved === "true";
+          return `
 
-  }
+            <div class="admin-product">
+
+              <div class="admin-product-head">
+
+                <strong>
+                  ${escapeHTML(product.name)}
+                </strong>
+
+
+                <button
+                  class="admin-delete"
+                  onclick="deleteProduct(${product.id})"
+                >
+                  ×
+                </button>
+
+              </div>
+
+
+              <label>
+                Nom
+              </label>
+
+              <input
+                id="admin-name-${product.id}"
+                value="${escapeAttribute(product.name)}"
+              >
+
+
+              <label>
+                Prix
+              </label>
+
+              <input
+                id="admin-price-${product.id}"
+                type="number"
+                step="0.01"
+                value="${product.price}"
+              >
+
+
+              <button
+                class="primary-button"
+                onclick="saveAdminProduct(${product.id})"
+              >
+                Enregistrer
+              </button>
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
 
 }
 
 
-function setShopStatus(open) {
+function saveAdminProduct(id) {
 
-  shopOpen = open;
-
-
-  localStorage.setItem(
-    "shopbassin-open",
-    String(shopOpen)
-  );
+  const product =
+    products.find(
+      product =>
+        product.id === id
+    );
 
 
-  updateShopStatusDisplay();
+  if (!product) return;
+
+
+  const name =
+    getInput(
+      "admin-name-" +
+      id
+    );
+
+
+  const price =
+    Number(
+      getInput(
+        "admin-price-" +
+        id
+      )
+    );
+
+
+  if (
+    !name ||
+    !Number.isFinite(price)
+  ) {
+
+    alert(
+      "Nom ou prix incorrect."
+    );
+
+    return;
+
+  }
+
+
+  product.name =
+    name;
+
+
+  product.price =
+    price;
+
+
+  saveProducts();
 
 
   alert(
-    shopOpen
-      ? "ShopBassin est maintenant OUVERT ✅"
-      : "ShopBassin est maintenant FERMÉ 🔴"
+    "Produit modifié ✅"
   );
 
 }
 
 
-function updateShopStatusDisplay() {
+// ==========================================
+// ADD PRODUCT + PHOTO
+// ==========================================
 
-  const status =
-    document.getElementById(
-      "shop-status"
+function addAdminProduct() {
+
+  const name =
+    getInput(
+      "new-product-name"
     );
 
 
-  const text =
-    document.getElementById(
-      "shop-status-text"
+  const price =
+    Number(
+      getInput(
+        "new-product-price"
+      )
     );
 
 
-  const description =
+  const photoInput =
     document.getElementById(
-      "shop-status-description"
+      "new-product-photo"
     );
 
 
-  if (!status) return;
+  if (
+    !name ||
+    !Number.isFinite(price)
+  ) {
+
+    alert(
+      "Entre un nom et un prix."
+    );
+
+    return;
+
+  }
 
 
-  status.classList.remove(
-    "open",
-    "closed"
+  const createProduct =
+    function (image) {
+
+      products.push({
+
+        id:
+          Date.now(),
+
+        name,
+
+        price,
+
+        image:
+          image || ""
+
+      });
+
+
+      saveProducts();
+
+
+      setInput(
+        "new-product-name",
+        ""
+      );
+
+
+      setInput(
+        "new-product-price",
+        ""
+      );
+
+
+      if (photoInput) {
+
+        photoInput.value =
+          "";
+
+      }
+
+
+      alert(
+        "Produit ajouté ✅"
+      );
+
+    };
+
+
+  const file =
+    photoInput
+      ?.files
+      ?.[0];
+
+
+  if (!file) {
+
+    createProduct("");
+
+    return;
+
+  }
+
+
+  const reader =
+    new FileReader();
+
+
+  reader.onload =
+    function () {
+
+      createProduct(
+        reader.result
+      );
+
+    };
+
+
+  reader.readAsDataURL(
+    file
   );
 
+}
 
-  if (shopOpen) {
 
-    status.classList.add(
-      "open"
+function deleteProduct(id) {
+
+  if (
+    !confirm(
+      "Supprimer ce produit ?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  products =
+    products.filter(
+      product =>
+        product.id !== id
     );
 
 
-    if (text) {
-      text.textContent =
-        "OUVERT";
-    }
-
-
-    if (description) {
-
-      description.textContent =
-        "Les commandes sont actuellement disponibles.";
-
-    }
-
-  } else {
-
-    status.classList.add(
-      "closed"
+  cart =
+    cart.filter(
+      item =>
+        item.id !== id
     );
 
 
-    if (text) {
-      text.textContent =
-        "FERMÉ";
-    }
+  saveProducts();
+
+  saveCart();
+
+  renderCart();
+
+}
 
 
-    if (description) {
+// ==========================================
+// PRODUCT SAVE
+// ==========================================
 
-      description.textContent =
-        "Les commandes sont actuellement fermées.";
+function saveProducts() {
 
-    }
+  try {
+
+    localStorage.setItem(
+      "sb-products",
+      JSON.stringify(
+        products
+      )
+    );
+
+  } catch {
+
+    alert(
+      "Impossible d'enregistrer. La photo est peut-être trop lourde."
+    );
+
+  }
+
+
+  renderProducts();
+
+  renderAdminProducts();
+
+}
+
+
+// ==========================================
+// HELPERS
+// ==========================================
+
+function formatPrice(
+  price
+) {
+
+  return new Intl
+    .NumberFormat(
+      "fr-FR",
+      {
+
+        style:
+          "currency",
+
+        currency:
+          "EUR"
+
+      }
+    )
+    .format(price);
+
+}
+
+
+function setText(
+  id,
+  value
+) {
+
+  const element =
+    document.getElementById(
+      id
+    );
+
+
+  if (element) {
+
+    element.textContent =
+      value || "";
 
   }
 
 }
 
 
-// ==========================================
-// SÉCURITÉ TEXTE
-// ==========================================
+function setInput(
+  id,
+  value
+) {
 
-function escapeHTML(value) {
+  const element =
+    document.getElementById(
+      id
+    );
 
-  return String(value)
 
-    .replaceAll("&", "&amp;")
+  if (element) {
 
-    .replaceAll("<", "&lt;")
+    element.value =
+      value || "";
 
-    .replaceAll(">", "&gt;")
-
-    .replaceAll('"', "&quot;")
-
-    .replaceAll("'", "&#039;");
+  }
 
 }
 
 
-function escapeAttribute(value) {
+function getInput(id) {
+
+  return (
+    document
+      .getElementById(id)
+      ?.value || ""
+  ).trim();
+
+}
+
+
+function escapeHTML(value) {
+
+  return String(
+    value || ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
+}
+
+
+function escapeAttribute(
+  value
+) {
 
   return escapeHTML(
-    value || ""
+    value
   );
 
 }
