@@ -6,15 +6,19 @@
 
 :root {
   --bg: #05070a;
+  --bg2: #0a0e14;
   --card: #11151c;
   --card2: #171c25;
+  --card3: #0c1016;
   --blue: #319cff;
   --blue2: #73c3ff;
   --white: #ffffff;
   --grey: #9298a2;
+  --grey2: #646b75;
   --border: rgba(255,255,255,.08);
   --green: #59dc91;
   --red: #ff696f;
+  --shadow: 0 18px 50px rgba(0,0,0,.28);
 }
 
 html,
@@ -25,23 +29,23 @@ body {
 
 body {
   color: white;
-
   font-family:
     -apple-system,
     BlinkMacSystemFont,
+    "SF Pro Display",
     "Segoe UI",
     sans-serif;
 
   background:
     radial-gradient(
       circle at 50% -10%,
-      rgba(36,136,255,.18),
-      transparent 30%
+      rgba(36,136,255,.20),
+      transparent 29%
     ),
     radial-gradient(
-      circle at 100% 60%,
-      rgba(46,82,135,.08),
-      transparent 35%
+      circle at 100% 55%,
+      rgba(52,82,150,.08),
+      transparent 34%
     ),
     linear-gradient(
       180deg,
@@ -51,6 +55,7 @@ body {
     );
 
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
@@ -64,8 +69,14 @@ button {
   cursor: pointer;
 }
 
+img {
+  -webkit-user-drag: none;
+}
 
-/* LOADER */
+
+/* =========================================
+   LOADER
+========================================= */
 
 #loader {
   position: fixed;
@@ -84,8 +95,8 @@ button {
     );
 
   transition:
-    opacity .6s,
-    visibility .6s;
+    opacity .6s ease,
+    visibility .6s ease;
 }
 
 #loader.hide {
@@ -95,53 +106,48 @@ button {
 }
 
 .loader-inner {
-  width: 210px;
+  width: 215px;
   text-align: center;
 }
 
 .loader-logo {
-  width: 135px;
-  height: 135px;
+  width: 138px;
+  height: 138px;
 
   border-radius: 50%;
   object-fit: cover;
 
   box-shadow:
-    0 0 25px rgba(49,156,255,.45),
-    0 0 80px rgba(49,156,255,.2);
+    0 0 28px rgba(49,156,255,.48),
+    0 0 85px rgba(49,156,255,.18);
 
   animation:
-    spin 2s ease;
+    spin 2s cubic-bezier(.4,0,.2,1);
 }
 
 @keyframes spin {
-
   from {
-    opacity: .4;
-
+    opacity: .35;
     transform:
-      rotate(0)
+      rotate(0deg)
       scale(.8);
   }
 
   to {
     opacity: 1;
-
     transform:
       rotate(360deg)
       scale(1);
   }
-
 }
 
 .loader-line {
   height: 3px;
-
-  margin-top: 25px;
+  margin-top: 26px;
 
   overflow: hidden;
 
-  border-radius: 10px;
+  border-radius: 999px;
 
   background:
     rgba(255,255,255,.08);
@@ -158,16 +164,17 @@ button {
       #7ac8ff
     );
 
+  box-shadow:
+    0 0 16px rgba(49,156,255,.45);
+
   animation:
-    loading 2.1s forwards;
+    loading 2.1s ease forwards;
 }
 
 @keyframes loading {
-
   to {
     width: 100%;
   }
-
 }
 
 .loader-inner p {
@@ -182,7 +189,9 @@ button {
 }
 
 
-/* APP */
+/* =========================================
+   APP
+========================================= */
 
 .app {
   width: 100%;
@@ -192,9 +201,9 @@ button {
 
   margin: auto;
 
-  padding-bottom: 105px;
+  padding-bottom: 108px;
 
-  transition: opacity .4s;
+  transition: opacity .4s ease;
 }
 
 .app-hidden {
@@ -202,11 +211,14 @@ button {
 }
 
 
-/* HEADER */
+/* =========================================
+   HEADER
+========================================= */
 
 .header {
   position: sticky;
   top: 0;
+
   z-index: 500;
 
   display: flex;
@@ -222,10 +234,10 @@ button {
     1px solid var(--border);
 
   background:
-    rgba(5,8,12,.92);
+    rgba(5,8,12,.90);
 
-  backdrop-filter: blur(25px);
-  -webkit-backdrop-filter: blur(25px);
+  backdrop-filter: blur(26px);
+  -webkit-backdrop-filter: blur(26px);
 }
 
 .brand {
@@ -235,11 +247,16 @@ button {
 }
 
 .brand-logo {
-  width: 45px;
-  height: 45px;
+  width: 46px;
+  height: 46px;
+
+  flex-shrink: 0;
 
   border-radius: 50%;
   object-fit: cover;
+
+  box-shadow:
+    0 0 18px rgba(49,156,255,.16);
 }
 
 .brand div {
@@ -249,8 +266,11 @@ button {
 
 .brand small {
   color: var(--grey);
+
   font-size: 8px;
-  letter-spacing: 1.5px;
+  font-weight: 800;
+
+  letter-spacing: 1.6px;
 }
 
 .brand strong {
@@ -275,12 +295,12 @@ button {
 
 .header-status.open {
   color: var(--green);
-  background: rgba(89,220,145,.1);
+  background: rgba(89,220,145,.10);
 }
 
 .header-status.closed {
   color: var(--red);
-  background: rgba(255,105,111,.1);
+  background: rgba(255,105,111,.10);
 }
 
 .cart-button {
@@ -290,35 +310,47 @@ button {
   height: 44px;
 
   border: 1px solid var(--border);
-
   border-radius: 15px;
 
-  background: var(--card);
+  background:
+    linear-gradient(
+      145deg,
+      #171c25,
+      #0e1218
+    );
 
   color: white;
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.15);
 }
 
 .cart-button b {
   position: absolute;
-
-  right: -5px;
   top: -5px;
+  right: -5px;
 
-  width: 19px;
+  min-width: 19px;
   height: 19px;
+
+  padding: 0 5px;
 
   display: grid;
   place-items: center;
 
-  border-radius: 50%;
+  border-radius: 50px;
 
   background: var(--blue);
+
+  color: white;
 
   font-size: 9px;
 }
 
 
-/* PAGES */
+/* =========================================
+   PAGES
+========================================= */
 
 .page {
   display: none;
@@ -333,19 +365,25 @@ button {
 
 .page.active {
   display: block;
+  animation: pageIn .25s ease;
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 
-/* CATALOGUE */
-
-.catalogue-title {
-  display: flex;
-
-  justify-content: space-between;
-  align-items: flex-end;
-
-  margin-bottom: 15px;
-}
+/* =========================================
+   TITRES
+========================================= */
 
 .blue-label {
   color: var(--blue);
@@ -356,20 +394,43 @@ button {
   letter-spacing: 1.8px;
 }
 
-.catalogue-title h1 {
+.catalogue-title {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  margin-bottom: 15px;
+}
+
+.catalogue-title h1,
+.page-title h2 {
   margin-top: 4px;
 
   font-size: 36px;
+  line-height: 1;
 
   letter-spacing: -1.5px;
+}
+
+.page-title {
+  margin-bottom: 18px;
+}
+
+.page-title p {
+  max-width: 420px;
+
+  margin-top: 8px;
+
+  color: var(--grey);
+
+  font-size: 12px;
+  line-height: 1.5;
 }
 
 .product-count {
   padding: 8px 11px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 14px;
 
   background: var(--card);
@@ -391,6 +452,11 @@ button {
   font-size: 8px;
 }
 
+
+/* =========================================
+   RECHERCHE
+========================================= */
+
 .search {
   height: 46px;
 
@@ -400,20 +466,23 @@ button {
   gap: 9px;
 
   margin-bottom: 14px;
+  padding: 0 13px;
 
-  padding:
-    0 13px;
-
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 16px;
 
-  background: #10141b;
+  background: rgba(16,20,27,.96);
+}
+
+.search span {
+  color: var(--grey);
+  font-size: 18px;
 }
 
 .search input {
   flex: 1;
+
+  min-width: 0;
 
   border: none;
   outline: none;
@@ -421,10 +490,18 @@ button {
   background: transparent;
 
   color: white;
+
+  font-size: 14px;
+}
+
+.search input::placeholder {
+  color: #636a74;
 }
 
 
-/* PRODUITS */
+/* =========================================
+   PRODUITS
+========================================= */
 
 .products {
   display: grid;
@@ -437,22 +514,30 @@ button {
 
 .product-card {
   min-width: 0;
-
   overflow: hidden;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 22px;
 
   background:
     linear-gradient(
       145deg,
-      #151a23,
-      #0c0f14
+      rgba(21,26,35,.98),
+      rgba(12,15,20,.98)
     );
 
+  box-shadow:
+    0 14px 32px rgba(0,0,0,.16);
+
   cursor: pointer;
+
+  transition:
+    transform .18s ease,
+    border-color .18s ease;
+}
+
+.product-card:active {
+  transform: scale(.985);
 }
 
 .product-image {
@@ -492,26 +577,31 @@ button {
   border-radius: 50%;
 
   object-fit: cover;
+
+  box-shadow:
+    0 0 26px rgba(49,156,255,.20);
 }
 
 .multi-photo-badge {
   position: absolute;
-
   top: 9px;
   right: 9px;
 
   padding: 5px 8px;
 
+  border: 1px solid rgba(255,255,255,.08);
   border-radius: 20px;
 
   background:
-    rgba(0,0,0,.6);
+    rgba(4,6,9,.70);
 
   color: white;
 
   font-size: 9px;
+  font-weight: 800;
 
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .product-body {
@@ -528,13 +618,17 @@ button {
 .product-body strong {
   display: block;
 
-  margin-top: 6px;
+  margin-top: 7px;
 
   color: var(--blue2);
+
+  font-size: 16px;
 }
 
 
-/* DETAIL PRODUIT */
+/* =========================================
+   FICHE PRODUIT
+========================================= */
 
 .back {
   margin-bottom: 14px;
@@ -544,27 +638,35 @@ button {
   background: transparent;
 
   color: var(--blue2);
+
+  font-size: 13px;
 }
 
 .detail-card {
   overflow: hidden;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 27px;
 
-  background: var(--card);
+  background:
+    linear-gradient(
+      145deg,
+      #121720,
+      #0d1117
+    );
+
+  box-shadow: var(--shadow);
 }
 
 
-/* GALERIE */
+/* =========================================
+   GALERIE
+========================================= */
 
 .detail-gallery {
   position: relative;
 
   width: 100%;
-
   aspect-ratio: 1 / 1.05;
 
   overflow: hidden;
@@ -576,8 +678,7 @@ button {
       #090c11 70%
     );
 
-  touch-action:
-    pan-y;
+  touch-action: pan-y;
 }
 
 .detail-slides {
@@ -587,7 +688,7 @@ button {
   height: 100%;
 
   transition:
-    transform .3s ease;
+    transform .32s cubic-bezier(.4,0,.2,1);
 }
 
 .detail-slide {
@@ -623,33 +724,34 @@ button {
 
 .gallery-arrow {
   position: absolute;
-
   top: 50%;
 
-  transform:
-    translateY(-50%);
+  transform: translateY(-50%);
 
   z-index: 5;
 
-  width: 39px;
-  height: 39px;
+  width: 40px;
+  height: 40px;
 
   display: grid;
   place-items: center;
 
-  border:
-    1px solid rgba(255,255,255,.1);
-
+  border: 1px solid rgba(255,255,255,.12);
   border-radius: 50%;
 
   background:
-    rgba(6,8,12,.6);
+    rgba(5,7,10,.62);
 
   color: white;
 
-  font-size: 26px;
+  font-size: 27px;
+  line-height: 1;
 
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,.18);
 }
 
 .gallery-prev {
@@ -662,26 +764,27 @@ button {
 
 .gallery-counter {
   position: absolute;
-
   right: 12px;
   bottom: 12px;
 
   padding: 6px 9px;
 
+  border: 1px solid rgba(255,255,255,.08);
   border-radius: 20px;
 
   background:
-    rgba(0,0,0,.62);
+    rgba(0,0,0,.60);
 
   color: white;
 
   font-size: 9px;
+  font-weight: 750;
 
   backdrop-filter: blur(10px);
 }
 
 .gallery-dots {
-  min-height: 27px;
+  min-height: 29px;
 
   display: flex;
   align-items: center;
@@ -689,25 +792,26 @@ button {
 
   gap: 6px;
 
-  padding:
-    9px 10px;
+  padding: 9px 10px;
 
-  background:
-    #0e1218;
+  background: #0e1218;
 }
 
 .gallery-dot {
   width: 6px;
   height: 6px;
 
-  border: none;
+  padding: 0;
 
+  border: none;
   border-radius: 50%;
 
   background:
     rgba(255,255,255,.22);
 
-  transition: .2s;
+  transition:
+    width .2s ease,
+    background .2s ease;
 }
 
 .gallery-dot.active {
@@ -718,6 +822,11 @@ button {
   background: var(--blue);
 }
 
+
+/* =========================================
+   DETAIL BODY
+========================================= */
+
 .detail-body {
   padding: 20px;
 }
@@ -726,6 +835,9 @@ button {
   margin-top: 6px;
 
   font-size: 28px;
+  line-height: 1.08;
+
+  letter-spacing: -.8px;
 }
 
 .detail-price {
@@ -755,17 +867,19 @@ button {
 
   color: var(--grey);
 
-  line-height: 1.6;
+  font-size: 13px;
+  line-height: 1.65;
 
   white-space: pre-line;
 }
 
 
-/* TAILLES */
+/* =========================================
+   TAILLES
+========================================= */
 
 .size-title-row {
   display: flex;
-
   align-items: center;
   justify-content: space-between;
 
@@ -792,9 +906,7 @@ button {
 .size-button {
   min-height: 46px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 13px;
 
   background: #0b0f15;
@@ -802,6 +914,9 @@ button {
   color: white;
 
   font-weight: 800;
+
+  transition:
+    .18s ease;
 }
 
 .size-button.available {
@@ -816,46 +931,65 @@ button {
     rgba(49,156,255,.15);
 
   color: var(--blue2);
+
+  box-shadow:
+    0 0 0 1px rgba(49,156,255,.10);
 }
 
 .size-button.unavailable {
   opacity: .35;
 
-  text-decoration:
-    line-through;
+  text-decoration: line-through;
 
   cursor: not-allowed;
 }
 
 .size-button.unique {
-  grid-column:
-    span 2;
+  grid-column: span 2;
 }
 
 
-/* PANIER */
+/* =========================================
+   BOUTONS PRINCIPAUX
+========================================= */
 
-.page-title {
-  margin-bottom: 18px;
+.primary {
+  width: 100%;
+  min-height: 47px;
+
+  margin-top: 13px;
+
+  border: none;
+  border-radius: 13px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #168bff,
+      #59b5ff
+    );
+
+  color: white;
+
+  font-size: 13px;
+  font-weight: 850;
+
+  box-shadow:
+    0 10px 26px rgba(49,156,255,.16);
+
+  transition:
+    transform .15s ease,
+    opacity .15s ease;
 }
 
-.page-title h2 {
-  margin-top: 5px;
-
-  font-size: 34px;
+.primary:active {
+  transform: scale(.985);
 }
 
-.page-title p {
-  max-width: 400px;
 
-  margin-top: 7px;
-
-  color: var(--grey);
-
-  font-size: 12px;
-
-  line-height: 1.45;
-}
+/* =========================================
+   PANIER
+========================================= */
 
 .cart-items {
   width: 100%;
@@ -873,12 +1007,16 @@ button {
 
   text-align: center;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 22px;
 
-  background: var(--card);
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(49,156,255,.10),
+      transparent 50%
+    ),
+    var(--card);
 }
 
 .empty-cart img {
@@ -887,6 +1025,8 @@ button {
 
   max-width: 70px !important;
 
+  display: block;
+
   margin:
     0 auto
     12px;
@@ -894,6 +1034,21 @@ button {
   border-radius: 50%;
 
   object-fit: cover;
+
+  box-shadow:
+    0 0 22px rgba(49,156,255,.18);
+}
+
+.empty-cart h3 {
+  font-size: 17px;
+}
+
+.empty-cart p {
+  margin-top: 6px;
+
+  color: var(--grey);
+
+  font-size: 11px;
 }
 
 .cart-item {
@@ -910,9 +1065,7 @@ button {
 
   padding: 10px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 18px;
 
   background: var(--card);
@@ -943,7 +1096,12 @@ button {
 .cart-product strong {
   display: block;
 
+  overflow: hidden;
+
   font-size: 13px;
+
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .cart-product p {
@@ -952,6 +1110,7 @@ button {
   color: var(--grey);
 
   font-size: 10px;
+  line-height: 1.4;
 }
 
 .cart-size {
@@ -965,17 +1124,20 @@ button {
   height: 34px;
 
   border: none;
-
   border-radius: 50%;
 
   background:
     rgba(255,255,255,.06);
 
   color: white;
+
+  font-size: 18px;
 }
 
 
-/* PANELS */
+/* =========================================
+   PANELS CHECKOUT
+========================================= */
 
 .panel {
   width: 100%;
@@ -984,9 +1146,7 @@ button {
 
   padding: 15px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 20px;
 
   background: var(--card);
@@ -1011,7 +1171,7 @@ button {
 
 .mode-button {
   width: 100%;
-
+  min-width: 0;
   min-height: 70px;
 
   display: flex;
@@ -1021,9 +1181,7 @@ button {
 
   padding: 10px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 15px;
 
   background: #0c1016;
@@ -1035,13 +1193,19 @@ button {
 
 .mode-button.active {
   border-color:
-    rgba(49,156,255,.7);
+    rgba(49,156,255,.70);
 
   background:
     rgba(49,156,255,.09);
 }
 
+.mode-button > span {
+  font-size: 20px;
+}
+
 .mode-button div {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
 }
@@ -1081,9 +1245,7 @@ button {
 
   padding: 10px 12px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 12px;
 
   outline: none;
@@ -1093,6 +1255,21 @@ button {
   color: white;
 
   font-size: 14px;
+
+  transition:
+    border-color .18s ease,
+    box-shadow .18s ease;
+}
+
+.panel input:focus,
+.panel select:focus,
+.admin-card input:focus,
+.admin-card textarea:focus {
+  border-color:
+    rgba(49,156,255,.60);
+
+  box-shadow:
+    0 0 0 3px rgba(49,156,255,.06);
 }
 
 .admin-card textarea {
@@ -1107,7 +1284,6 @@ button {
 
 .price-row {
   display: flex;
-
   justify-content: space-between;
 
   gap: 15px;
@@ -1124,9 +1300,7 @@ button {
 }
 
 .delivery-info {
-  margin:
-    8px 0;
-
+  margin: 8px 0;
   padding: 9px;
 
   border-radius: 10px;
@@ -1137,13 +1311,11 @@ button {
   color: var(--blue2);
 
   font-size: 9px;
-
   line-height: 1.5;
 }
 
 .price-row.total {
   margin-top: 5px;
-
   padding-top: 13px;
 
   border-top:
@@ -1158,31 +1330,10 @@ button {
   color: var(--blue2);
 }
 
-.primary {
-  width: 100%;
 
-  min-height: 46px;
-
-  margin-top: 13px;
-
-  border: none;
-
-  border-radius: 13px;
-
-  background:
-    linear-gradient(
-      135deg,
-      #168bff,
-      #59b5ff
-    );
-
-  color: white;
-
-  font-weight: 800;
-}
-
-
-/* CONTACT */
+/* =========================================
+   CONTACT
+========================================= */
 
 .contacts {
   display: grid;
@@ -1198,9 +1349,7 @@ button {
 
   padding: 13px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 18px;
 
   background: var(--card);
@@ -1239,6 +1388,8 @@ button {
 }
 
 .contact-card > div:last-child {
+  min-width: 0;
+
   display: flex;
   flex-direction: column;
 }
@@ -1251,10 +1402,14 @@ button {
 
 .contact-card strong {
   margin-top: 3px;
+
+  overflow-wrap: anywhere;
 }
 
 
-/* INFOS */
+/* =========================================
+   INFOS
+========================================= */
 
 .status-card {
   display: grid;
@@ -1267,12 +1422,9 @@ button {
   gap: 11px;
 
   margin-bottom: 9px;
-
   padding: 13px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 18px;
 
   background: var(--card);
@@ -1313,33 +1465,34 @@ button {
   border-radius: 20px;
 
   font-size: 7px;
+  font-weight: 900;
 }
 
 .badge.available {
   color: var(--green);
 
   background:
-    rgba(89,220,145,.1);
+    rgba(89,220,145,.10);
 }
 
 .badge.unavailable {
   color: var(--red);
 
   background:
-    rgba(255,105,111,.1);
+    rgba(255,105,111,.10);
 }
 
 
-/* ADMIN */
+/* =========================================
+   ADMIN
+========================================= */
 
 .admin-card {
   margin-bottom: 11px;
 
   padding: 15px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 20px;
 
   background: var(--card);
@@ -1347,6 +1500,8 @@ button {
 
 .admin-card h3 {
   margin-bottom: 10px;
+
+  font-size: 17px;
 }
 
 .admin-card p {
@@ -1360,7 +1515,7 @@ button {
 .admin-help {
   color: var(--blue2) !important;
 
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .admin-actions {
@@ -1378,18 +1533,19 @@ button {
   min-height: 38px;
 
   border: none;
-
   border-radius: 11px;
 
   background:
-    rgba(89,220,145,.1);
+    rgba(89,220,145,.10);
 
   color: var(--green);
+
+  font-weight: 800;
 }
 
 .admin-actions button.red {
   background:
-    rgba(255,105,111,.1);
+    rgba(255,105,111,.10);
 
   color: var(--red);
 }
@@ -1399,9 +1555,7 @@ button {
 
   padding: 12px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 15px;
 
   background: #0c0f14;
@@ -1409,24 +1563,31 @@ button {
 
 .admin-product-header {
   display: flex;
-
+  align-items: center;
   justify-content: space-between;
 
-  align-items: center;
+  gap: 10px;
+}
+
+.admin-product-header strong {
+  font-size: 13px;
 }
 
 .admin-delete {
   width: 32px;
   height: 32px;
 
-  border: none;
+  flex-shrink: 0;
 
+  border: none;
   border-radius: 50%;
 
   background:
-    rgba(255,105,111,.1);
+    rgba(255,105,111,.10);
 
   color: var(--red);
+
+  font-size: 18px;
 }
 
 .admin-gallery-preview {
@@ -1435,10 +1596,15 @@ button {
   gap: 7px;
 
   margin-top: 9px;
+  padding-bottom: 4px;
 
   overflow-x: auto;
 
-  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.admin-gallery-preview::-webkit-scrollbar {
+  display: none;
 }
 
 .admin-gallery-preview img {
@@ -1447,22 +1613,23 @@ button {
 
   flex-shrink: 0;
 
+  border: 1px solid var(--border);
   border-radius: 10px;
 
   object-fit: cover;
-
-  border:
-    1px solid var(--border);
 }
+
+
+/* =========================================
+   ADMIN TAILLES
+========================================= */
 
 .admin-size-box {
   margin-top: 16px;
 
   padding: 13px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 14px;
 
   background:
@@ -1477,12 +1644,10 @@ button {
 
 .toggle-line {
   display: flex !important;
-
   align-items: center;
   justify-content: space-between;
 
   margin: 0 !important;
-
   padding: 10px 0;
 
   border-bottom:
@@ -1493,10 +1658,15 @@ button {
   font-size: 12px !important;
 }
 
+.toggle-line:last-of-type {
+  border-bottom: none;
+}
+
 .toggle-line input {
   width: 20px !important;
-
   min-height: 20px !important;
+
+  padding: 0 !important;
 
   accent-color: var(--blue);
 }
@@ -1515,9 +1685,7 @@ button {
 .admin-size-option {
   padding: 8px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 11px;
 
   background: #090c11;
@@ -1535,14 +1703,17 @@ button {
 
 .admin-size-option input {
   width: 18px !important;
-
   min-height: 18px !important;
+
+  padding: 0 !important;
 
   accent-color: var(--blue);
 }
 
 
-/* NAV */
+/* =========================================
+   NAVIGATION BAS
+========================================= */
 
 .bottom-nav {
   position: fixed;
@@ -1574,9 +1745,7 @@ button {
 
   padding: 6px;
 
-  border:
-    1px solid var(--border);
-
+  border: 1px solid var(--border);
   border-radius: 22px;
 
   background:
@@ -1584,15 +1753,16 @@ button {
 
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
+
+  box-shadow:
+    0 18px 50px rgba(0,0,0,.42);
 }
 
 .nav-item {
   min-width: 0;
-
   min-height: 51px;
 
   border: none;
-
   border-radius: 14px;
 
   background: transparent;
@@ -1620,6 +1790,10 @@ button {
   object-fit: cover;
 
   opacity: .42;
+
+  transition:
+    opacity .18s ease,
+    transform .18s ease;
 }
 
 .nav-item.active {
@@ -1631,8 +1805,14 @@ button {
 
 .nav-item.active img {
   opacity: 1;
+
+  transform: scale(1.08);
 }
 
+
+/* =========================================
+   MOBILE
+========================================= */
 
 @media (max-width: 430px) {
 
@@ -1641,13 +1821,46 @@ button {
     padding-right: 13px;
   }
 
+  .catalogue-title h1,
+  .page-title h2 {
+    font-size: 34px;
+  }
+
   .products {
     gap: 8px;
+  }
+
+  .product-body {
+    padding: 11px;
+  }
+
+  .detail-body {
+    padding: 18px;
   }
 
   .gallery-arrow {
     width: 36px;
     height: 36px;
+
+    font-size: 24px;
   }
 
+  .panel,
+  .admin-card {
+    padding: 13px;
+  }
+
+  .size-options {
+    gap: 6px;
+  }
+
+  .size-button {
+    min-height: 43px;
+  }
+
+  .empty-cart img {
+    width: 64px !important;
+    height: 64px !important;
+    max-width: 64px !important;
+  }
 }
