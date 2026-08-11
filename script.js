@@ -1,10 +1,11 @@
 const LOGO =
   "6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png";
 
-const ADMIN_CODE = "483726";
-const ADMIN_LONG_PRESS_TIME = 1500;
+const ADMIN_CODE =
+  "483726";
 
-const tg = window.Telegram?.WebApp;
+const tg =
+  window.Telegram?.WebApp;
 
 if (tg) {
   try {
@@ -14,55 +15,74 @@ if (tg) {
 }
 
 
+// DONNÉES
+
 const DEFAULT_PRODUCTS = [
   {
     id: 1,
     name: "Produit ShopBassin",
     price: 25,
     description:
-      "Ajoute ici la description de ton produit depuis la partie Gestion.",
+      "Description du produit. Tu peux la modifier dans Gestion.",
     image: ""
   },
-
   {
     id: 2,
     name: "Produit Premium",
     price: 29.90,
     description:
-      "Produit sélectionné par ShopBassin. Modifie cette description dans Gestion.",
+      "Ajoute ici toutes les informations importantes du produit.",
     image: ""
   }
 ];
 
+const DEFAULT_CONTACTS = {
+  snap: "ton_snap",
+  insta: "@instagram",
+  telegram: "@shopbassinstore_bot"
+};
+
 
 let products = [];
 let cart = [];
+let contacts = {};
+
 let shopOpen = true;
 let pickupAvailable = true;
 let deliveryAvailable = true;
+
 let orderMode = "pickup";
+
 let adminUnlocked = false;
-let adminPressTimer = null;
+let adminTimer = null;
 
 
 // LOADER
 
-window.addEventListener("load", function () {
+window.addEventListener(
+  "load",
+  function () {
 
-  setTimeout(function () {
+    setTimeout(
+      function () {
 
-    document
-      .getElementById("loader")
-      ?.classList.add("hide");
+        document
+          .getElementById("loader")
+          ?.classList.add("hide");
 
-    document
-      .getElementById("app")
-      ?.classList.remove("app-loading");
+        document
+          .getElementById("app")
+          ?.classList.remove("app-hidden");
 
-  }, 2200);
+      },
+      2200
+    );
 
-});
+  }
+);
 
+
+// INITIALISATION
 
 document.addEventListener(
   "DOMContentLoaded",
@@ -70,128 +90,33 @@ document.addEventListener(
 
     loadProducts();
     loadCart();
+    loadContacts();
+    loadAvailability();
 
     renderProducts();
     renderCart();
 
+    updateContacts();
+    updateAvailability();
+
     updateCartCount();
     updateOrderMode();
 
-    setupSecretAdmin();
+    setupAdmin();
 
   }
 );
 
 
-// ADMIN APPUI LONG
-
-function setupSecretAdmin() {
-
-  const logo =
-    document.getElementById(
-      "admin-secret-trigger"
-    );
-
-  if (!logo) return;
-
-
-  logo.addEventListener(
-    "touchstart",
-    function () {
-
-      clearTimeout(adminPressTimer);
-
-      adminPressTimer =
-        setTimeout(
-          openAdmin,
-          ADMIN_LONG_PRESS_TIME
-        );
-
-    }
-  );
-
-
-  logo.addEventListener(
-    "touchend",
-    cancelAdminPress
-  );
-
-
-  logo.addEventListener(
-    "touchmove",
-    cancelAdminPress
-  );
-
-
-  logo.addEventListener(
-    "mousedown",
-    function () {
-
-      clearTimeout(adminPressTimer);
-
-      adminPressTimer =
-        setTimeout(
-          openAdmin,
-          ADMIN_LONG_PRESS_TIME
-        );
-
-    }
-  );
-
-
-  logo.addEventListener(
-    "mouseup",
-    cancelAdminPress
-  );
-
-}
-
-
-function cancelAdminPress() {
-
-  clearTimeout(
-    adminPressTimer
-  );
-
-}
-
-
-function openAdmin() {
-
-  if (!adminUnlocked) {
-
-    const code =
-      prompt(
-        "Code administrateur ShopBassin"
-      );
-
-    if (code !== ADMIN_CODE) {
-
-      alert(
-        "Code incorrect."
-      );
-
-      return;
-    }
-
-    adminUnlocked = true;
-
-  }
-
-
-  renderAdminProducts();
-
-  showPage("gestion");
-
-}
-
-
 // NAVIGATION
 
-function showPage(pageId, button = null) {
+function showPage(
+  id,
+  button = null
+) {
 
   if (
-    pageId === "gestion" &&
+    id === "gestion" &&
     !adminUnlocked
   ) {
     return;
@@ -207,15 +132,15 @@ function showPage(pageId, button = null) {
 
 
   document
-    .getElementById(pageId)
+    .getElementById(id)
     ?.classList.add("active");
 
 
   document
-    .querySelectorAll(".nav-button")
+    .querySelectorAll(".nav-item")
     .forEach(
-      nav =>
-        nav.classList.remove("active")
+      button =>
+        button.classList.remove("active")
     );
 
 
@@ -224,8 +149,14 @@ function showPage(pageId, button = null) {
   }
 
 
-  if (pageId === "panier") {
+  if (id === "panier") {
     renderCart();
+  }
+
+
+  if (id === "gestion") {
+    fillAdminContacts();
+    renderAdminProducts();
   }
 
 
@@ -237,23 +168,138 @@ function showPage(pageId, button = null) {
 }
 
 
+// ADMIN APPUI LONG
+
+function setupAdmin() {
+
+  const logo =
+    document.getElementById(
+      "admin-trigger"
+    );
+
+  if (!logo) return;
+
+
+  logo.style.webkitTouchCallout =
+    "none";
+
+  logo.style.userSelect =
+    "none";
+
+
+  const start =
+    function () {
+
+      clearTimeout(adminTimer);
+
+      adminTimer =
+        setTimeout(
+          openAdmin,
+          1500
+        );
+
+    };
+
+
+  const stop =
+    function () {
+
+      clearTimeout(adminTimer);
+
+    };
+
+
+  logo.addEventListener(
+    "touchstart",
+    start,
+    {
+      passive: true
+    }
+  );
+
+  logo.addEventListener(
+    "touchend",
+    stop
+  );
+
+  logo.addEventListener(
+    "touchmove",
+    stop
+  );
+
+  logo.addEventListener(
+    "touchcancel",
+    stop
+  );
+
+  logo.addEventListener(
+    "mousedown",
+    start
+  );
+
+  logo.addEventListener(
+    "mouseup",
+    stop
+  );
+
+  logo.addEventListener(
+    "mouseleave",
+    stop
+  );
+
+}
+
+
+function openAdmin() {
+
+  if (!adminUnlocked) {
+
+    const code =
+      prompt(
+        "Code administrateur"
+      );
+
+
+    if (
+      code !== ADMIN_CODE
+    ) {
+
+      alert(
+        "Code incorrect."
+      );
+
+      return;
+    }
+
+
+    adminUnlocked = true;
+
+  }
+
+
+  showPage("gestion");
+
+}
+
+
 // PRODUITS
 
 function loadProducts() {
 
   try {
 
-    products =
-      JSON.parse(
-        localStorage.getItem(
-          "sb-products-v2"
-        )
-      ) ||
-      JSON.parse(
-        JSON.stringify(
-          DEFAULT_PRODUCTS
-        )
+    const saved =
+      localStorage.getItem(
+        "shopbassin-products-final"
       );
+
+
+    products =
+      saved
+        ? JSON.parse(saved)
+        : structuredClone(
+            DEFAULT_PRODUCTS
+          );
 
   } catch {
 
@@ -267,14 +313,13 @@ function loadProducts() {
   }
 
 
-  // ajoute description aux anciens produits
   products =
     products.map(
       product => ({
         ...product,
         description:
           product.description ||
-          "Aucune description pour le moment."
+          "Aucune description."
       })
     );
 
@@ -283,10 +328,21 @@ function loadProducts() {
 
 function saveProducts() {
 
-  localStorage.setItem(
-    "sb-products-v2",
-    JSON.stringify(products)
-  );
+  try {
+
+    localStorage.setItem(
+      "shopbassin-products-final",
+      JSON.stringify(products)
+    );
+
+  } catch {
+
+    alert(
+      "Impossible d'enregistrer. Essaie avec une photo moins lourde."
+    );
+
+  }
+
 
   renderProducts();
   renderAdminProducts();
@@ -298,7 +354,7 @@ function renderProducts() {
 
   const container =
     document.getElementById(
-      "products-container"
+      "products"
     );
 
   if (!container) return;
@@ -307,11 +363,12 @@ function renderProducts() {
   const search =
     (
       document
-        .getElementById("product-search")
+        .getElementById(
+          "search-input"
+        )
         ?.value || ""
     )
-      .toLowerCase()
-      .trim();
+    .toLowerCase();
 
 
   const filtered =
@@ -323,30 +380,24 @@ function renderProducts() {
     );
 
 
-  const counter =
-    document.getElementById(
-      "product-count"
-    );
-
-  if (counter) {
-    counter.textContent =
-      products.length;
-  }
+  setText(
+    "product-count",
+    products.length
+  );
 
 
   container.innerHTML =
     filtered.map(
-      product => {
+      function (product) {
 
         const image =
           product.image ||
-          `./${LOGO}`;
-
+          LOGO;
 
         const placeholder =
           product.image
             ? ""
-            : "product-placeholder";
+            : "placeholder";
 
 
         return `
@@ -361,24 +412,22 @@ function renderProducts() {
               <img
                 src="${image}"
                 class="${placeholder}"
-                alt="${escapeHTML(product.name)}"
-                onerror="this.src='./${LOGO}'"
+                alt=""
+                onerror="this.src='${LOGO}'"
               >
 
             </div>
 
 
-            <div class="product-info">
+            <div class="product-body">
 
               <h3>
                 ${escapeHTML(product.name)}
               </h3>
 
-              <div class="product-price">
-
+              <strong>
                 ${formatPrice(product.price)}
-
-              </div>
+              </strong>
 
             </div>
 
@@ -392,7 +441,7 @@ function renderProducts() {
 }
 
 
-// OUVRIR FICHE PRODUIT
+// FICHE PRODUIT
 
 function openProduct(id) {
 
@@ -408,49 +457,46 @@ function openProduct(id) {
 
   const image =
     product.image ||
-    `./${LOGO}`;
+    LOGO;
 
 
   document
     .getElementById(
-      "detail-product-image"
-    )
-    .src = image;
+      "detail-image"
+    ).src = image;
 
 
   setText(
-    "detail-product-name",
+    "detail-name",
     product.name
   );
 
 
   setText(
-    "detail-product-price",
+    "detail-price",
     formatPrice(product.price)
   );
 
 
   setText(
-    "detail-product-description",
+    "detail-description",
     product.description
   );
 
 
   const button =
     document.getElementById(
-      "detail-add-button"
+      "detail-add"
     );
 
 
   button.onclick =
     function () {
 
-      addToCart(
-        product.id
-      );
+      addToCart(id);
 
       alert(
-        "Produit ajouté au panier ✅"
+        "Ajouté au panier ✅"
       );
 
     };
@@ -470,7 +516,7 @@ function loadCart() {
     cart =
       JSON.parse(
         localStorage.getItem(
-          "sb-cart"
+          "shopbassin-cart"
         )
       ) || [];
 
@@ -486,9 +532,10 @@ function loadCart() {
 function saveCart() {
 
   localStorage.setItem(
-    "sb-cart",
+    "shopbassin-cart",
     JSON.stringify(cart)
   );
+
 
   updateCartCount();
 
@@ -503,6 +550,7 @@ function addToCart(id) {
         product.id === id
     );
 
+
   if (!product) return;
 
 
@@ -514,11 +562,16 @@ function addToCart(id) {
 
 
   if (existing) {
+
     existing.quantity++;
+
   } else {
 
     cart.push({
-      ...product,
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      image: product.image,
       quantity: 1
     });
 
@@ -538,11 +591,14 @@ function removeFromCart(id) {
         item.id === id
     );
 
+
   if (!item) return;
 
 
   if (item.quantity > 1) {
+
     item.quantity--;
+
   } else {
 
     cart =
@@ -562,21 +618,19 @@ function removeFromCart(id) {
 
 function updateCartCount() {
 
-  const counter =
-    document.getElementById(
-      "cart-count"
-    );
-
-  if (!counter) return;
-
-
-  counter.textContent =
+  const count =
     cart.reduce(
-      (total, item) =>
+      (total,item) =>
         total +
         item.quantity,
       0
     );
+
+
+  setText(
+    "cart-count",
+    count
+  );
 
 }
 
@@ -588,23 +642,28 @@ function renderCart() {
       "cart-items"
     );
 
+
   if (!container) return;
 
 
-  if (!cart.length) {
+  if (cart.length === 0) {
 
     container.innerHTML = `
 
       <div class="empty-cart">
 
         <img
-          src="./${LOGO}"
+          src="${LOGO}"
           alt=""
         >
 
         <h3>
           Panier vide
         </h3>
+
+        <p>
+          Ajoute un produit depuis le catalogue.
+        </p>
 
       </div>
 
@@ -621,13 +680,15 @@ function renderCart() {
             <div class="cart-thumb">
 
               <img
-                src="${item.image || `./${LOGO}`}"
-                onerror="this.src='./${LOGO}'"
+                src="${item.image || LOGO}"
+                alt=""
+                onerror="this.src='${LOGO}'"
               >
 
             </div>
 
-            <div class="cart-info">
+
+            <div class="cart-product">
 
               <strong>
                 ${escapeHTML(item.name)}
@@ -641,8 +702,9 @@ function renderCart() {
 
             </div>
 
+
             <button
-              class="remove-button"
+              class="remove"
               onclick="removeFromCart(${item.id})"
             >
               −
@@ -678,13 +740,15 @@ function updateOrderMode() {
 
   const pickup =
     document.getElementById(
-      "pickup-choice"
+      "pickup-mode"
     );
+
 
   const delivery =
     document.getElementById(
-      "delivery-choice"
+      "delivery-mode"
     );
+
 
   const fields =
     document.getElementById(
@@ -692,13 +756,20 @@ function updateOrderMode() {
     );
 
 
-  pickup?.classList.remove("active");
-  delivery?.classList.remove("active");
+  pickup
+    ?.classList.remove("active");
+
+  delivery
+    ?.classList.remove("active");
 
 
-  if (orderMode === "pickup") {
+  if (
+    orderMode === "pickup"
+  ) {
 
-    pickup?.classList.add("active");
+    pickup
+      ?.classList.add("active");
+
 
     if (fields) {
       fields.style.display =
@@ -707,7 +778,9 @@ function updateOrderMode() {
 
   } else {
 
-    delivery?.classList.add("active");
+    delivery
+      ?.classList.add("active");
+
 
     if (fields) {
       fields.style.display =
@@ -719,10 +792,12 @@ function updateOrderMode() {
 }
 
 
+// PRIX
+
 function getSubtotal() {
 
   return cart.reduce(
-    (total, item) =>
+    (total,item) =>
       total +
       item.price *
       item.quantity,
@@ -749,9 +824,14 @@ function getDeliveryPrice() {
       ?.value;
 
 
-  return city === "outside"
-    ? 10
-    : 5;
+  if (
+    city === "outside"
+  ) {
+    return 10;
+  }
+
+
+  return 5;
 
 }
 
@@ -761,28 +841,553 @@ function updateTotals() {
   const subtotal =
     getSubtotal();
 
+
   const delivery =
     cart.length
       ? getDeliveryPrice()
       : 0;
+
 
   const total =
     subtotal + delivery;
 
 
   setText(
-    "cart-subtotal",
+    "subtotal",
     formatPrice(subtotal)
   );
+
 
   setText(
     "delivery-price",
     formatPrice(delivery)
   );
 
+
   setText(
-    "cart-total",
+    "total",
     formatPrice(total)
+  );
+
+}
+
+
+// COMMANDE
+
+async function prepareOrder() {
+
+  if (!shopOpen) {
+
+    alert(
+      "ShopBassin est fermé."
+    );
+
+    return;
+  }
+
+
+  if (!cart.length) {
+
+    alert(
+      "Ton panier est vide."
+    );
+
+    return;
+  }
+
+
+  if (
+    orderMode === "pickup" &&
+    !pickupAvailable
+  ) {
+
+    alert(
+      "Le retrait sur place est indisponible."
+    );
+
+    return;
+  }
+
+
+  if (
+    orderMode === "delivery" &&
+    !deliveryAvailable
+  ) {
+
+    alert(
+      "La livraison est indisponible."
+    );
+
+    return;
+  }
+
+
+  const name =
+    valueOf("customer-name");
+
+
+  const phone =
+    valueOf("customer-phone");
+
+
+  if (!name || !phone) {
+
+    alert(
+      "Entre ton nom et ton téléphone."
+    );
+
+    return;
+  }
+
+
+  let cityName = "";
+  let address = "";
+
+
+  if (
+    orderMode === "delivery"
+  ) {
+
+    const city =
+      document
+        .getElementById(
+          "delivery-city"
+        )
+        ?.value;
+
+
+    const cityNames = {
+      arcachon: "Arcachon",
+      lateste: "La Teste-de-Buch",
+      gujan: "Gujan-Mestras",
+      outside: "Plus loin"
+    };
+
+
+    cityName =
+      cityNames[city] ||
+      city;
+
+
+    address =
+      valueOf(
+        "delivery-address"
+      );
+
+
+    const extra =
+      valueOf(
+        "delivery-extra"
+      );
+
+
+    if (!address) {
+
+      alert(
+        "Entre ton adresse."
+      );
+
+      return;
+    }
+
+
+    if (extra) {
+      address +=
+        " — " +
+        extra;
+    }
+
+  }
+
+
+  const subtotal =
+    getSubtotal();
+
+
+  const delivery =
+    getDeliveryPrice();
+
+
+  const total =
+    subtotal + delivery;
+
+
+  let message =
+`🛍 COMMANDE SHOPBASSIN
+
+👤 ${name}
+📞 ${phone}
+
+`;
+
+
+  if (
+    orderMode === "pickup"
+  ) {
+
+    message +=
+`🏠 SUR PLACE À ARCACHON
+
+`;
+
+  } else {
+
+    message +=
+`🚚 LIVRAISON
+📍 ${cityName}
+🏡 ${address}
+
+`;
+
+  }
+
+
+  message +=
+`🛒 PRODUITS
+
+`;
+
+
+  cart.forEach(
+    item => {
+
+      message +=
+`• ${item.name}
+  ${item.quantity} × ${formatPrice(item.price)}
+
+`;
+
+    }
+  );
+
+
+  message +=
+`Sous-total : ${formatPrice(subtotal)}
+Livraison : ${formatPrice(delivery)}
+TOTAL : ${formatPrice(total)}`;
+
+
+  try {
+
+    await navigator.clipboard
+      .writeText(message);
+
+
+    alert(
+      "Commande copiée ✅ Telegram va s'ouvrir."
+    );
+
+
+    openTelegram();
+
+  } catch {
+
+    alert(message);
+
+  }
+
+}
+
+
+function openTelegram() {
+
+  let username =
+    contacts.telegram ||
+    "@shopbassinstore_bot";
+
+
+  username =
+    username.replace("@","");
+
+
+  const url =
+    "https://t.me/" +
+    username;
+
+
+  if (
+    tg &&
+    typeof tg.openTelegramLink ===
+    "function"
+  ) {
+
+    tg.openTelegramLink(url);
+
+  } else {
+
+    window.location.href =
+      url;
+
+  }
+
+}
+
+
+// DISPONIBILITÉ
+
+function loadAvailability() {
+
+  shopOpen =
+    getBool(
+      "sb-open",
+      true
+    );
+
+
+  pickupAvailable =
+    getBool(
+      "sb-pickup",
+      true
+    );
+
+
+  deliveryAvailable =
+    getBool(
+      "sb-delivery",
+      true
+    );
+
+}
+
+
+function getBool(
+  key,
+  defaultValue
+) {
+
+  const value =
+    localStorage.getItem(key);
+
+
+  return value === null
+    ? defaultValue
+    : value === "true";
+
+}
+
+
+function setShopOpen(value) {
+
+  shopOpen = value;
+
+  localStorage.setItem(
+    "sb-open",
+    value
+  );
+
+  updateAvailability();
+
+}
+
+
+function setPickupAvailable(value) {
+
+  pickupAvailable = value;
+
+  localStorage.setItem(
+    "sb-pickup",
+    value
+  );
+
+  updateAvailability();
+
+}
+
+
+function setDeliveryAvailable(value) {
+
+  deliveryAvailable = value;
+
+  localStorage.setItem(
+    "sb-delivery",
+    value
+  );
+
+  updateAvailability();
+
+}
+
+
+function updateAvailability() {
+
+  updateBadge(
+    "shop-status",
+    shopOpen,
+    "OUVERT",
+    "FERMÉ"
+  );
+
+
+  updateBadge(
+    "pickup-status",
+    pickupAvailable,
+    "DISPONIBLE",
+    "INDISPONIBLE"
+  );
+
+
+  updateBadge(
+    "delivery-status",
+    deliveryAvailable,
+    "DISPONIBLE",
+    "INDISPONIBLE"
+  );
+
+
+  const header =
+    document.getElementById(
+      "header-status"
+    );
+
+
+  if (header) {
+
+    header.textContent =
+      shopOpen
+        ? "OUVERT"
+        : "FERMÉ";
+
+
+    header.classList.toggle(
+      "open",
+      shopOpen
+    );
+
+
+    header.classList.toggle(
+      "closed",
+      !shopOpen
+    );
+
+  }
+
+}
+
+
+function updateBadge(
+  id,
+  state,
+  yes,
+  no
+) {
+
+  const element =
+    document.getElementById(id);
+
+
+  if (!element) return;
+
+
+  element.textContent =
+    state
+      ? yes
+      : no;
+
+
+  element.classList.toggle(
+    "available",
+    state
+  );
+
+
+  element.classList.toggle(
+    "unavailable",
+    !state
+  );
+
+}
+
+
+// CONTACTS
+
+function loadContacts() {
+
+  try {
+
+    contacts =
+      JSON.parse(
+        localStorage.getItem(
+          "sb-contacts"
+        )
+      ) ||
+      {...DEFAULT_CONTACTS};
+
+  } catch {
+
+    contacts =
+      {...DEFAULT_CONTACTS};
+
+  }
+
+}
+
+
+function updateContacts() {
+
+  setText(
+    "contact-snap",
+    contacts.snap
+  );
+
+
+  setText(
+    "contact-insta",
+    contacts.insta
+  );
+
+
+  setText(
+    "contact-telegram",
+    contacts.telegram
+  );
+
+}
+
+
+function fillAdminContacts() {
+
+  setValue(
+    "admin-snap",
+    contacts.snap
+  );
+
+
+  setValue(
+    "admin-insta",
+    contacts.insta
+  );
+
+
+  setValue(
+    "admin-telegram",
+    contacts.telegram
+  );
+
+}
+
+
+function saveContacts() {
+
+  contacts = {
+    snap:
+      valueOf("admin-snap"),
+    insta:
+      valueOf("admin-insta"),
+    telegram:
+      valueOf("admin-telegram")
+  };
+
+
+  localStorage.setItem(
+    "sb-contacts",
+    JSON.stringify(contacts)
+  );
+
+
+  updateContacts();
+
+  alert(
+    "Contacts enregistrés ✅"
   );
 
 }
@@ -797,6 +1402,7 @@ function renderAdminProducts() {
       "admin-products"
     );
 
+
   if (!container) return;
 
 
@@ -806,12 +1412,28 @@ function renderAdminProducts() {
 
         <div class="admin-product">
 
+          <div class="admin-product-header">
+
+            <strong>
+              ${escapeHTML(product.name)}
+            </strong>
+
+            <button
+              class="admin-delete"
+              onclick="deleteProduct(${product.id})"
+            >
+              ×
+            </button>
+
+          </div>
+
+
           <label>
             Nom
           </label>
 
           <input
-            id="admin-name-${product.id}"
+            id="name-${product.id}"
             value="${escapeAttribute(product.name)}"
           >
 
@@ -821,7 +1443,7 @@ function renderAdminProducts() {
           </label>
 
           <input
-            id="admin-price-${product.id}"
+            id="price-${product.id}"
             type="number"
             step="0.01"
             value="${product.price}"
@@ -833,24 +1455,16 @@ function renderAdminProducts() {
           </label>
 
           <textarea
-            id="admin-description-${product.id}"
-            class="admin-textarea"
+            id="description-${product.id}"
+            rows="4"
           >${escapeHTML(product.description)}</textarea>
 
 
           <button
-            class="primary-button"
-            onclick="saveAdminProduct(${product.id})"
+            class="primary"
+            onclick="saveProduct(${product.id})"
           >
             Enregistrer
-          </button>
-
-
-          <button
-            class="remove-button"
-            onclick="deleteProduct(${product.id})"
-          >
-            ×
           </button>
 
         </div>
@@ -861,7 +1475,7 @@ function renderAdminProducts() {
 }
 
 
-function saveAdminProduct(id) {
+function saveProduct(id) {
 
   const product =
     products.find(
@@ -869,81 +1483,81 @@ function saveAdminProduct(id) {
         product.id === id
     );
 
+
   if (!product) return;
 
 
-  product.name =
-    document
-      .getElementById(
-        `admin-name-${id}`
-      )
-      ?.value
-      .trim();
-
-
-  product.price =
-    Number(
-      document
-        .getElementById(
-          `admin-price-${id}`
-        )
-        ?.value
+  const name =
+    valueOf(
+      `name-${id}`
     );
 
 
-  product.description =
-    document
-      .getElementById(
-        `admin-description-${id}`
+  const price =
+    Number(
+      valueOf(
+        `price-${id}`
       )
-      ?.value
-      .trim();
+    );
+
+
+  const description =
+    valueOf(
+      `description-${id}`
+    );
+
+
+  if (
+    !name ||
+    !Number.isFinite(price)
+  ) {
+
+    alert(
+      "Nom ou prix incorrect."
+    );
+
+    return;
+  }
+
+
+  product.name = name;
+  product.price = price;
+  product.description =
+    description ||
+    "Aucune description.";
 
 
   saveProducts();
 
+
   alert(
-    "Produit modifié ✅"
+    "Produit enregistré ✅"
   );
 
 }
 
 
-// AJOUT PRODUIT
-
-function addAdminProduct() {
+function addProduct() {
 
   const name =
-    document
-      .getElementById(
-        "new-product-name"
-      )
-      ?.value
-      .trim();
+    valueOf("new-name");
 
 
   const price =
     Number(
-      document
-        .getElementById(
-          "new-product-price"
-        )
-        ?.value
+      valueOf("new-price")
     );
 
 
   const description =
-    document
-      .getElementById(
-        "new-product-description"
-      )
-      ?.value
-      .trim();
+    valueOf(
+      "new-description"
+    );
 
 
   const photoInput =
     document.getElementById(
-      "new-product-photo"
+      "new-photo"
     );
 
 
@@ -957,51 +1571,64 @@ function addAdminProduct() {
     );
 
     return;
-
   }
 
 
-  const createProduct =
+  const finish =
     function (image) {
 
       products.push({
-
         id: Date.now(),
-
         name,
-
         price,
-
         description:
           description ||
           "Aucune description.",
-
         image:
           image || ""
-
       });
 
 
       saveProducts();
 
+
+      setValue(
+        "new-name",
+        ""
+      );
+
+      setValue(
+        "new-price",
+        ""
+      );
+
+      setValue(
+        "new-description",
+        ""
+      );
+
+
+      if (photoInput) {
+        photoInput.value = "";
+      }
+
+
       alert(
         "Produit ajouté ✅"
       );
 
-    };
+  };
 
 
   const file =
-    photoInput
-      ?.files?.[0];
+    photoInput?.files?.[0];
 
 
   if (!file) {
 
-    createProduct("");
+    finish("");
 
     return;
-
   }
 
 
@@ -1011,17 +1638,11 @@ function addAdminProduct() {
 
   reader.onload =
     function () {
-
-      createProduct(
-        reader.result
-      );
-
+      finish(reader.result);
     };
 
 
-  reader.readAsDataURL(
-    file
-  );
+  reader.readAsDataURL(file);
 
 }
 
@@ -1032,9 +1653,7 @@ function deleteProduct(id) {
     !confirm(
       "Supprimer ce produit ?"
     )
-  ) {
-    return;
-  }
+  ) return;
 
 
   products =
@@ -1044,19 +1663,21 @@ function deleteProduct(id) {
     );
 
 
+  cart =
+    cart.filter(
+      item =>
+        item.id !== id
+    );
+
+
   saveProducts();
+  saveCart();
+  renderCart();
 
 }
 
 
-// COMMANDES / HELPERS
-
-function prepareOrder() {
-  alert(
-    "Le système de commande reste identique à ta version actuelle."
-  );
-}
-
+// OUTILS
 
 function formatPrice(price) {
 
@@ -1073,14 +1694,46 @@ function formatPrice(price) {
 }
 
 
-function setText(id, value) {
+function valueOf(id) {
+
+  return (
+    document
+      .getElementById(id)
+      ?.value || ""
+  ).trim();
+
+}
+
+
+function setValue(
+  id,
+  value
+) {
 
   const element =
     document.getElementById(id);
 
+
+  if (element) {
+    element.value =
+      value || "";
+  }
+
+}
+
+
+function setText(
+  id,
+  value
+) {
+
+  const element =
+    document.getElementById(id);
+
+
   if (element) {
     element.textContent =
-      value || "";
+      value ?? "";
   }
 
 }
@@ -1089,11 +1742,11 @@ function setText(id, value) {
 function escapeHTML(value) {
 
   return String(value || "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
 
 }
 
