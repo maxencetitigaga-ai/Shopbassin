@@ -6,767 +6,730 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
   <meta name="theme-color" content="#050608">
 
   <title>ShopBassin</title>
 
-  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="style.css">
 
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
+
 <body>
 
-<!-- LOADER -->
-<div id="loader">
+  <!-- CHARGEMENT -->
 
-  <div class="loader-box">
+  <div id="loader">
 
-    <div class="loader-logo-ring">
+    <div class="loader-inner">
 
       <img
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+        src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+        class="loader-logo"
         alt="ShopBassin"
       >
 
-    </div>
+      <div class="loader-line">
+        <div class="loader-progress"></div>
+      </div>
 
-    <div class="loader-bar">
-      <div class="loader-progress"></div>
-    </div>
+      <p>
+        PREMIUM • QUALITÉ • UNIQUE
+      </p>
 
-    <p>
-      PREMIUM • QUALITÉ • UNIQUE
-    </p>
+    </div>
 
   </div>
 
-</div>
+
+  <div id="app" class="app app-hidden">
 
 
-<div id="app" class="app app-loading">
+    <!-- HEADER -->
 
+    <header class="header">
 
-  <!-- HEADER -->
-  <header class="header">
-
-    <div class="brand">
-
-      <img
-        id="admin-secret-trigger"
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        class="brand-logo"
-        alt="ShopBassin"
-      >
-
-      <div>
-
-        <span>
-          SHOPBASSIN
-        </span>
-
-        <strong>
-          Premium
-        </strong>
-
-      </div>
-
-    </div>
-
-
-    <div class="header-right">
-
-      <div
-        id="header-status"
-        class="header-status open"
-      >
-        OUVERT
-      </div>
-
-
-      <button
-        class="cart-top"
-        onclick="showPage('panier')"
-      >
-        <span class="cart-symbol">
-          ◉
-        </span>
-
-        <b id="cart-count">
-          0
-        </b>
-
-      </button>
-
-    </div>
-
-  </header>
-
-
-
-  <!-- CATALOGUE -->
-  <main
-    id="catalogue"
-    class="page active"
-  >
-
-    <section class="catalogue-heading">
-
-      <div>
-
-        <span class="mini-title">
-          SHOPBASSIN
-        </span>
-
-        <h1>
-          Catalogue
-        </h1>
-
-      </div>
-
-
-      <div class="product-counter">
-
-        <strong id="product-count">
-          0
-        </strong>
-
-        <span>
-          produits
-        </span>
-
-      </div>
-
-    </section>
-
-
-    <div class="search-box">
-
-      <span>
-        ⌕
-      </span>
-
-      <input
-        id="product-search"
-        type="search"
-        placeholder="Rechercher un produit"
-        oninput="renderProducts()"
-      >
-
-    </div>
-
-
-    <div
-      id="products-container"
-      class="products-grid"
-    >
-    </div>
-
-  </main>
-
-
-
-  <!-- FICHE PRODUIT -->
-  <main
-    id="produit"
-    class="page"
-  >
-
-    <button
-      class="back-button"
-      onclick="showPage('catalogue')"
-    >
-      ← Retour
-    </button>
-
-
-    <div class="product-detail-card">
-
-      <div class="product-detail-image">
+      <div class="brand">
 
         <img
-          id="detail-product-image"
-          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-          alt=""
+          id="admin-trigger"
+          src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          class="brand-logo"
+          alt="ShopBassin"
         >
+
+        <div>
+
+          <small>
+            SHOPBASSIN
+          </small>
+
+          <strong>
+            Premium
+          </strong>
+
+        </div>
 
       </div>
 
 
-      <div class="product-detail-content">
+      <div class="header-actions">
 
-        <span class="mini-title">
-          SHOPBASSIN
+        <span
+          id="header-status"
+          class="header-status open"
+        >
+          OUVERT
         </span>
 
-        <h2 id="detail-product-name">
-          Produit
-        </h2>
 
-        <div
-          id="detail-product-price"
-          class="product-detail-price"
+        <button
+          class="cart-button"
+          onclick="showPage('panier')"
         >
-          0,00 €
+
+          🛒
+
+          <b id="cart-count">
+            0
+          </b>
+
+        </button>
+
+      </div>
+
+    </header>
+
+
+
+    <!-- CATALOGUE -->
+
+    <main
+      id="catalogue"
+      class="page active"
+    >
+
+      <div class="catalogue-title">
+
+        <div>
+
+          <small class="blue-label">
+            SHOPBASSIN
+          </small>
+
+          <h1>
+            Catalogue
+          </h1>
+
         </div>
 
 
-        <div class="detail-divider"></div>
+        <div class="product-count">
 
+          <strong id="product-count">
+            0
+          </strong>
 
-        <h3>
-          Description
-        </h3>
+          <span>
+            produits
+          </span>
 
-        <p
-          id="detail-product-description"
-          class="product-description"
-        >
-        </p>
-
-
-        <button
-          id="detail-add-button"
-          class="primary-button"
-          type="button"
-        >
-          Ajouter au panier
-        </button>
+        </div>
 
       </div>
 
-    </div>
 
-  </main>
+      <div class="search">
 
+        <span>
+          ⌕
+        </span>
 
+        <input
+          id="search-input"
+          type="search"
+          placeholder="Rechercher"
+          oninput="renderProducts()"
+        >
 
-  <!-- PANIER -->
-  <main
-    id="panier"
-    class="page"
-  >
-
-    <div class="page-heading">
-
-      <img
-        class="page-logo"
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
-      >
-
-      <span class="mini-title">
-        SHOPBASSIN
-      </span>
-
-      <h2>
-        Ton panier
-      </h2>
-
-      <p>
-        Vérifie tes articles et choisis comment récupérer ta commande.
-      </p>
-
-    </div>
+      </div>
 
 
-    <div
-      id="cart-items"
-      class="cart-items"
+      <div
+        id="products"
+        class="products"
+      ></div>
+
+    </main>
+
+
+
+    <!-- FICHE PRODUIT -->
+
+    <main
+      id="produit"
+      class="page"
     >
-    </div>
-
-
-    <section class="checkout-section">
-
-      <h3>
-        Récupération
-      </h3>
-
-
-      <div class="delivery-choice">
-
-        <button
-          id="pickup-choice"
-          class="choice-button active"
-          onclick="setOrderMode('pickup')"
-        >
-
-          <span>
-            🏠
-          </span>
-
-          <div>
-
-            <strong>
-              Sur place
-            </strong>
-
-            <small>
-              Arcachon
-            </small>
-
-          </div>
-
-        </button>
-
-
-        <button
-          id="delivery-choice"
-          class="choice-button"
-          onclick="setOrderMode('delivery')"
-        >
-
-          <span>
-            🚚
-          </span>
-
-          <div>
-
-            <strong>
-              Livraison
-            </strong>
-
-            <small>
-              À ton adresse
-            </small>
-
-          </div>
-
-        </button>
-
-      </div>
-
-    </section>
-
-
-    <section class="checkout-section">
-
-      <h3>
-        Tes informations
-      </h3>
-
-
-      <label class="field-label">
-        Nom / Prénom
-      </label>
-
-      <input
-        id="customer-name"
-        class="checkout-input"
-        type="text"
-        placeholder="Ex : Maxence"
-      >
-
-
-      <label class="field-label">
-        Téléphone
-      </label>
-
-      <input
-        id="customer-phone"
-        class="checkout-input"
-        type="tel"
-        placeholder="06..."
-      >
-
-
-      <div id="delivery-fields">
-
-        <label class="field-label">
-          Ville
-        </label>
-
-
-        <select
-          id="delivery-city"
-          class="checkout-input"
-          onchange="updateTotals()"
-        >
-
-          <option value="arcachon">
-            Arcachon
-          </option>
-
-          <option value="la-teste">
-            La Teste-de-Buch
-          </option>
-
-          <option value="gujan">
-            Gujan-Mestras
-          </option>
-
-          <option value="outside">
-            Plus loin sur le Bassin
-          </option>
-
-        </select>
-
-
-        <label class="field-label">
-          Adresse
-        </label>
-
-        <input
-          id="delivery-address"
-          class="checkout-input"
-          type="text"
-          placeholder="Numéro et rue"
-        >
-
-
-        <label class="field-label">
-          Complément
-        </label>
-
-        <input
-          id="delivery-extra"
-          class="checkout-input"
-          type="text"
-          placeholder="Appartement, bâtiment... (facultatif)"
-        >
-
-      </div>
-
-    </section>
-
-
-    <section class="order-summary">
-
-      <div class="summary-row">
-
-        <span>
-          Sous-total
-        </span>
-
-        <strong id="cart-subtotal">
-          0,00 €
-        </strong>
-
-      </div>
-
-
-      <div class="summary-row">
-
-        <span>
-          Livraison
-        </span>
-
-        <strong id="delivery-price">
-          0,00 €
-        </strong>
-
-      </div>
-
-
-      <div class="delivery-explanation">
-
-        <span>
-          Arcachon • La Teste • Gujan : 5 €
-        </span>
-
-        <span>
-          Plus loin : 10 €
-        </span>
-
-      </div>
-
-
-      <div class="summary-row total-row">
-
-        <span>
-          Total
-        </span>
-
-        <strong id="cart-total">
-          0,00 €
-        </strong>
-
-      </div>
-
 
       <button
-        class="primary-button"
-        onclick="prepareOrder()"
+        class="back"
+        onclick="showPage('catalogue')"
       >
-        Valider ma commande
+        ← Catalogue
       </button>
 
-    </section>
 
-  </main>
+      <article class="detail-card">
 
+        <div class="detail-image">
 
+          <img
+            id="detail-image"
+            src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+            alt=""
+          >
 
-  <!-- CONTACT -->
-  <main
-    id="contact"
-    class="page"
-  >
-
-    <div class="page-heading">
-
-      <img
-        class="page-logo"
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
-      >
-
-      <span class="mini-title">
-        SHOPBASSIN
-      </span>
-
-      <h2>
-        Contact
-      </h2>
-
-      <p>
-        Retrouve-nous directement sur les réseaux.
-      </p>
-
-    </div>
-
-
-    <div class="social-list">
-
-      <div class="social-card">
-
-        <div class="social-icon snapchat">
-          👻
         </div>
 
-        <div>
 
-          <span>
-            Snapchat
-          </span>
+        <div class="detail-body">
 
-          <strong id="snapchat-contact">
-            ton_snapchat
+          <small class="blue-label">
+            SHOPBASSIN
+          </small>
+
+          <h2 id="detail-name">
+            Produit
+          </h2>
+
+          <strong
+            id="detail-price"
+            class="detail-price"
+          >
+            0,00 €
           </strong>
 
-        </div>
 
-      </div>
+          <div class="separator"></div>
 
 
-      <div class="social-card">
+          <h3>
+            Description
+          </h3>
 
-        <div class="social-icon instagram">
-          ◎
-        </div>
+          <p id="detail-description">
+          </p>
 
-        <div>
-
-          <span>
-            Instagram
-          </span>
-
-          <strong id="instagram-contact">
-            @toninstagram
-          </strong>
-
-        </div>
-
-      </div>
-
-
-      <div class="social-card">
-
-        <div class="social-icon telegram">
-          ➤
-        </div>
-
-        <div>
-
-          <span>
-            Telegram
-          </span>
-
-          <strong id="telegram-contact">
-            @shopbassinstore_bot
-          </strong>
-
-        </div>
-
-      </div>
-
-    </div>
-
-  </main>
-
-
-
-  <!-- INFOS -->
-  <main
-    id="infos"
-    class="page"
-  >
-
-    <div class="page-heading">
-
-      <img
-        class="page-logo"
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
-      >
-
-      <span class="mini-title">
-        SHOPBASSIN
-      </span>
-
-      <h2>
-        Infos
-      </h2>
-
-      <p>
-        Disponibilités actuelles.
-      </p>
-
-    </div>
-
-
-    <div class="availability-card">
-
-      <div class="availability-icon">
-        ◉
-      </div>
-
-      <div class="availability-info">
-
-        <span>
-          Boutique
-        </span>
-
-        <strong>
-          ShopBassin
-        </strong>
-
-      </div>
-
-      <div
-        id="shop-status"
-        class="availability-status available"
-      >
-        OUVERT
-      </div>
-
-    </div>
-
-
-    <div class="availability-card">
-
-      <div class="availability-icon">
-        🏠
-      </div>
-
-      <div class="availability-info">
-
-        <span>
-          Sur place
-        </span>
-
-        <strong>
-          Arcachon
-        </strong>
-
-      </div>
-
-      <div
-        id="pickup-status"
-        class="availability-status available"
-      >
-        DISPONIBLE
-      </div>
-
-    </div>
-
-
-    <div class="availability-card">
-
-      <div class="availability-icon">
-        🚚
-      </div>
-
-      <div class="availability-info">
-
-        <span>
-          Livraison
-        </span>
-
-        <strong>
-          Bassin d'Arcachon
-        </strong>
-
-      </div>
-
-      <div
-        id="delivery-status"
-        class="availability-status available"
-      >
-        DISPONIBLE
-      </div>
-
-    </div>
-
-  </main>
-
-
-
-  <!-- GESTION -->
-  <main
-    id="gestion"
-    class="page admin-page"
-  >
-
-    <div class="page-heading">
-
-      <img
-        class="page-logo"
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
-      >
-
-      <span class="mini-title">
-        ADMINISTRATION
-      </span>
-
-      <h2>
-        Gestion
-      </h2>
-
-      <p>
-        Modifie tes produits et leurs descriptions.
-      </p>
-
-    </div>
-
-
-    <section class="admin-card">
-
-      <h3>
-        Disponibilités
-      </h3>
-
-      <div class="admin-setting">
-
-        <span>
-          Boutique
-        </span>
-
-        <div class="admin-buttons">
 
           <button
-            onclick="setShopOpen(true)"
+            id="detail-add"
+            class="primary"
           >
+            Ajouter au panier
+          </button>
+
+        </div>
+
+      </article>
+
+    </main>
+
+
+
+    <!-- PANIER -->
+
+    <main
+      id="panier"
+      class="page"
+    >
+
+      <div class="page-title">
+
+        <small class="blue-label">
+          SHOPBASSIN
+        </small>
+
+        <h2>
+          Ton panier
+        </h2>
+
+        <p>
+          Vérifie ta commande et choisis ton mode de récupération.
+        </p>
+
+      </div>
+
+
+      <div
+        id="cart-items"
+        class="cart-items"
+      ></div>
+
+
+
+      <!-- MODE DE RÉCUPÉRATION -->
+
+      <section class="panel">
+
+        <h3>
+          Récupération
+        </h3>
+
+
+        <div class="mode-grid">
+
+          <button
+            id="pickup-mode"
+            class="mode-button active"
+            onclick="setOrderMode('pickup')"
+          >
+
+            <span>
+              🏠
+            </span>
+
+            <div>
+
+              <strong>
+                Sur place
+              </strong>
+
+              <small>
+                Arcachon
+              </small>
+
+            </div>
+
+          </button>
+
+
+          <button
+            id="delivery-mode"
+            class="mode-button"
+            onclick="setOrderMode('delivery')"
+          >
+
+            <span>
+              🚚
+            </span>
+
+            <div>
+
+              <strong>
+                Livraison
+              </strong>
+
+              <small>
+                À ton adresse
+              </small>
+
+            </div>
+
+          </button>
+
+        </div>
+
+      </section>
+
+
+
+      <!-- CLIENT -->
+
+      <section class="panel">
+
+        <h3>
+          Tes informations
+        </h3>
+
+
+        <label>
+          Nom / Prénom
+        </label>
+
+        <input
+          id="customer-name"
+          type="text"
+          placeholder="Ex : Maxence"
+        >
+
+
+        <label>
+          Téléphone
+        </label>
+
+        <input
+          id="customer-phone"
+          type="tel"
+          placeholder="06..."
+        >
+
+
+        <div id="delivery-fields">
+
+          <label>
+            Ville
+          </label>
+
+          <select
+            id="delivery-city"
+            onchange="updateTotals()"
+          >
+
+            <option value="arcachon">
+              Arcachon
+            </option>
+
+            <option value="lateste">
+              La Teste-de-Buch
+            </option>
+
+            <option value="gujan">
+              Gujan-Mestras
+            </option>
+
+            <option value="outside">
+              Plus loin
+            </option>
+
+          </select>
+
+
+          <label>
+            Adresse
+          </label>
+
+          <input
+            id="delivery-address"
+            type="text"
+            placeholder="Numéro et rue"
+          >
+
+
+          <label>
+            Complément
+          </label>
+
+          <input
+            id="delivery-extra"
+            type="text"
+            placeholder="Appartement, bâtiment..."
+          >
+
+        </div>
+
+      </section>
+
+
+
+      <!-- TOTAL -->
+
+      <section class="panel total-panel">
+
+        <div class="price-row">
+
+          <span>
+            Sous-total
+          </span>
+
+          <strong id="subtotal">
+            0,00 €
+          </strong>
+
+        </div>
+
+
+        <div class="price-row">
+
+          <span>
+            Livraison
+          </span>
+
+          <strong id="delivery-price">
+            0,00 €
+          </strong>
+
+        </div>
+
+
+        <div class="delivery-info">
+
+          Arcachon • La Teste • Gujan : 5 €<br>
+          Plus loin : 10 €<br>
+          Sur place : gratuit
+
+        </div>
+
+
+        <div class="price-row total">
+
+          <span>
+            Total
+          </span>
+
+          <strong id="total">
+            0,00 €
+          </strong>
+
+        </div>
+
+
+        <button
+          class="primary"
+          onclick="prepareOrder()"
+        >
+          Valider ma commande
+        </button>
+
+      </section>
+
+    </main>
+
+
+
+    <!-- CONTACT -->
+
+    <main
+      id="contact"
+      class="page"
+    >
+
+      <div class="page-title">
+
+        <small class="blue-label">
+          SHOPBASSIN
+        </small>
+
+        <h2>
+          Contact
+        </h2>
+
+        <p>
+          Retrouve ShopBassin sur les réseaux.
+        </p>
+
+      </div>
+
+
+      <div class="contacts">
+
+        <div class="contact-card">
+
+          <div class="snap-icon">
+            👻
+          </div>
+
+          <div>
+
+            <small>
+              Snapchat
+            </small>
+
+            <strong id="contact-snap">
+              ton_snap
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="contact-card">
+
+          <div class="insta-icon">
+            ◎
+          </div>
+
+          <div>
+
+            <small>
+              Instagram
+            </small>
+
+            <strong id="contact-insta">
+              @instagram
+            </strong>
+
+          </div>
+
+        </div>
+
+
+        <div class="contact-card">
+
+          <div class="telegram-icon">
+            ➤
+          </div>
+
+          <div>
+
+            <small>
+              Telegram
+            </small>
+
+            <strong id="contact-telegram">
+              @shopbassinstore_bot
+            </strong>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </main>
+
+
+
+    <!-- INFOS -->
+
+    <main
+      id="infos"
+      class="page"
+    >
+
+      <div class="page-title">
+
+        <small class="blue-label">
+          SHOPBASSIN
+        </small>
+
+        <h2>
+          Infos
+        </h2>
+
+      </div>
+
+
+      <div class="status-card">
+
+        <span class="status-icon">
+          ●
+        </span>
+
+        <div>
+
+          <small>
+            Boutique
+          </small>
+
+          <strong>
+            ShopBassin
+          </strong>
+
+        </div>
+
+        <b
+          id="shop-status"
+          class="badge available"
+        >
+          OUVERT
+        </b>
+
+      </div>
+
+
+      <div class="status-card">
+
+        <span class="status-icon">
+          🏠
+        </span>
+
+        <div>
+
+          <small>
+            Sur place
+          </small>
+
+          <strong>
+            Arcachon
+          </strong>
+
+        </div>
+
+        <b
+          id="pickup-status"
+          class="badge available"
+        >
+          DISPONIBLE
+        </b>
+
+      </div>
+
+
+      <div class="status-card">
+
+        <span class="status-icon">
+          🚚
+        </span>
+
+        <div>
+
+          <small>
+            Livraison
+          </small>
+
+          <strong>
+            Bassin
+          </strong>
+
+        </div>
+
+        <b
+          id="delivery-status"
+          class="badge available"
+        >
+          DISPONIBLE
+        </b>
+
+      </div>
+
+    </main>
+
+
+
+    <!-- ADMIN -->
+
+    <main
+      id="gestion"
+      class="page"
+    >
+
+      <div class="page-title">
+
+        <small class="blue-label">
+          ADMINISTRATION
+        </small>
+
+        <h2>
+          Gestion
+        </h2>
+
+      </div>
+
+
+      <section class="admin-card">
+
+        <h3>
+          Disponibilités
+        </h3>
+
+
+        <p>
+          Boutique
+        </p>
+
+        <div class="admin-actions">
+
+          <button onclick="setShopOpen(true)">
             Ouvrir
           </button>
 
           <button
-            class="danger-button"
+            class="red"
             onclick="setShopOpen(false)"
           >
             Fermer
@@ -774,25 +737,19 @@
 
         </div>
 
-      </div>
 
+        <p>
+          Sur place
+        </p>
 
-      <div class="admin-setting">
+        <div class="admin-actions">
 
-        <span>
-          Sur place à Arcachon
-        </span>
-
-        <div class="admin-buttons">
-
-          <button
-            onclick="setPickupAvailable(true)"
-          >
+          <button onclick="setPickupAvailable(true)">
             Disponible
           </button>
 
           <button
-            class="danger-button"
+            class="red"
             onclick="setPickupAvailable(false)"
           >
             Indisponible
@@ -800,25 +757,19 @@
 
         </div>
 
-      </div>
 
-
-      <div class="admin-setting">
-
-        <span>
+        <p>
           Livraison
-        </span>
+        </p>
 
-        <div class="admin-buttons">
+        <div class="admin-actions">
 
-          <button
-            onclick="setDeliveryAvailable(true)"
-          >
+          <button onclick="setDeliveryAvailable(true)">
             Disponible
           </button>
 
           <button
-            class="danger-button"
+            class="red"
             onclick="setDeliveryAvailable(false)"
           >
             Indisponible
@@ -826,159 +777,196 @@
 
         </div>
 
-      </div>
-
-    </section>
+      </section>
 
 
-    <section class="admin-card">
 
-      <h3>
-        Nouveau produit
-      </h3>
+      <section class="admin-card">
+
+        <h3>
+          Contacts
+        </h3>
 
 
-      <label>
-        Nom
-      </label>
+        <label>
+          Snapchat
+        </label>
 
-      <input
-        id="new-product-name"
-        type="text"
-        placeholder="Nom du produit"
+        <input id="admin-snap">
+
+
+        <label>
+          Instagram
+        </label>
+
+        <input id="admin-insta">
+
+
+        <label>
+          Telegram
+        </label>
+
+        <input id="admin-telegram">
+
+
+        <button
+          class="primary"
+          onclick="saveContacts()"
+        >
+          Enregistrer
+        </button>
+
+      </section>
+
+
+
+      <section class="admin-card">
+
+        <h3>
+          Ajouter un produit
+        </h3>
+
+
+        <label>
+          Nom
+        </label>
+
+        <input
+          id="new-name"
+          type="text"
+        >
+
+
+        <label>
+          Prix
+        </label>
+
+        <input
+          id="new-price"
+          type="number"
+          step="0.01"
+        >
+
+
+        <label>
+          Description
+        </label>
+
+        <textarea
+          id="new-description"
+          rows="5"
+        ></textarea>
+
+
+        <label>
+          Photo
+        </label>
+
+        <input
+          id="new-photo"
+          type="file"
+          accept="image/*"
+        >
+
+
+        <button
+          class="primary"
+          onclick="addProduct()"
+        >
+          Ajouter le produit
+        </button>
+
+      </section>
+
+
+      <section class="admin-card">
+
+        <h3>
+          Produits
+        </h3>
+
+        <div id="admin-products">
+        </div>
+
+      </section>
+
+    </main>
+
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="bottom-nav">
+
+      <button
+        class="nav-item active"
+        data-page="catalogue"
+        onclick="showPage('catalogue', this)"
       >
 
+        <img
+          src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
-      <label>
-        Prix
-      </label>
+        Catalogue
 
-      <input
-        id="new-product-price"
-        type="number"
-        step="0.01"
-        placeholder="29.90"
-      >
-
-
-      <label>
-        Description
-      </label>
-
-      <textarea
-        id="new-product-description"
-        class="admin-textarea"
-        placeholder="Décris le produit..."
-      ></textarea>
-
-
-      <label>
-        Photo
-      </label>
-
-      <input
-        id="new-product-photo"
-        type="file"
-        accept="image/*"
-      >
+      </button>
 
 
       <button
-        class="primary-button"
-        onclick="addAdminProduct()"
+        class="nav-item"
+        data-page="panier"
+        onclick="showPage('panier', this)"
       >
-        Ajouter le produit
+
+        <img
+          src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
+        Panier
+
       </button>
 
-    </section>
 
-
-    <section class="admin-card">
-
-      <h3>
-        Produits existants
-      </h3>
-
-      <div id="admin-products">
-      </div>
-
-    </section>
-
-  </main>
-
-
-
-  <!-- NAVIGATION -->
-  <nav class="bottom-nav">
-
-    <button
-      class="nav-button active"
-      data-page="catalogue"
-      onclick="showPage('catalogue', this)"
-    >
-
-      <img
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
+      <button
+        class="nav-item"
+        data-page="contact"
+        onclick="showPage('contact', this)"
       >
 
-      Catalogue
+        <img
+          src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
-    </button>
+        Contact
+
+      </button>
 
 
-    <button
-      class="nav-button"
-      data-page="panier"
-      onclick="showPage('panier', this)"
-    >
-
-      <img
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
+      <button
+        class="nav-item"
+        data-page="infos"
+        onclick="showPage('infos', this)"
       >
 
-      Panier
+        <img
+          src="6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
 
-    </button>
+        Infos
 
+      </button>
 
-    <button
-      class="nav-button"
-      data-page="contact"
-      onclick="showPage('contact', this)"
-    >
+    </nav>
 
-      <img
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
-      >
-
-      Contact
-
-    </button>
+  </div>
 
 
-    <button
-      class="nav-button"
-      data-page="infos"
-      onclick="showPage('infos', this)"
-    >
-
-      <img
-        src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-        alt=""
-      >
-
-      Infos
-
-    </button>
-
-  </nav>
-
-</div>
-
-<script src="./script.js"></script>
+  <script src="script.js"></script>
 
 </body>
 
