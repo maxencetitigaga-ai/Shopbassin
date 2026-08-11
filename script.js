@@ -21,7 +21,7 @@ if (tg) {
 
 
 // ==========================================
-// PRODUITS PAR DÉFAUT
+// DONNÉES PAR DÉFAUT
 // ==========================================
 
 const DEFAULT_PRODUCTS = [
@@ -36,10 +36,10 @@ const DEFAULT_PRODUCTS = [
       25,
 
     description:
-      "Description du produit. Tu peux la modifier dans Gestion.",
+      "Description du produit. Modifie-la dans Gestion.",
 
-    image:
-      "",
+    images:
+      [],
 
     sizes: {
       S: true,
@@ -62,8 +62,8 @@ const DEFAULT_PRODUCTS = [
     description:
       "Ajoute ici toutes les informations importantes du produit.",
 
-    image:
-      "",
+    images:
+      [],
 
     sizes: {
       S: false,
@@ -129,6 +129,13 @@ let selectedSize =
   null;
 
 
+let currentGalleryIndex =
+  0;
+
+let galleryTouchStartX =
+  0;
+
+
 // ==========================================
 // LOADER
 // ==========================================
@@ -166,7 +173,7 @@ window.addEventListener(
 
 
 // ==========================================
-// START
+// DÉMARRAGE
 // ==========================================
 
 document.addEventListener(
@@ -197,6 +204,8 @@ document.addEventListener(
 
 
     setupAdmin();
+
+    setupGallerySwipe();
 
   }
 );
@@ -235,7 +244,9 @@ function showPage(
 
 
   document
-    .getElementById(id)
+    .getElementById(
+      id
+    )
     ?.classList.add(
       "active"
     );
@@ -287,11 +298,9 @@ function showPage(
 
   window.scrollTo({
 
-    top:
-      0,
+    top: 0,
 
-    behavior:
-      "smooth"
+    behavior: "smooth"
 
   });
 
@@ -299,7 +308,7 @@ function showPage(
 
 
 // ==========================================
-// ADMIN APPUI LONG
+// ADMIN APPUI LONG LOGO
 // ==========================================
 
 function setupAdmin() {
@@ -351,8 +360,7 @@ function setupAdmin() {
     "touchstart",
     start,
     {
-      passive:
-        true
+      passive: true
     }
   );
 
@@ -442,7 +450,7 @@ function loadProducts() {
 
     const saved =
       localStorage.getItem(
-        "shopbassin-products-sizes"
+        "shopbassin-products-gallery"
       );
 
 
@@ -469,9 +477,31 @@ function loadProducts() {
   }
 
 
+  // Compatibilité avec tes anciens produits
+
   products =
     products.map(
       function (product) {
+
+        let images =
+          Array.isArray(
+            product.images
+          )
+            ? product.images
+            : [];
+
+
+        if (
+          images.length === 0 &&
+          product.image
+        ) {
+
+          images = [
+            product.image
+          ];
+
+        }
+
 
         return {
 
@@ -481,6 +511,8 @@ function loadProducts() {
             product.description ||
             "Aucune description.",
 
+          images:
+            images,
 
           sizes:
             normalizeSizes(
@@ -503,17 +535,13 @@ function normalizeSizes(
 
     return {
 
-      S:
-        true,
+      S: true,
 
-      M:
-        true,
+      M: true,
 
-      L:
-        true,
+      L: true,
 
-      UNIQUE:
-        false
+      UNIQUE: false
 
     };
 
@@ -553,7 +581,7 @@ function saveProducts() {
   try {
 
     localStorage.setItem(
-      "shopbassin-products-sizes",
+      "shopbassin-products-gallery",
 
       JSON.stringify(
         products
@@ -563,8 +591,10 @@ function saveProducts() {
   } catch {
 
     alert(
-      "Impossible d'enregistrer. Essaie avec une photo moins lourde."
+      "Impossible d'enregistrer. Les photos sont peut-être trop lourdes."
     );
+
+    return;
 
   }
 
@@ -628,15 +658,33 @@ function renderProducts() {
       .map(
         function (product) {
 
-          const image =
-            product.image ||
-            LOGO;
+          const images =
+            getProductImages(
+              product
+            );
+
+
+          const firstImage =
+            images[0];
 
 
           const placeholder =
-            product.image
+            product.images &&
+            product.images.length
               ? ""
               : "placeholder";
+
+
+          const photoBadge =
+            images.length > 1
+              ? `
+
+                <div class="multi-photo-badge">
+                  📷 ${images.length}
+                </div>
+
+              `
+              : "";
 
 
           return `
@@ -649,11 +697,13 @@ function renderProducts() {
               <div class="product-image">
 
                 <img
-                  src="${image}"
+                  src="${firstImage}"
                   class="${placeholder}"
                   alt=""
                   onerror="this.src='${LOGO}'"
                 >
+
+                ${photoBadge}
 
               </div>
 
@@ -683,10 +733,12 @@ function renderProducts() {
 
 
 // ==========================================
-// FICHE PRODUIT
+// OUVRIR PRODUIT
 // ==========================================
 
-function openProduct(id) {
+function openProduct(
+  id
+) {
 
   const product =
     products.find(
@@ -711,17 +763,8 @@ function openProduct(id) {
     null;
 
 
-  const image =
-    product.image ||
-    LOGO;
-
-
-  document
-    .getElementById(
-      "detail-image"
-    )
-    .src =
-      image;
+  currentGalleryIndex =
+    0;
 
 
   setText(
@@ -750,6 +793,11 @@ function openProduct(id) {
   );
 
 
+  renderGallery(
+    product
+  );
+
+
   renderProductSizes(
     product
   );
@@ -773,6 +821,7 @@ function openProduct(id) {
         );
 
         return;
+
       }
 
 
@@ -797,7 +846,360 @@ function openProduct(id) {
 
 
 // ==========================================
-// AFFICHAGE TAILLES
+// GALERIE
+// ==========================================
+
+function getProductImages(
+  product
+) {
+
+  if (
+    Array.isArray(
+      product.images
+    ) &&
+    product.images.length
+  ) {
+
+    return product.images;
+
+  }
+
+
+  return [
+    LOGO
+  ];
+
+}
+
+
+function renderGallery(
+  product
+) {
+
+  const images =
+    getProductImages(
+      product
+    );
+
+
+  const slides =
+    document.getElementById(
+      "detail-slides"
+    );
+
+
+  const dots =
+    document.getElementById(
+      "gallery-dots"
+    );
+
+
+  if (
+    !slides ||
+    !dots
+  ) return;
+
+
+  slides.innerHTML =
+    images
+      .map(
+        function (
+          image,
+          index
+        ) {
+
+          const placeholder =
+            image === LOGO
+              ? "gallery-placeholder"
+              : "";
+
+
+          return `
+
+            <div class="detail-slide">
+
+              <img
+                src="${image}"
+                class="${placeholder}"
+                alt="Photo ${index + 1}"
+                onerror="this.src='${LOGO}'"
+              >
+
+            </div>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  dots.innerHTML =
+    images
+      .map(
+        function (
+          image,
+          index
+        ) {
+
+          return `
+
+            <button
+              class="gallery-dot ${index === 0 ? "active" : ""}"
+              onclick="goToProductImage(${index})"
+            ></button>
+
+          `;
+
+        }
+      )
+      .join("");
+
+
+  updateGallery();
+
+}
+
+
+function updateGallery() {
+
+  const product =
+    products.find(
+      function (product) {
+
+        return (
+          product.id ===
+          currentProductId
+        );
+
+      }
+    );
+
+
+  if (!product) return;
+
+
+  const images =
+    getProductImages(
+      product
+    );
+
+
+  if (
+    currentGalleryIndex <
+    0
+  ) {
+
+    currentGalleryIndex =
+      images.length - 1;
+
+  }
+
+
+  if (
+    currentGalleryIndex >=
+    images.length
+  ) {
+
+    currentGalleryIndex =
+      0;
+
+  }
+
+
+  const slides =
+    document.getElementById(
+      "detail-slides"
+    );
+
+
+  if (slides) {
+
+    slides.style.transform =
+      `translateX(-${currentGalleryIndex * 100}%)`;
+
+  }
+
+
+  document
+    .querySelectorAll(
+      ".gallery-dot"
+    )
+    .forEach(
+      function (
+        dot,
+        index
+      ) {
+
+        dot.classList.toggle(
+          "active",
+          index ===
+          currentGalleryIndex
+        );
+
+      }
+    );
+
+
+  setText(
+    "gallery-counter",
+    `${currentGalleryIndex + 1} / ${images.length}`
+  );
+
+
+  const prev =
+    document.getElementById(
+      "gallery-prev"
+    );
+
+
+  const next =
+    document.getElementById(
+      "gallery-next"
+    );
+
+
+  if (
+    images.length <= 1
+  ) {
+
+    if (prev) {
+      prev.style.display =
+        "none";
+    }
+
+
+    if (next) {
+      next.style.display =
+        "none";
+    }
+
+  } else {
+
+    if (prev) {
+      prev.style.display =
+        "grid";
+    }
+
+
+    if (next) {
+      next.style.display =
+        "grid";
+    }
+
+  }
+
+}
+
+
+function previousProductImage() {
+
+  currentGalleryIndex--;
+
+  updateGallery();
+
+}
+
+
+function nextProductImage() {
+
+  currentGalleryIndex++;
+
+  updateGallery();
+
+}
+
+
+function goToProductImage(
+  index
+) {
+
+  currentGalleryIndex =
+    index;
+
+  updateGallery();
+
+}
+
+
+// ==========================================
+// SWIPE GALERIE
+// ==========================================
+
+function setupGallerySwipe() {
+
+  const gallery =
+    document.getElementById(
+      "detail-gallery"
+    );
+
+
+  if (!gallery) return;
+
+
+  gallery.addEventListener(
+    "touchstart",
+    function (event) {
+
+      galleryTouchStartX =
+        event.touches[0]
+          .clientX;
+
+    },
+    {
+      passive: true
+    }
+  );
+
+
+  gallery.addEventListener(
+    "touchend",
+    function (event) {
+
+      const endX =
+        event.changedTouches[0]
+          .clientX;
+
+
+      const difference =
+        endX -
+        galleryTouchStartX;
+
+
+      if (
+        Math.abs(
+          difference
+        ) < 45
+      ) {
+
+        return;
+
+      }
+
+
+      if (
+        difference < 0
+      ) {
+
+        nextProductImage();
+
+      } else {
+
+        previousProductImage();
+
+      }
+
+    },
+    {
+      passive: true
+    }
+  );
+
+}
+
+
+// ==========================================
+// TAILLES
 // ==========================================
 
 function renderProductSizes(
@@ -841,56 +1243,28 @@ function renderProductSizes(
 
 
   const options = [
-
-    {
-      key:
-        "S",
-
-      label:
-        "S"
-    },
-
-    {
-      key:
-        "M",
-
-      label:
-        "M"
-    },
-
-    {
-      key:
-        "L",
-
-      label:
-        "L"
-    }
-
+    "S",
+    "M",
+    "L"
   ];
 
 
   container.innerHTML =
     options
       .map(
-        function (item) {
-
-          const available =
-            sizes[
-              item.key
-            ];
-
+        function (size) {
 
           if (
-            available
+            sizes[size]
           ) {
 
             return `
 
               <button
                 class="size-button available"
-                onclick="selectSize('${item.label}', this)"
+                onclick="selectSize('${size}', this)"
               >
-                ${item.label}
+                ${size}
               </button>
 
             `;
@@ -904,7 +1278,7 @@ function renderProductSizes(
               class="size-button unavailable"
               disabled
             >
-              ${item.label}
+              ${size}
             </button>
 
           `;
@@ -964,7 +1338,7 @@ function loadCart() {
     cart =
       JSON.parse(
         localStorage.getItem(
-          "shopbassin-cart-sizes"
+          "shopbassin-cart-gallery"
         )
       ) ||
       [];
@@ -982,7 +1356,7 @@ function loadCart() {
 function saveCart() {
 
   localStorage.setItem(
-    "shopbassin-cart-sizes",
+    "shopbassin-cart-gallery",
 
     JSON.stringify(
       cart
@@ -1048,8 +1422,8 @@ function addToCart(
       price:
         product.price,
 
-      image:
-        product.image,
+      images:
+        product.images,
 
       size:
         size,
@@ -1110,8 +1484,11 @@ function removeFromCart(
         function (item) {
 
           return !(
+
             item.id === id &&
+
             item.size === size
+
           );
 
         }
@@ -1197,6 +1574,13 @@ function renderCart() {
         .map(
           function (item) {
 
+            const image =
+              item.images &&
+              item.images.length
+                ? item.images[0]
+                : LOGO;
+
+
             const encodedSize =
               encodeURIComponent(
                 item.size
@@ -1210,7 +1594,7 @@ function renderCart() {
                 <div class="cart-thumb">
 
                   <img
-                    src="${item.image || LOGO}"
+                    src="${image}"
                     alt=""
                     onerror="this.src='${LOGO}'"
                   >
@@ -1226,10 +1610,8 @@ function renderCart() {
 
 
                   <p class="cart-size">
-
                     Taille :
                     ${escapeHTML(item.size)}
-
                   </p>
 
 
@@ -1909,9 +2291,7 @@ function updateAvailability() {
     );
 
 
-  if (
-    header
-  ) {
+  if (header) {
 
     header.textContent =
       shopOpen
@@ -1948,9 +2328,7 @@ function updateBadge(
     );
 
 
-  if (
-    !element
-  ) return;
+  if (!element) return;
 
 
   element.textContent =
@@ -2100,9 +2478,7 @@ function renderAdminProducts() {
     );
 
 
-  if (
-    !container
-  ) return;
+  if (!container) return;
 
 
   container.innerHTML =
@@ -2114,6 +2490,31 @@ function renderAdminProducts() {
             normalizeSizes(
               product.sizes
             );
+
+
+          const images =
+            getProductImages(
+              product
+            );
+
+
+          const previews =
+            images
+              .filter(
+                image =>
+                  image !== LOGO
+              )
+              .map(
+                image => `
+
+                  <img
+                    src="${image}"
+                    alt=""
+                  >
+
+                `
+              )
+              .join("");
 
 
           return `
@@ -2135,6 +2536,19 @@ function renderAdminProducts() {
                 </button>
 
               </div>
+
+
+              ${
+                previews
+                  ? `
+
+                    <div class="admin-gallery-preview">
+                      ${previews}
+                    </div>
+
+                  `
+                  : ""
+              }
 
 
               <label>
@@ -2169,6 +2583,23 @@ function renderAdminProducts() {
               >${escapeHTML(product.description)}</textarea>
 
 
+              <label>
+                Remplacer les photos
+              </label>
+
+              <input
+                id="photos-${product.id}"
+                type="file"
+                accept="image/*"
+                multiple
+              >
+
+
+              <p class="admin-help">
+                Laisse vide si tu veux garder les photos actuelles.
+              </p>
+
+
               <div class="admin-size-box">
 
                 <h4>
@@ -2181,9 +2612,7 @@ function renderAdminProducts() {
 
                   <label class="admin-size-option">
 
-                    <span>
-                      S
-                    </span>
+                    <span>S</span>
 
                     <input
                       id="size-s-${product.id}"
@@ -2196,9 +2625,7 @@ function renderAdminProducts() {
 
                   <label class="admin-size-option">
 
-                    <span>
-                      M
-                    </span>
+                    <span>M</span>
 
                     <input
                       id="size-m-${product.id}"
@@ -2211,9 +2638,7 @@ function renderAdminProducts() {
 
                   <label class="admin-size-option">
 
-                    <span>
-                      L
-                    </span>
+                    <span>L</span>
 
                     <input
                       id="size-l-${product.id}"
@@ -2226,9 +2651,7 @@ function renderAdminProducts() {
 
                   <label class="admin-size-option">
 
-                    <span>
-                      Unique
-                    </span>
+                    <span>Unique</span>
 
                     <input
                       id="size-u-${product.id}"
@@ -2266,25 +2689,18 @@ function renderAdminProducts() {
 // ENREGISTRER PRODUIT
 // ==========================================
 
-function saveProduct(
+async function saveProduct(
   id
 ) {
 
   const product =
     products.find(
-      function (product) {
-
-        return (
-          product.id === id
-        );
-
-      }
+      product =>
+        product.id === id
     );
 
 
-  if (
-    !product
-  ) return;
+  if (!product) return;
 
 
   const name =
@@ -2391,6 +2807,29 @@ function saveProduct(
     sizes;
 
 
+  const fileInput =
+    document.getElementById(
+      `photos-${id}`
+    );
+
+
+  const files =
+    fileInput?.files;
+
+
+  if (
+    files &&
+    files.length
+  ) {
+
+    product.images =
+      await filesToDataURLs(
+        files
+      );
+
+  }
+
+
   saveProducts();
 
 
@@ -2405,7 +2844,7 @@ function saveProduct(
 // AJOUTER PRODUIT
 // ==========================================
 
-function addProduct() {
+async function addProduct() {
 
   const name =
     valueOf(
@@ -2424,12 +2863,6 @@ function addProduct() {
   const description =
     valueOf(
       "new-description"
-    );
-
-
-  const photoInput =
-    document.getElementById(
-      "new-photo"
     );
 
 
@@ -2500,154 +2933,139 @@ function addProduct() {
   }
 
 
-  const finish =
-    function (
-      image
-    ) {
-
-      products.push({
-
-        id:
-          Date.now(),
-
-        name:
-          name,
-
-        price:
-          price,
-
-        description:
-          description ||
-          "Aucune description.",
-
-        image:
-          image ||
-          "",
-
-        sizes:
-          sizes
-
-      });
+  const photoInput =
+    document.getElementById(
+      "new-photos"
+    );
 
 
-      saveProducts();
-
-
-      setValue(
-        "new-name",
-        ""
-      );
-
-
-      setValue(
-        "new-price",
-        ""
-      );
-
-
-      setValue(
-        "new-description",
-        ""
-      );
-
-
-      if (
-        photoInput
-      ) {
-
-        photoInput.value =
-          "";
-
-      }
-
-
-      const s =
-        document.getElementById(
-          "new-size-s"
-        );
-
-      const m =
-        document.getElementById(
-          "new-size-m"
-        );
-
-      const l =
-        document.getElementById(
-          "new-size-l"
-        );
-
-      const u =
-        document.getElementById(
-          "new-size-unique"
-        );
-
-
-      if (s) {
-        s.checked =
-          true;
-      }
-
-
-      if (m) {
-        m.checked =
-          true;
-      }
-
-
-      if (l) {
-        l.checked =
-          true;
-      }
-
-
-      if (u) {
-        u.checked =
-          false;
-      }
-
-
-      alert(
-        "Produit ajouté ✅"
-      );
-
-    };
-
-
-  const file =
-    photoInput
-      ?.files
-      ?.[0];
+  let images =
+    [];
 
 
   if (
-    !file
+    photoInput?.files?.length
   ) {
 
-    finish(
-      ""
-    );
-
-    return;
+    images =
+      await filesToDataURLs(
+        photoInput.files
+      );
 
   }
 
 
-  const reader =
-    new FileReader();
+  products.push({
+
+    id:
+      Date.now(),
+
+    name:
+      name,
+
+    price:
+      price,
+
+    description:
+      description ||
+      "Aucune description.",
+
+    images:
+      images,
+
+    sizes:
+      sizes
+
+  });
 
 
-  reader.onload =
-    function () {
-
-      finish(
-        reader.result
-      );
-
-    };
+  saveProducts();
 
 
-  reader.readAsDataURL(
-    file
+  setValue(
+    "new-name",
+    ""
+  );
+
+
+  setValue(
+    "new-price",
+    ""
+  );
+
+
+  setValue(
+    "new-description",
+    ""
+  );
+
+
+  if (
+    photoInput
+  ) {
+
+    photoInput.value =
+      "";
+
+  }
+
+
+  alert(
+    "Produit ajouté ✅"
+  );
+
+}
+
+
+// ==========================================
+// LIRE PLUSIEURS PHOTOS
+// ==========================================
+
+function filesToDataURLs(
+  files
+) {
+
+  return Promise.all(
+
+    Array
+      .from(files)
+      .map(
+        function (file) {
+
+          return new Promise(
+            function (
+              resolve,
+              reject
+            ) {
+
+              const reader =
+                new FileReader();
+
+
+              reader.onload =
+                function () {
+
+                  resolve(
+                    reader.result
+                  );
+
+                };
+
+
+              reader.onerror =
+                reject;
+
+
+              reader.readAsDataURL(
+                file
+              );
+
+            }
+          );
+
+        }
+      )
+
   );
 
 }
@@ -2672,25 +3090,15 @@ function deleteProduct(
 
   products =
     products.filter(
-      function (product) {
-
-        return (
-          product.id !== id
-        );
-
-      }
+      product =>
+        product.id !== id
     );
 
 
   cart =
     cart.filter(
-      function (item) {
-
-        return (
-          item.id !== id
-        );
-
-      }
+      item =>
+        item.id !== id
     );
 
 
@@ -2704,7 +3112,7 @@ function deleteProduct(
 
 
 // ==========================================
-// HELPERS
+// OUTILS
 // ==========================================
 
 function formatPrice(
@@ -2742,8 +3150,7 @@ function valueOf(
       )
       ?.value ||
     ""
-  )
-    .trim();
+  ).trim();
 
 }
 
@@ -2774,9 +3181,7 @@ function setValue(
     );
 
 
-  if (
-    element
-  ) {
+  if (element) {
 
     element.value =
       value ||
@@ -2798,9 +3203,7 @@ function setText(
     );
 
 
-  if (
-    element
-  ) {
+  if (element) {
 
     element.textContent =
       value ??
