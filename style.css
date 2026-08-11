@@ -25,6 +25,7 @@ body {
 
 body {
   color: white;
+
   font-family:
     -apple-system,
     BlinkMacSystemFont,
@@ -64,6 +65,7 @@ button {
 #loader {
   position: fixed;
   inset: 0;
+
   z-index: 99999;
 
   display: flex;
@@ -98,6 +100,7 @@ button {
   height: 135px;
 
   border-radius: 50%;
+
   object-fit: cover;
 
   box-shadow:
@@ -108,8 +111,10 @@ button {
 }
 
 @keyframes spin {
+
   from {
     opacity: .4;
+
     transform:
       rotate(0)
       scale(.8);
@@ -117,10 +122,12 @@ button {
 
   to {
     opacity: 1;
+
     transform:
       rotate(360deg)
       scale(1);
   }
+
 }
 
 .loader-line {
@@ -228,11 +235,13 @@ button {
   height: 45px;
 
   border-radius: 50%;
+
   object-fit: cover;
 }
 
 .brand div {
   display: flex;
+
   flex-direction: column;
 }
 
@@ -268,12 +277,16 @@ button {
 
 .header-status.open {
   color: var(--green);
-  background: rgba(89,220,145,.1);
+
+  background:
+    rgba(89,220,145,.1);
 }
 
 .header-status.closed {
   color: var(--red);
-  background: rgba(255,105,111,.1);
+
+  background:
+    rgba(255,105,111,.1);
 }
 
 .cart-button {
@@ -301,6 +314,7 @@ button {
   height: 19px;
 
   display: grid;
+
   place-items: center;
 
   border-radius: 50%;
@@ -318,7 +332,10 @@ button {
 
   width: 100%;
 
-  padding: 20px 15px 35px;
+  padding:
+    20px
+    15px
+    35px;
 }
 
 .page.active {
@@ -357,7 +374,9 @@ button {
 .product-count {
   padding: 8px 11px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
+
   border-radius: 14px;
 
   background: var(--card);
@@ -389,9 +408,12 @@ button {
 
   margin-bottom: 14px;
 
-  padding: 0 13px;
+  padding:
+    0 13px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
+
   border-radius: 16px;
 
   background: #10141b;
@@ -401,6 +423,7 @@ button {
   flex: 1;
 
   border: none;
+
   outline: none;
 
   background: transparent;
@@ -415,7 +438,10 @@ button {
   display: grid;
 
   grid-template-columns:
-    repeat(2, minmax(0,1fr));
+    repeat(
+      2,
+      minmax(0,1fr)
+    );
 
   gap: 10px;
 }
@@ -425,7 +451,8 @@ button {
 
   overflow: hidden;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 22px;
 
@@ -435,6 +462,8 @@ button {
       #151a23,
       #0c0f14
     );
+
+  cursor: pointer;
 }
 
 .product-image {
@@ -510,7 +539,8 @@ button {
 .detail-card {
   overflow: hidden;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 27px;
 
@@ -538,6 +568,7 @@ button {
 
 .detail-image img {
   width: 100%;
+
   max-height: 430px;
 
   object-fit: cover;
@@ -575,7 +606,7 @@ button {
   font-size: 14px;
 }
 
-.detail-body p {
+.detail-body > p {
   margin-top: 8px;
 
   color: var(--grey);
@@ -583,6 +614,88 @@ button {
   line-height: 1.6;
 
   white-space: pre-line;
+}
+
+
+/* TAILLES */
+
+.size-section {
+  width: 100%;
+}
+
+.size-title-row {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  gap: 10px;
+}
+
+.size-title-row span {
+  color: var(--grey);
+
+  font-size: 10px;
+}
+
+.size-options {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0,1fr));
+
+  gap: 8px;
+
+  margin-top: 12px;
+}
+
+.size-button {
+  min-height: 46px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 13px;
+
+  background: #0b0f15;
+
+  color: white;
+
+  font-weight: 800;
+
+  transition: .2s;
+}
+
+.size-button.available {
+  border-color:
+    rgba(49,156,255,.28);
+}
+
+.size-button.selected {
+  border-color: var(--blue);
+
+  background:
+    rgba(49,156,255,.15);
+
+  color: var(--blue2);
+
+  box-shadow:
+    0 0 0 1px
+    rgba(49,156,255,.1);
+}
+
+.size-button.unavailable {
+  opacity: .35;
+
+  text-decoration:
+    line-through;
+
+  cursor: not-allowed;
+}
+
+.size-button.unique {
+  grid-column:
+    span 2;
 }
 
 
@@ -606,6 +719,7 @@ button {
   color: var(--grey);
 
   font-size: 12px;
+
   line-height: 1.45;
 }
 
@@ -620,11 +734,14 @@ button {
 .empty-cart {
   width: 100%;
 
-  padding: 28px 20px;
+  padding:
+    28px 20px;
 
   text-align: center;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
+
   border-radius: 22px;
 
   background: var(--card);
@@ -636,23 +753,13 @@ button {
 
   max-width: 70px !important;
 
-  margin: 0 auto 12px;
+  margin:
+    0 auto
+    12px;
 
   border-radius: 50%;
 
   object-fit: cover;
-}
-
-.empty-cart h3 {
-  font-size: 17px;
-}
-
-.empty-cart p {
-  margin-top: 6px;
-
-  color: var(--grey);
-
-  font-size: 11px;
 }
 
 .cart-item {
@@ -669,7 +776,9 @@ button {
 
   padding: 10px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
+
   border-radius: 18px;
 
   background: var(--card);
@@ -713,6 +822,14 @@ button {
   color: var(--grey);
 
   font-size: 10px;
+
+  line-height: 1.45;
+}
+
+.cart-size {
+  color: var(--blue2) !important;
+
+  font-weight: 700;
 }
 
 .remove {
@@ -739,7 +856,8 @@ button {
 
   padding: 15px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 20px;
 
@@ -758,7 +876,10 @@ button {
   display: grid;
 
   grid-template-columns:
-    repeat(2,minmax(0,1fr));
+    repeat(
+      2,
+      minmax(0,1fr)
+    );
 
   gap: 8px;
 }
@@ -776,7 +897,8 @@ button {
 
   padding: 10px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 15px;
 
@@ -799,6 +921,7 @@ button {
   min-width: 0;
 
   display: flex;
+
   flex-direction: column;
 }
 
@@ -837,7 +960,8 @@ button {
 
   padding: 10px 12px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 12px;
 
@@ -881,7 +1005,8 @@ button {
 }
 
 .delivery-info {
-  margin: 8px 0;
+  margin:
+    8px 0;
 
   padding: 9px;
 
@@ -902,7 +1027,8 @@ button {
 
   padding-top: 13px;
 
-  border-top: 1px solid var(--border);
+  border-top:
+    1px solid var(--border);
 
   color: white;
 
@@ -953,7 +1079,8 @@ button {
 
   padding: 13px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 18px;
 
@@ -965,6 +1092,7 @@ button {
   height: 46px;
 
   display: grid;
+
   place-items: center;
 
   flex-shrink: 0;
@@ -1025,7 +1153,8 @@ button {
 
   padding: 13px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 18px;
 
@@ -1037,6 +1166,7 @@ button {
   height: 46px;
 
   display: grid;
+
   place-items: center;
 
   border-radius: 14px;
@@ -1072,12 +1202,14 @@ button {
 
 .badge.available {
   color: var(--green);
+
   background:
     rgba(89,220,145,.1);
 }
 
 .badge.unavailable {
   color: var(--red);
+
   background:
     rgba(255,105,111,.1);
 }
@@ -1090,7 +1222,8 @@ button {
 
   padding: 15px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 20px;
 
@@ -1145,7 +1278,8 @@ button {
 
   padding: 12px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 15px;
 
@@ -1175,7 +1309,110 @@ button {
 }
 
 
-/* BOTTOM NAV */
+/* ADMIN TAILLES */
+
+.admin-size-box {
+  margin-top: 16px;
+
+  padding: 13px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 14px;
+
+  background:
+    rgba(255,255,255,.025);
+}
+
+.admin-size-box h4 {
+  margin-bottom: 8px;
+
+  font-size: 13px;
+}
+
+.toggle-line {
+  width: 100%;
+
+  display: flex !important;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin:
+    0 !important;
+
+  padding:
+    10px 0;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.05);
+
+  color: white !important;
+
+  font-size: 12px !important;
+}
+
+.toggle-line:last-of-type {
+  border-bottom: none;
+}
+
+.toggle-line input {
+  width: 20px !important;
+
+  min-height: 20px !important;
+
+  accent-color: var(--blue);
+}
+
+.admin-hint {
+  margin-top: 10px !important;
+
+  line-height: 1.5;
+}
+
+.admin-size-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap: 7px;
+
+  margin-top: 10px;
+}
+
+.admin-size-option {
+  padding: 8px;
+
+  border:
+    1px solid var(--border);
+
+  border-radius: 11px;
+
+  background: #090c11;
+
+  text-align: center;
+}
+
+.admin-size-option span {
+  display: block;
+
+  margin-bottom: 6px;
+
+  font-size: 10px;
+}
+
+.admin-size-option input {
+  width: 18px !important;
+
+  min-height: 18px !important;
+
+  accent-color: var(--blue);
+}
+
+
+/* NAV */
 
 .bottom-nav {
   position: fixed;
@@ -1207,7 +1444,8 @@ button {
 
   padding: 6px;
 
-  border: 1px solid var(--border);
+  border:
+    1px solid var(--border);
 
   border-radius: 22px;
 
@@ -1220,6 +1458,7 @@ button {
 
 .nav-item {
   min-width: 0;
+
   min-height: 51px;
 
   border: none;
@@ -1271,6 +1510,7 @@ button {
 
   .page {
     padding-left: 13px;
+
     padding-right: 13px;
   }
 
@@ -1282,10 +1522,12 @@ button {
     padding: 13px;
   }
 
-  .empty-cart img {
-    width: 62px !important;
-    height: 62px !important;
-    max-width: 62px !important;
+  .size-options {
+    gap: 6px;
+  }
+
+  .size-button {
+    min-height: 43px;
   }
 
 }
