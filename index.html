@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1.0, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#050505">
+  <meta name="theme-color" content="#050506">
 
   <title>ShopBassin</title>
 
@@ -21,7 +21,7 @@
 <body>
 
   <!-- =========================
-       ÉCRAN DE CHARGEMENT
+       CHARGEMENT
   ========================== -->
 
   <div id="loader">
@@ -41,7 +41,9 @@
         <div class="loading-progress"></div>
       </div>
 
-      <p>SHOPBASSIN PREMIUM</p>
+      <p>
+        PREMIUM • QUALITÉ • UNIQUE
+      </p>
 
     </div>
 
@@ -68,8 +70,15 @@
         >
 
         <div>
-          <span>SHOPBASSIN</span>
-          <strong>Premium</strong>
+
+          <span>
+            SHOPBASSIN
+          </span>
+
+          <strong>
+            Premium
+          </strong>
+
         </div>
 
       </div>
@@ -79,12 +88,16 @@
         class="cart-top"
         onclick="showPage('panier')"
       >
+
         <img
           src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
           alt=""
         >
 
-        <span id="cart-count">0</span>
+        <span id="cart-count">
+          0
+        </span>
+
       </button>
 
     </header>
@@ -95,21 +108,10 @@
          CATALOGUE
     ========================== -->
 
-    <main id="catalogue" class="page active">
-
-      <section class="intro">
-
-        <span class="premium">
-          SHOPBASSIN PREMIUM
-        </span>
-
-        <p>
-          Livraison gratuite dès 30 € d'achat.
-          En dessous de 30 €, 5 € de livraison.
-        </p>
-
-      </section>
-
+    <main
+      id="catalogue"
+      class="page active"
+    >
 
       <section class="catalogue-section">
 
@@ -121,16 +123,22 @@
               SHOPBASSIN
             </span>
 
-            <h1>Catalogue</h1>
+            <h1>
+              Catalogue
+            </h1>
 
           </div>
 
 
           <div class="product-counter">
 
-            <strong id="product-count">0</strong>
+            <strong id="product-count">
+              0
+            </strong>
 
-            <span>produits</span>
+            <span>
+              produits
+            </span>
 
           </div>
 
@@ -140,7 +148,8 @@
         <div
           id="products-container"
           class="products-grid"
-        ></div>
+        >
+        </div>
 
       </section>
 
@@ -152,7 +161,10 @@
          PANIER
     ========================== -->
 
-    <main id="panier" class="page">
+    <main
+      id="panier"
+      class="page"
+    >
 
       <div class="page-header">
 
@@ -166,7 +178,9 @@
           SHOPBASSIN
         </span>
 
-        <h2>Ton panier</h2>
+        <h2>
+          Ton panier
+        </h2>
 
         <p>
           Vérifie ta commande avant de continuer.
@@ -175,14 +189,17 @@
       </div>
 
 
-      <div id="cart-items"></div>
+      <div id="cart-items">
+      </div>
 
 
       <div class="order-summary">
 
         <div class="summary-line">
 
-          <span>Sous-total</span>
+          <span>
+            Sous-total
+          </span>
 
           <strong id="cart-subtotal">
             0,00 €
@@ -193,7 +210,9 @@
 
         <div class="summary-line">
 
-          <span>Livraison</span>
+          <span>
+            Livraison
+          </span>
 
           <strong id="delivery-price">
             0,00 €
@@ -203,13 +222,15 @@
 
 
         <div class="free-delivery">
-          Livraison gratuite dès 30 €
+          Livraison gratuite dès 30 € • sinon 5 €
         </div>
 
 
         <div class="summary-line total-line">
 
-          <span>Total</span>
+          <span>
+            Total
+          </span>
 
           <strong id="cart-total">
             0,00 €
@@ -235,7 +256,10 @@
          CONTACT
     ========================== -->
 
-    <main id="contact" class="page">
+    <main
+      id="contact"
+      class="page"
+    >
 
       <div class="page-header">
 
@@ -249,7 +273,9 @@
           SHOPBASSIN
         </span>
 
-        <h2>Contact</h2>
+        <h2>
+          Contact
+        </h2>
 
         <p>
           Retrouve ShopBassin sur les réseaux.
@@ -261,64 +287,74 @@
       <div class="contact-list">
 
 
+        <!-- SNAPCHAT -->
+
         <div class="contact-item">
 
-          <img
-            src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-            class="contact-logo"
-            alt=""
-          >
+          <div class="social-logo snapchat-logo">
+            👻
+          </div>
 
           <div>
 
-            <span>Snapchat</span>
+            <span>
+              Snapchat
+            </span>
 
-            <!-- TON SNAPCHAT ICI -->
-            <strong>Ton Snapchat</strong>
+            <strong id="snapchat-contact">
+              ton_snapchat
+            </strong>
 
           </div>
 
         </div>
 
 
+        <!-- INSTAGRAM -->
+
         <div class="contact-item">
 
-          <img
-            src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-            class="contact-logo"
-            alt=""
-          >
+          <div class="social-logo instagram-logo">
+            ◎
+          </div>
 
           <div>
 
-            <span>Instagram</span>
+            <span>
+              Instagram
+            </span>
 
-            <!-- TON INSTAGRAM ICI -->
-            <strong>@toninstagram</strong>
+            <strong id="instagram-contact">
+              @toninstagram
+            </strong>
 
           </div>
 
         </div>
 
 
+        <!-- TELEGRAM -->
+
         <div class="contact-item">
 
-          <img
-            src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-            class="contact-logo"
-            alt=""
-          >
+          <div class="social-logo telegram-logo">
+            ➤
+          </div>
 
           <div>
 
-            <span>Telegram</span>
+            <span>
+              Telegram
+            </span>
 
-            <!-- TON TELEGRAM ICI -->
-            <strong>@tontelegram</strong>
+            <strong id="telegram-contact">
+              @shopbassinstore_bot
+            </strong>
 
           </div>
 
         </div>
+
 
       </div>
 
@@ -330,7 +366,10 @@
          INFOS
     ========================== -->
 
-    <main id="infos" class="page">
+    <main
+      id="infos"
+      class="page"
+    >
 
       <div class="page-header">
 
@@ -344,11 +383,9 @@
           SHOPBASSIN
         </span>
 
-        <h2>Infos</h2>
-
-        <p>
-          Informations de la boutique.
-        </p>
+        <h2>
+          Infos
+        </h2>
 
       </div>
 
@@ -363,35 +400,30 @@
               ÉTAT ACTUEL
             </span>
 
-            <h3>ShopBassin</h3>
+            <h3>
+              ShopBassin
+            </h3>
 
           </div>
 
-
-          <!--
-          POUR FERMER :
-
-          remplace :
-          class="shop-status open"
-          par :
-          class="shop-status closed"
-
-          et remplace OUVERT par FERMÉ
-          -->
 
           <div
             id="shop-status"
             class="shop-status open"
           >
+
             <span></span>
 
-            OUVERT
+            <b id="shop-status-text">
+              OUVERT
+            </b>
+
           </div>
 
         </div>
 
 
-        <p>
+        <p id="shop-status-description">
           Les commandes sont actuellement disponibles.
         </p>
 
@@ -407,31 +439,13 @@
 
         <div>
 
-          <strong>Livraison</strong>
+          <strong>
+            Livraison
+          </strong>
 
           <p>
             Gratuite dès 30 € d'achat.
-            Sinon 5 € de frais de livraison.
-          </p>
-
-        </div>
-
-      </div>
-
-
-      <div class="info-card">
-
-        <img
-          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
-          alt=""
-        >
-
-        <div>
-
-          <strong>ShopBassin Premium</strong>
-
-          <p>
-            Qualité • Premium • Rapidité
+            En dessous de 30 €, 5 €.
           </p>
 
         </div>
@@ -443,7 +457,204 @@
 
 
     <!-- =========================
-         MENU DU BAS
+         GESTION
+    ========================== -->
+
+    <main
+      id="gestion"
+      class="page"
+    >
+
+      <div class="page-header">
+
+        <img
+          class="page-logo"
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
+        <span class="mini-title">
+          ADMINISTRATION
+        </span>
+
+        <h2>
+          Gestion
+        </h2>
+
+        <p>
+          Modifie rapidement ta boutique depuis ton téléphone.
+        </p>
+
+      </div>
+
+
+      <!-- STATUT -->
+
+      <div class="admin-card">
+
+        <h3>
+          Boutique
+        </h3>
+
+        <p>
+          Choisis si ShopBassin est ouvert ou fermé.
+        </p>
+
+        <div class="status-buttons">
+
+          <button
+            class="admin-open"
+            onclick="setShopStatus(true)"
+          >
+            OUVRIR
+          </button>
+
+          <button
+            class="admin-close"
+            onclick="setShopStatus(false)"
+          >
+            FERMER
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- CONTACTS -->
+
+      <div class="admin-card">
+
+        <h3>
+          Contacts
+        </h3>
+
+        <label>
+          Snapchat
+        </label>
+
+        <input
+          id="admin-snapchat"
+          type="text"
+          placeholder="Ton Snapchat"
+        >
+
+
+        <label>
+          Instagram
+        </label>
+
+        <input
+          id="admin-instagram"
+          type="text"
+          placeholder="@Instagram"
+        >
+
+
+        <label>
+          Telegram
+        </label>
+
+        <input
+          id="admin-telegram"
+          type="text"
+          placeholder="@Telegram"
+        >
+
+
+        <button
+          class="main-button"
+          onclick="saveContacts()"
+        >
+          Enregistrer les contacts
+        </button>
+
+      </div>
+
+
+      <!-- PRODUITS -->
+
+      <div class="admin-card">
+
+        <h3>
+          Produits
+        </h3>
+
+        <p>
+          Modifie les produits existants.
+        </p>
+
+        <div id="admin-products">
+        </div>
+
+      </div>
+
+
+      <!-- AJOUT PRODUIT -->
+
+      <div class="admin-card">
+
+        <h3>
+          Ajouter un produit
+        </h3>
+
+
+        <label>
+          Nom
+        </label>
+
+        <input
+          id="new-product-name"
+          type="text"
+          placeholder="Nom du produit"
+        >
+
+
+        <label>
+          Prix
+        </label>
+
+        <input
+          id="new-product-price"
+          type="number"
+          step="0.01"
+          placeholder="29.90"
+        >
+
+
+        <label>
+          Nom du fichier photo
+        </label>
+
+        <input
+          id="new-product-image"
+          type="text"
+          placeholder="exemple.jpg"
+        >
+
+
+        <p class="admin-help">
+          Pour l'instant, la photo doit d'abord être ajoutée
+          dans GitHub. Ensuite tu écris ici exactement le nom
+          du fichier.
+        </p>
+
+
+        <button
+          class="main-button"
+          onclick="addAdminProduct()"
+        >
+          Ajouter le produit
+        </button>
+
+      </div>
+
+    </main>
+
+
+
+    <!-- =========================
+         NAVIGATION
     ========================== -->
 
     <nav class="bottom-nav">
@@ -509,6 +720,22 @@
         >
 
         Infos
+
+      </button>
+
+
+      <button
+        class="nav-button"
+        data-page="gestion"
+        onclick="showPage('gestion', this)"
+      >
+
+        <img
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
+        Gestion
 
       </button>
 
