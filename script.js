@@ -1,8 +1,34 @@
+// ======================================================
+// SHOPBASSIN + SUPABASE
+// ======================================================
+
 const LOGO =
   "6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png";
 
-const ADMIN_CODE =
-  "483726";
+
+// ======================================================
+// SUPABASE
+// ======================================================
+
+const SUPABASE_URL =
+  "https://szfzibyixkiewkosjbro.supabase.co";
+
+
+// COLLE TA PUBLISHABLE KEY ENTRE LES GUILLEMETS
+const SUPABASE_KEY =
+  "sb_publishable_URF7d3K0eXTiCActPBMGTw_f5k7bvzB";
+
+
+const supabaseClient =
+  window.supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+
+
+// ======================================================
+// TELEGRAM
+// ======================================================
 
 const tg =
   window.Telegram?.WebApp;
@@ -15,100 +41,31 @@ if (tg) {
     tg.ready();
     tg.expand();
 
-  } catch {}
+  } catch (error) {}
 
 }
 
 
-// ==========================================
-// DONNÉES PAR DÉFAUT
-// ==========================================
-
-const DEFAULT_PRODUCTS = [
-
-  {
-    id: 1,
-
-    name:
-      "Produit ShopBassin",
-
-    price:
-      25,
-
-    description:
-      "Description du produit. Modifie-la dans Gestion.",
-
-    images:
-      [],
-
-    sizes: {
-      S: true,
-      M: true,
-      L: true,
-      UNIQUE: false
-    }
-  },
-
-
-  {
-    id: 2,
-
-    name:
-      "Produit Premium",
-
-    price:
-      29.90,
-
-    description:
-      "Ajoute ici toutes les informations importantes du produit.",
-
-    images:
-      [],
-
-    sizes: {
-      S: false,
-      M: false,
-      L: false,
-      UNIQUE: true
-    }
-  }
-
-];
-
-
-const DEFAULT_CONTACTS = {
-
-  snap:
-    "ton_snap",
-
-  insta:
-    "@instagram",
-
-  telegram:
-    "@shopbassinstore_bot"
-
-};
-
-
-// ==========================================
+// ======================================================
 // VARIABLES
-// ==========================================
+// ======================================================
 
 let products = [];
 
 let cart = [];
 
-let contacts = {};
+let contacts = {
+  snap: "",
+  insta: "",
+  telegram: ""
+};
 
 
-let shopOpen =
-  true;
+let shopOpen = true;
 
-let pickupAvailable =
-  true;
+let pickupAvailable = true;
 
-let deliveryAvailable =
-  true;
+let deliveryAvailable = true;
 
 
 let orderMode =
@@ -136,9 +93,9 @@ let galleryTouchStartX =
   0;
 
 
-// ==========================================
+// ======================================================
 // LOADER
-// ==========================================
+// ======================================================
 
 window.addEventListener(
   "load",
@@ -148,51 +105,59 @@ window.addEventListener(
       function () {
 
         document
-          .getElementById(
-            "loader"
-          )
-          ?.classList.add(
-            "hide"
-          );
+          .getElementById("loader")
+          ?.classList.add("hide");
 
 
         document
-          .getElementById(
-            "app"
-          )
-          ?.classList.remove(
-            "app-hidden"
-          );
+          .getElementById("app")
+          ?.classList.remove("app-hidden");
 
       },
-      2200
+      1800
     );
 
   }
 );
 
 
-// ==========================================
+// sécurité anti-loader bloqué
+
+setTimeout(
+  function () {
+
+    document
+      .getElementById("loader")
+      ?.classList.add("hide");
+
+
+    document
+      .getElementById("app")
+      ?.classList.remove("app-hidden");
+
+  },
+  4500
+);
+
+
+// ======================================================
 // DÉMARRAGE
-// ==========================================
+// ======================================================
 
 document.addEventListener(
   "DOMContentLoaded",
-  function () {
-
-    loadProducts();
+  async function () {
 
     loadCart();
 
-    loadContacts();
+    await loadProducts();
 
-    loadAvailability();
+    await loadShopSettings();
 
 
     renderProducts();
 
     renderCart();
-
 
     updateContacts();
 
@@ -211,9 +176,9 @@ document.addEventListener(
 );
 
 
-// ==========================================
+// ======================================================
 // NAVIGATION
-// ==========================================
+// ======================================================
 
 function showPage(
   id,
@@ -224,14 +189,14 @@ function showPage(
     id === "gestion" &&
     !adminUnlocked
   ) {
+
     return;
+
   }
 
 
   document
-    .querySelectorAll(
-      ".page"
-    )
+    .querySelectorAll(".page")
     .forEach(
       function (page) {
 
@@ -244,18 +209,14 @@ function showPage(
 
 
   document
-    .getElementById(
-      id
-    )
+    .getElementById(id)
     ?.classList.add(
       "active"
     );
 
 
   document
-    .querySelectorAll(
-      ".nav-item"
-    )
+    .querySelectorAll(".nav-item")
     .forEach(
       function (nav) {
 
@@ -297,19 +258,16 @@ function showPage(
 
 
   window.scrollTo({
-
     top: 0,
-
     behavior: "smooth"
-
   });
 
 }
 
 
-// ==========================================
-// ADMIN APPUI LONG LOGO
-// ==========================================
+// ======================================================
+// ADMIN — APPUI LONG SUR LE LOGO
+// ======================================================
 
 function setupAdmin() {
 
@@ -328,6 +286,19 @@ function setupAdmin() {
   logo.style.userSelect =
     "none";
 
+  logo.style.webkitUserSelect =
+    "none";
+
+
+  logo.addEventListener(
+    "contextmenu",
+    function (event) {
+
+      event.preventDefault();
+
+    }
+  );
+
 
   const start =
     function () {
@@ -339,7 +310,7 @@ function setupAdmin() {
 
       adminTimer =
         setTimeout(
-          openAdmin,
+          openAdminLogin,
           1500
         );
 
@@ -403,35 +374,120 @@ function setupAdmin() {
 }
 
 
-function openAdmin() {
+// ======================================================
+// CONNEXION ADMIN SUPABASE
+// ======================================================
+
+async function openAdminLogin() {
+
+  // vérifie d'abord si une session existe déjà
+
+  const {
+    data: sessionData
+  } =
+    await supabaseClient
+      .auth
+      .getSession();
+
 
   if (
-    !adminUnlocked
+    sessionData?.session
   ) {
-
-    const code =
-      prompt(
-        "Code administrateur"
-      );
-
-
-    if (
-      code !== ADMIN_CODE
-    ) {
-
-      alert(
-        "Code incorrect."
-      );
-
-      return;
-    }
-
 
     adminUnlocked =
       true;
 
+
+    fillAdminContacts();
+
+    renderAdminProducts();
+
+    showPage(
+      "gestion"
+    );
+
+    return;
+
   }
 
+
+  const email =
+    prompt(
+      "Email administrateur ShopBassin"
+    );
+
+
+  if (!email) {
+
+    return;
+
+  }
+
+
+  const password =
+    prompt(
+      "Mot de passe administrateur"
+    );
+
+
+  if (!password) {
+
+    return;
+
+  }
+
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .auth
+      .signInWithPassword({
+        email:
+          email.trim(),
+
+        password:
+          password
+      });
+
+
+  if (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Connexion refusée. Vérifie ton email et ton mot de passe."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !data?.user
+  ) {
+
+    alert(
+      "Connexion impossible."
+    );
+
+    return;
+
+  }
+
+
+  adminUnlocked =
+    true;
+
+
+  fillAdminContacts();
+
+  renderAdminProducts();
 
   showPage(
     "gestion"
@@ -440,175 +496,160 @@ function openAdmin() {
 }
 
 
-// ==========================================
-// PRODUITS
-// ==========================================
+// ======================================================
+// DÉCONNEXION ADMIN
+// ======================================================
 
-function loadProducts() {
+async function logoutAdmin() {
 
-  try {
-
-    const saved =
-      localStorage.getItem(
-        "shopbassin-products-gallery"
-      );
+  await supabaseClient
+    .auth
+    .signOut();
 
 
-    products =
-      saved
-        ? JSON.parse(
-            saved
-          )
-        : JSON.parse(
-            JSON.stringify(
-              DEFAULT_PRODUCTS
-            )
-          );
-
-  } catch {
-
-    products =
-      JSON.parse(
-        JSON.stringify(
-          DEFAULT_PRODUCTS
-        )
-      );
-
-  }
+  adminUnlocked =
+    false;
 
 
-  // Compatibilité avec tes anciens produits
-
-  products =
-    products.map(
-      function (product) {
-
-        let images =
-          Array.isArray(
-            product.images
-          )
-            ? product.images
-            : [];
+  showPage(
+    "catalogue"
+  );
 
 
-        if (
-          images.length === 0 &&
-          product.image
-        ) {
+  alert(
+    "Déconnecté de la gestion."
+  );
 
-          images = [
-            product.image
-          ];
+}
 
+
+// ======================================================
+// CHARGER PRODUITS DEPUIS SUPABASE
+// ======================================================
+
+async function loadProducts() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from("products")
+      .select("*")
+      .eq("active", true)
+      .order(
+        "created_at",
+        {
+          ascending: false
         }
+      );
 
 
-        return {
+  if (error) {
 
-          ...product,
-
-          description:
-            product.description ||
-            "Aucune description.",
-
-          images:
-            images,
-
-          sizes:
-            normalizeSizes(
-              product.sizes
-            )
-
-        };
-
-      }
+    console.error(
+      "Erreur produits :",
+      error
     );
 
-}
-
-
-function normalizeSizes(
-  sizes
-) {
-
-  if (!sizes) {
-
-    return {
-
-      S: true,
-
-      M: true,
-
-      L: true,
-
-      UNIQUE: false
-
-    };
-
-  }
-
-
-  return {
-
-    S:
-      Boolean(
-        sizes.S
-      ),
-
-    M:
-      Boolean(
-        sizes.M
-      ),
-
-    L:
-      Boolean(
-        sizes.L
-      ),
-
-    UNIQUE:
-      Boolean(
-        sizes.UNIQUE ||
-        sizes.unique
-      )
-
-  };
-
-}
-
-
-function saveProducts() {
-
-  try {
-
-    localStorage.setItem(
-      "shopbassin-products-gallery",
-
-      JSON.stringify(
-        products
-      )
-    );
-
-  } catch {
 
     alert(
-      "Impossible d'enregistrer. Les photos sont peut-être trop lourdes."
+      "Impossible de charger les produits."
     );
+
+    products = [];
 
     return;
 
   }
 
 
-  renderProducts();
+  products =
+    (data || [])
+      .map(
+        function (product) {
 
-  renderAdminProducts();
+          return normalizeProduct(
+            product
+          );
+
+        }
+      );
 
 }
 
 
-// ==========================================
+// ======================================================
+// NORMALISATION PRODUIT
+// ======================================================
+
+function normalizeProduct(
+  product
+) {
+
+  return {
+
+    id:
+      Number(
+        product.id
+      ),
+
+    name:
+      product.name ||
+      "",
+
+    price:
+      Number(
+        product.price ||
+        0
+      ),
+
+    description:
+      product.description ||
+      "",
+
+    images:
+      Array.isArray(
+        product.images
+      )
+        ? product.images
+        : [],
+
+    sizes: {
+
+      S:
+        Boolean(
+          product.size_s
+        ),
+
+      M:
+        Boolean(
+          product.size_m
+        ),
+
+      L:
+        Boolean(
+          product.size_l
+        ),
+
+      UNIQUE:
+        Boolean(
+          product.size_unique
+        )
+
+    },
+
+    active:
+      product.active !== false
+
+  };
+
+}
+
+
+// ======================================================
 // CATALOGUE
-// ==========================================
+// ======================================================
 
 function renderProducts() {
 
@@ -630,6 +671,7 @@ function renderProducts() {
         ?.value ||
       ""
     )
+      .trim()
       .toLowerCase();
 
 
@@ -653,6 +695,36 @@ function renderProducts() {
   );
 
 
+  if (
+    filtered.length === 0
+  ) {
+
+    container.innerHTML = `
+
+      <div class="empty-cart">
+
+        <img
+          src="${LOGO}"
+          alt="ShopBassin"
+        >
+
+        <h3>
+          Aucun produit
+        </h3>
+
+        <p>
+          Les produits seront bientôt disponibles.
+        </p>
+
+      </div>
+
+    `;
+
+    return;
+
+  }
+
+
   container.innerHTML =
     filtered
       .map(
@@ -664,23 +736,24 @@ function renderProducts() {
             );
 
 
-          const firstImage =
+          const image =
             images[0];
 
 
           const placeholder =
-            product.images &&
             product.images.length
               ? ""
               : "placeholder";
 
 
-          const photoBadge =
+          const badge =
             images.length > 1
               ? `
 
                 <div class="multi-photo-badge">
+
                   📷 ${images.length}
+
                 </div>
 
               `
@@ -697,13 +770,14 @@ function renderProducts() {
               <div class="product-image">
 
                 <img
-                  src="${firstImage}"
+                  src="${escapeAttribute(image)}"
                   class="${placeholder}"
-                  alt=""
+                  alt="${escapeAttribute(product.name)}"
+                  loading="lazy"
                   onerror="this.src='${LOGO}'"
                 >
 
-                ${photoBadge}
+                ${badge}
 
               </div>
 
@@ -713,7 +787,6 @@ function renderProducts() {
                 <h3>
                   ${escapeHTML(product.name)}
                 </h3>
-
 
                 <strong>
                   ${formatPrice(product.price)}
@@ -732,9 +805,9 @@ function renderProducts() {
 }
 
 
-// ==========================================
-// OUVRIR PRODUIT
-// ==========================================
+// ======================================================
+// FICHE PRODUIT
+// ======================================================
 
 function openProduct(
   id
@@ -809,33 +882,37 @@ function openProduct(
     );
 
 
-  button.onclick =
-    function () {
+  if (button) {
 
-      if (
-        !selectedSize
-      ) {
+    button.onclick =
+      function () {
 
-        alert(
-          "Choisis une taille avant d'ajouter le produit."
+        if (
+          !selectedSize
+        ) {
+
+          alert(
+            "Choisis une taille avant d'ajouter le produit."
+          );
+
+          return;
+
+        }
+
+
+        addToCart(
+          product.id,
+          selectedSize
         );
 
-        return;
 
-      }
+        alert(
+          "Ajouté au panier ✅"
+        );
 
+      };
 
-      addToCart(
-        product.id,
-        selectedSize
-      );
-
-
-      alert(
-        "Ajouté au panier ✅"
-      );
-
-    };
+  }
 
 
   showPage(
@@ -845,9 +922,9 @@ function openProduct(
 }
 
 
-// ==========================================
-// GALERIE
-// ==========================================
+// ======================================================
+// IMAGES PRODUIT
+// ======================================================
 
 function getProductImages(
   product
@@ -871,6 +948,10 @@ function getProductImages(
 
 }
 
+
+// ======================================================
+// GALERIE
+// ======================================================
 
 function renderGallery(
   product
@@ -897,7 +978,11 @@ function renderGallery(
   if (
     !slides ||
     !dots
-  ) return;
+  ) {
+
+    return;
+
+  }
 
 
   slides.innerHTML =
@@ -919,7 +1004,7 @@ function renderGallery(
             <div class="detail-slide">
 
               <img
-                src="${image}"
+                src="${escapeAttribute(image)}"
                 class="${placeholder}"
                 alt="Photo ${index + 1}"
                 onerror="this.src='${LOGO}'"
@@ -986,8 +1071,7 @@ function updateGallery() {
 
 
   if (
-    currentGalleryIndex <
-    0
+    currentGalleryIndex < 0
   ) {
 
     currentGalleryIndex =
@@ -1059,34 +1143,21 @@ function updateGallery() {
     );
 
 
-  if (
-    images.length <= 1
-  ) {
-
-    if (prev) {
-      prev.style.display =
-        "none";
-    }
+  const visible =
+    images.length > 1
+      ? "grid"
+      : "none";
 
 
-    if (next) {
-      next.style.display =
-        "none";
-    }
-
-  } else {
-
-    if (prev) {
-      prev.style.display =
-        "grid";
-    }
+  if (prev) {
+    prev.style.display =
+      visible;
+  }
 
 
-    if (next) {
-      next.style.display =
-        "grid";
-    }
-
+  if (next) {
+    next.style.display =
+      visible;
   }
 
 }
@@ -1122,9 +1193,9 @@ function goToProductImage(
 }
 
 
-// ==========================================
-// SWIPE GALERIE
-// ==========================================
+// ======================================================
+// SWIPE PHOTOS
+// ======================================================
 
 function setupGallerySwipe() {
 
@@ -1156,13 +1227,13 @@ function setupGallerySwipe() {
     "touchend",
     function (event) {
 
-      const endX =
+      const end =
         event.changedTouches[0]
           .clientX;
 
 
       const difference =
-        endX -
+        end -
         galleryTouchStartX;
 
 
@@ -1198,9 +1269,9 @@ function setupGallerySwipe() {
 }
 
 
-// ==========================================
+// ======================================================
 // TAILLES
-// ==========================================
+// ======================================================
 
 function renderProductSizes(
   product
@@ -1216,9 +1287,7 @@ function renderProductSizes(
 
 
   const sizes =
-    normalizeSizes(
-      product.sizes
-    );
+    product.sizes;
 
 
   if (
@@ -1236,17 +1305,17 @@ function renderProductSizes(
 
     `;
 
-
     return;
 
   }
 
 
-  const options = [
-    "S",
-    "M",
-    "L"
-  ];
+  const options =
+    [
+      "S",
+      "M",
+      "L"
+    ];
 
 
   container.innerHTML =
@@ -1327,9 +1396,9 @@ function selectSize(
 }
 
 
-// ==========================================
-// PANIER
-// ==========================================
+// ======================================================
+// PANIER LOCAL
+// ======================================================
 
 function loadCart() {
 
@@ -1338,7 +1407,7 @@ function loadCart() {
     cart =
       JSON.parse(
         localStorage.getItem(
-          "shopbassin-cart-gallery"
+          "shopbassin-cart"
         )
       ) ||
       [];
@@ -1356,7 +1425,7 @@ function loadCart() {
 function saveCart() {
 
   localStorage.setItem(
-    "shopbassin-cart-gallery",
+    "shopbassin-cart",
 
     JSON.stringify(
       cart
@@ -1394,11 +1463,8 @@ function addToCart(
       function (item) {
 
         return (
-
           item.id === id &&
-
           item.size === size
-
         );
 
       }
@@ -1457,11 +1523,8 @@ function removeFromCart(
       function (item) {
 
         return (
-
           item.id === id &&
-
           item.size === size
-
         );
 
       }
@@ -1484,11 +1547,8 @@ function removeFromCart(
         function (item) {
 
           return !(
-
             item.id === id &&
-
             item.size === size
-
           );
 
         }
@@ -1552,7 +1612,7 @@ function renderCart() {
 
         <img
           src="${LOGO}"
-          alt=""
+          alt="ShopBassin"
         >
 
         <h3>
@@ -1575,10 +1635,8 @@ function renderCart() {
           function (item) {
 
             const image =
-              item.images &&
-              item.images.length
-                ? item.images[0]
-                : LOGO;
+              item.images?.[0] ||
+              LOGO;
 
 
             const encodedSize =
@@ -1594,7 +1652,7 @@ function renderCart() {
                 <div class="cart-thumb">
 
                   <img
-                    src="${image}"
+                    src="${escapeAttribute(image)}"
                     alt=""
                     onerror="this.src='${LOGO}'"
                   >
@@ -1610,8 +1668,10 @@ function renderCart() {
 
 
                   <p class="cart-size">
+
                     Taille :
                     ${escapeHTML(item.size)}
+
                   </p>
 
 
@@ -1649,9 +1709,9 @@ function renderCart() {
 }
 
 
-// ==========================================
-// MODE COMMANDE
-// ==========================================
+// ======================================================
+// MODE LIVRAISON
+// ======================================================
 
 function setOrderMode(
   mode
@@ -1737,9 +1797,9 @@ function updateOrderMode() {
 }
 
 
-// ==========================================
+// ======================================================
 // PRIX
-// ==========================================
+// ======================================================
 
 function getSubtotal() {
 
@@ -1750,12 +1810,9 @@ function getSubtotal() {
     ) {
 
       return (
-
         total +
-
-        item.price *
+        Number(item.price) *
         item.quantity
-
       );
 
     },
@@ -1841,9 +1898,9 @@ function updateTotals() {
 }
 
 
-// ==========================================
+// ======================================================
 // COMMANDE
-// ==========================================
+// ======================================================
 
 async function prepareOrder() {
 
@@ -1852,7 +1909,7 @@ async function prepareOrder() {
   ) {
 
     alert(
-      "ShopBassin est fermé."
+      "ShopBassin est actuellement fermé."
     );
 
     return;
@@ -1861,7 +1918,7 @@ async function prepareOrder() {
 
 
   if (
-    !cart.length
+    cart.length === 0
   ) {
 
     alert(
@@ -1879,7 +1936,7 @@ async function prepareOrder() {
   ) {
 
     alert(
-      "Le retrait sur place est indisponible."
+      "Le retrait sur place est actuellement indisponible."
     );
 
     return;
@@ -1893,7 +1950,7 @@ async function prepareOrder() {
   ) {
 
     alert(
-      "La livraison est indisponible."
+      "La livraison est actuellement indisponible."
     );
 
     return;
@@ -1946,7 +2003,7 @@ async function prepareOrder() {
         ?.value;
 
 
-    const cityNames = {
+    const cities = {
 
       arcachon:
         "Arcachon",
@@ -1964,9 +2021,7 @@ async function prepareOrder() {
 
 
     cityName =
-      cityNames[
-        city
-      ] ||
+      cities[city] ||
       city;
 
 
@@ -1982,9 +2037,7 @@ async function prepareOrder() {
       );
 
 
-    if (
-      !address
-    ) {
+    if (!address) {
 
       alert(
         "Entre ton adresse."
@@ -1995,9 +2048,7 @@ async function prepareOrder() {
     }
 
 
-    if (
-      extra
-    ) {
+    if (extra) {
 
       address +=
         " — " +
@@ -2025,8 +2076,8 @@ async function prepareOrder() {
 
 `🛍 COMMANDE SHOPBASSIN
 
-👤 ${name}
-📞 ${phone}
+👤 Client : ${name}
+📞 Téléphone : ${phone}
 
 `;
 
@@ -2037,7 +2088,8 @@ async function prepareOrder() {
 
     message +=
 
-`🏠 SUR PLACE À ARCACHON
+`🏠 RETRAIT SUR PLACE
+📍 Arcachon
 
 `;
 
@@ -2046,8 +2098,8 @@ async function prepareOrder() {
     message +=
 
 `🚚 LIVRAISON
-📍 ${cityName}
-🏡 ${address}
+📍 Ville : ${cityName}
+🏡 Adresse : ${address}
 
 `;
 
@@ -2055,7 +2107,6 @@ async function prepareOrder() {
 
 
   message +=
-
 `🛒 PRODUITS
 
 `;
@@ -2110,9 +2161,9 @@ TOTAL : ${formatPrice(total)}`;
 }
 
 
-// ==========================================
+// ======================================================
 // TELEGRAM
-// ==========================================
+// ======================================================
 
 function openTelegram() {
 
@@ -2153,111 +2204,207 @@ function openTelegram() {
 }
 
 
-// ==========================================
-// DISPONIBILITÉS
-// ==========================================
+// ======================================================
+// CHARGER RÉGLAGES SUPABASE
+// ======================================================
 
-function loadAvailability() {
+async function loadShopSettings() {
+
+  const {
+    data,
+    error
+  } =
+    await supabaseClient
+      .from(
+        "shop_settings"
+      )
+      .select("*")
+      .eq(
+        "id",
+        1
+      )
+      .single();
+
+
+  if (error) {
+
+    console.error(
+      "Erreur réglages :",
+      error
+    );
+
+    return;
+
+  }
+
 
   shopOpen =
-    getBool(
-      "sb-open",
-      true
+    Boolean(
+      data.shop_open
     );
 
 
   pickupAvailable =
-    getBool(
-      "sb-pickup",
-      true
+    Boolean(
+      data.pickup_available
     );
 
 
   deliveryAvailable =
-    getBool(
-      "sb-delivery",
-      true
-    );
-
-}
-
-
-function getBool(
-  key,
-  defaultValue
-) {
-
-  const value =
-    localStorage.getItem(
-      key
+    Boolean(
+      data.delivery_available
     );
 
 
-  return (
-    value === null
-      ? defaultValue
-      : value === "true"
-  );
+  contacts = {
+
+    snap:
+      data.snapchat ||
+      "",
+
+    insta:
+      data.instagram ||
+      "",
+
+    telegram:
+      data.telegram ||
+      ""
+
+  };
 
 }
 
 
-function setShopOpen(
-  value
+// ======================================================
+// MODIFIER RÉGLAGES ADMIN
+// ======================================================
+
+async function updateShopSettings(
+  changes,
+  successMessage
 ) {
 
-  shopOpen =
-    value;
+  if (!adminUnlocked) {
+
+    alert(
+      "Connexion administrateur nécessaire."
+    );
+
+    return;
+
+  }
 
 
-  localStorage.setItem(
-    "sb-open",
-    value
-  );
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(
+        "shop_settings"
+      )
+      .update({
+        ...changes,
+        updated_at:
+          new Date()
+            .toISOString()
+      })
+      .eq(
+        "id",
+        1
+      );
 
+
+  if (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Modification refusée."
+    );
+
+    return;
+
+  }
+
+
+  await loadShopSettings();
 
   updateAvailability();
 
+  updateContacts();
+
+
+  if (successMessage) {
+
+    alert(
+      successMessage
+    );
+
+  }
+
 }
 
 
-function setPickupAvailable(
+async function setShopOpen(
   value
 ) {
 
-  pickupAvailable =
-    value;
+  await updateShopSettings(
+    {
+      shop_open:
+        value
+    },
 
-
-  localStorage.setItem(
-    "sb-pickup",
     value
+      ? "Boutique ouverte ✅"
+      : "Boutique fermée."
   );
-
-
-  updateAvailability();
 
 }
 
 
-function setDeliveryAvailable(
+async function setPickupAvailable(
   value
 ) {
 
-  deliveryAvailable =
-    value;
+  await updateShopSettings(
+    {
+      pickup_available:
+        value
+    },
 
-
-  localStorage.setItem(
-    "sb-delivery",
     value
+      ? "Retrait disponible ✅"
+      : "Retrait indisponible."
   );
-
-
-  updateAvailability();
 
 }
 
+
+async function setDeliveryAvailable(
+  value
+) {
+
+  await updateShopSettings(
+    {
+      delivery_available:
+        value
+    },
+
+    value
+      ? "Livraison disponible ✅"
+      : "Livraison indisponible."
+  );
+
+}
+
+
+// ======================================================
+// AFFICHAGE DISPONIBILITÉS
+// ======================================================
 
 function updateAvailability() {
 
@@ -2351,35 +2498,9 @@ function updateBadge(
 }
 
 
-// ==========================================
+// ======================================================
 // CONTACTS
-// ==========================================
-
-function loadContacts() {
-
-  try {
-
-    contacts =
-      JSON.parse(
-        localStorage.getItem(
-          "sb-contacts"
-        )
-      ) ||
-      {
-        ...DEFAULT_CONTACTS
-      };
-
-  } catch {
-
-    contacts =
-      {
-        ...DEFAULT_CONTACTS
-      };
-
-  }
-
-}
-
+// ======================================================
 
 function updateContacts() {
 
@@ -2425,50 +2546,37 @@ function fillAdminContacts() {
 }
 
 
-function saveContacts() {
+async function saveContacts() {
 
-  contacts = {
+  await updateShopSettings(
+    {
 
-    snap:
-      valueOf(
-        "admin-snap"
-      ),
+      snapchat:
+        valueOf(
+          "admin-snap"
+        ),
 
-    insta:
-      valueOf(
-        "admin-insta"
-      ),
+      instagram:
+        valueOf(
+          "admin-insta"
+        ),
 
-    telegram:
-      valueOf(
-        "admin-telegram"
-      )
+      telegram:
+        valueOf(
+          "admin-telegram"
+        )
 
-  };
+    },
 
-
-  localStorage.setItem(
-    "sb-contacts",
-
-    JSON.stringify(
-      contacts
-    )
-  );
-
-
-  updateContacts();
-
-
-  alert(
     "Contacts enregistrés ✅"
   );
 
 }
 
 
-// ==========================================
-// ADMIN PRODUITS
-// ==========================================
+// ======================================================
+// ADMIN — PRODUITS
+// ======================================================
 
 function renderAdminProducts() {
 
@@ -2481,38 +2589,38 @@ function renderAdminProducts() {
   if (!container) return;
 
 
+  if (
+    products.length === 0
+  ) {
+
+    container.innerHTML =
+      "<p>Aucun produit.</p>";
+
+    return;
+
+  }
+
+
   container.innerHTML =
     products
       .map(
         function (product) {
 
-          const sizes =
-            normalizeSizes(
-              product.sizes
-            );
-
-
-          const images =
-            getProductImages(
-              product
-            );
-
-
           const previews =
-            images
-              .filter(
-                image =>
-                  image !== LOGO
-              )
+            product.images
               .map(
-                image => `
+                function (image) {
 
-                  <img
-                    src="${image}"
-                    alt=""
-                  >
+                  return `
 
-                `
+                    <img
+                      src="${escapeAttribute(image)}"
+                      alt=""
+                    >
+
+                  `;
+
+                }
               )
               .join("");
 
@@ -2543,7 +2651,9 @@ function renderAdminProducts() {
                   ? `
 
                     <div class="admin-gallery-preview">
+
                       ${previews}
+
                     </div>
 
                   `
@@ -2584,7 +2694,7 @@ function renderAdminProducts() {
 
 
               <label>
-                Remplacer les photos
+                Remplacer toutes les photos
               </label>
 
               <input
@@ -2596,7 +2706,7 @@ function renderAdminProducts() {
 
 
               <p class="admin-help">
-                Laisse vide si tu veux garder les photos actuelles.
+                Laisse vide pour conserver les photos actuelles.
               </p>
 
 
@@ -2610,56 +2720,36 @@ function renderAdminProducts() {
                 <div class="admin-size-grid">
 
 
-                  <label class="admin-size-option">
-
-                    <span>S</span>
-
-                    <input
-                      id="size-s-${product.id}"
-                      type="checkbox"
-                      ${sizes.S ? "checked" : ""}
-                    >
-
-                  </label>
+                  ${adminSizeCheckbox(
+                    product.id,
+                    "s",
+                    "S",
+                    product.sizes.S
+                  )}
 
 
-                  <label class="admin-size-option">
-
-                    <span>M</span>
-
-                    <input
-                      id="size-m-${product.id}"
-                      type="checkbox"
-                      ${sizes.M ? "checked" : ""}
-                    >
-
-                  </label>
+                  ${adminSizeCheckbox(
+                    product.id,
+                    "m",
+                    "M",
+                    product.sizes.M
+                  )}
 
 
-                  <label class="admin-size-option">
-
-                    <span>L</span>
-
-                    <input
-                      id="size-l-${product.id}"
-                      type="checkbox"
-                      ${sizes.L ? "checked" : ""}
-                    >
-
-                  </label>
+                  ${adminSizeCheckbox(
+                    product.id,
+                    "l",
+                    "L",
+                    product.sizes.L
+                  )}
 
 
-                  <label class="admin-size-option">
-
-                    <span>Unique</span>
-
-                    <input
-                      id="size-u-${product.id}"
-                      type="checkbox"
-                      ${sizes.UNIQUE ? "checked" : ""}
-                    >
-
-                  </label>
+                  ${adminSizeCheckbox(
+                    product.id,
+                    "u",
+                    "Unique",
+                    product.sizes.UNIQUE
+                  )}
 
 
                 </div>
@@ -2685,18 +2775,417 @@ function renderAdminProducts() {
 }
 
 
-// ==========================================
-// ENREGISTRER PRODUIT
-// ==========================================
+function adminSizeCheckbox(
+  id,
+  key,
+  label,
+  checkedState
+) {
+
+  return `
+
+    <label class="admin-size-option">
+
+      <span>
+        ${label}
+      </span>
+
+      <input
+        id="size-${key}-${id}"
+        type="checkbox"
+        ${checkedState ? "checked" : ""}
+      >
+
+    </label>
+
+  `;
+
+}
+
+
+// ======================================================
+// UPLOAD PHOTOS SUPABASE
+// ======================================================
+
+async function uploadProductImages(
+  files
+) {
+
+  const urls =
+    [];
+
+
+  for (
+    const file
+    of Array.from(files)
+  ) {
+
+    // taille max choisie : 8 Mo
+    if (
+      file.size >
+      8 * 1024 * 1024
+    ) {
+
+      throw new Error(
+        `La photo ${file.name} dépasse 8 Mo.`
+      );
+
+    }
+
+
+    const extension =
+      (
+        file.name
+          .split(".")
+          .pop() ||
+        "jpg"
+      )
+        .toLowerCase();
+
+
+    const safeExtension =
+      extension.replace(
+        /[^a-z0-9]/g,
+        ""
+      ) ||
+      "jpg";
+
+
+    const filePath =
+      `products/${Date.now()}-${crypto.randomUUID()}.${safeExtension}`;
+
+
+    const {
+      error
+    } =
+      await supabaseClient
+        .storage
+        .from(
+          "product-images"
+        )
+        .upload(
+          filePath,
+          file,
+          {
+            cacheControl:
+              "3600",
+
+            upsert:
+              false,
+
+            contentType:
+              file.type ||
+              undefined
+          }
+        );
+
+
+    if (error) {
+
+      console.error(
+        "Upload :",
+        error
+      );
+
+
+      throw error;
+
+    }
+
+
+    const {
+      data
+    } =
+      supabaseClient
+        .storage
+        .from(
+          "product-images"
+        )
+        .getPublicUrl(
+          filePath
+        );
+
+
+    urls.push(
+      data.publicUrl
+    );
+
+  }
+
+
+  return urls;
+
+}
+
+
+// ======================================================
+// AJOUTER PRODUIT
+// ======================================================
+
+async function addProduct() {
+
+  if (!adminUnlocked) {
+
+    alert(
+      "Connexion administrateur nécessaire."
+    );
+
+    return;
+
+  }
+
+
+  const name =
+    valueOf(
+      "new-name"
+    );
+
+
+  const price =
+    Number(
+      valueOf(
+        "new-price"
+      )
+    );
+
+
+  const description =
+    valueOf(
+      "new-description"
+    );
+
+
+  if (
+    !name ||
+    !Number.isFinite(price) ||
+    price < 0
+  ) {
+
+    alert(
+      "Entre un nom et un prix valide."
+    );
+
+    return;
+
+  }
+
+
+  const sizes =
+    readNewProductSizes();
+
+
+  if (
+    !hasAnySize(
+      sizes
+    )
+  ) {
+
+    alert(
+      "Choisis au moins une taille."
+    );
+
+    return;
+
+  }
+
+
+  const photoInput =
+    document.getElementById(
+      "new-photos"
+    );
+
+
+  let imageUrls =
+    [];
+
+
+  try {
+
+    if (
+      photoInput?.files?.length
+    ) {
+
+      imageUrls =
+        await uploadProductImages(
+          photoInput.files
+        );
+
+    }
+
+  } catch (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Erreur pendant l'envoi des photos : " +
+      (
+        error.message ||
+        "upload impossible"
+      )
+    );
+
+    return;
+
+  }
+
+
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(
+        "products"
+      )
+      .insert({
+
+        name:
+          name,
+
+        price:
+          price,
+
+        description:
+          description,
+
+        images:
+          imageUrls,
+
+        size_s:
+          sizes.S,
+
+        size_m:
+          sizes.M,
+
+        size_l:
+          sizes.L,
+
+        size_unique:
+          sizes.UNIQUE,
+
+        active:
+          true
+
+      });
+
+
+  if (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Impossible d'ajouter le produit."
+    );
+
+    return;
+
+  }
+
+
+  clearNewProductForm();
+
+
+  await loadProducts();
+
+
+  renderProducts();
+
+  renderAdminProducts();
+
+
+  alert(
+    "Produit ajouté ✅"
+  );
+
+}
+
+
+// ======================================================
+// TAILLES NOUVEAU PRODUIT
+// ======================================================
+
+function readNewProductSizes() {
+
+  const unique =
+    checked(
+      "new-size-unique"
+    );
+
+
+  return {
+
+    S:
+      unique
+        ? false
+        : checked(
+            "new-size-s"
+          ),
+
+    M:
+      unique
+        ? false
+        : checked(
+            "new-size-m"
+          ),
+
+    L:
+      unique
+        ? false
+        : checked(
+            "new-size-l"
+          ),
+
+    UNIQUE:
+      unique
+
+  };
+
+}
+
+
+function hasAnySize(
+  sizes
+) {
+
+  return Boolean(
+    sizes.S ||
+    sizes.M ||
+    sizes.L ||
+    sizes.UNIQUE
+  );
+
+}
+
+
+// ======================================================
+// MODIFIER PRODUIT
+// ======================================================
 
 async function saveProduct(
   id
 ) {
 
+  if (!adminUnlocked) {
+
+    return;
+
+  }
+
+
   const product =
     products.find(
-      product =>
-        product.id === id
+      function (product) {
+
+        return (
+          product.id === id
+        );
+
+      }
     );
 
 
@@ -2725,9 +3214,8 @@ async function saveProduct(
 
   if (
     !name ||
-    !Number.isFinite(
-      price
-    )
+    !Number.isFinite(price) ||
+    price < 0
   ) {
 
     alert(
@@ -2775,14 +3263,13 @@ async function saveProduct(
 
 
   if (
-    !sizes.S &&
-    !sizes.M &&
-    !sizes.L &&
-    !sizes.UNIQUE
+    !hasAnySize(
+      sizes
+    )
   ) {
 
     alert(
-      "Choisis au moins une taille disponible."
+      "Choisis au moins une taille."
     );
 
     return;
@@ -2790,47 +3277,110 @@ async function saveProduct(
   }
 
 
-  product.name =
-    name;
+  let images =
+    product.images;
 
 
-  product.price =
-    price;
-
-
-  product.description =
-    description ||
-    "Aucune description.";
-
-
-  product.sizes =
-    sizes;
-
-
-  const fileInput =
+  const photoInput =
     document.getElementById(
       `photos-${id}`
     );
 
 
-  const files =
-    fileInput?.files;
+  try {
 
+    if (
+      photoInput?.files?.length
+    ) {
 
-  if (
-    files &&
-    files.length
-  ) {
+      images =
+        await uploadProductImages(
+          photoInput.files
+        );
 
-    product.images =
-      await filesToDataURLs(
-        files
-      );
+    }
+
+  } catch (error) {
+
+    alert(
+      "Erreur photo : " +
+      (
+        error.message ||
+        "upload impossible"
+      )
+    );
+
+    return;
 
   }
 
 
-  saveProducts();
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(
+        "products"
+      )
+      .update({
+
+        name:
+          name,
+
+        price:
+          price,
+
+        description:
+          description,
+
+        images:
+          images,
+
+        size_s:
+          sizes.S,
+
+        size_m:
+          sizes.M,
+
+        size_l:
+          sizes.L,
+
+        size_unique:
+          sizes.UNIQUE,
+
+        updated_at:
+          new Date()
+            .toISOString()
+
+      })
+      .eq(
+        "id",
+        id
+      );
+
+
+  if (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Impossible d'enregistrer le produit."
+    );
+
+    return;
+
+  }
+
+
+  await loadProducts();
+
+
+  renderProducts();
+
+  renderAdminProducts();
 
 
   alert(
@@ -2840,147 +3390,92 @@ async function saveProduct(
 }
 
 
-// ==========================================
-// AJOUTER PRODUIT
-// ==========================================
+// ======================================================
+// SUPPRIMER PRODUIT
+// ======================================================
 
-async function addProduct() {
-
-  const name =
-    valueOf(
-      "new-name"
-    );
-
-
-  const price =
-    Number(
-      valueOf(
-        "new-price"
-      )
-    );
-
-
-  const description =
-    valueOf(
-      "new-description"
-    );
-
+async function deleteProduct(
+  id
+) {
 
   if (
-    !name ||
-    !Number.isFinite(
-      price
+    !confirm(
+      "Supprimer ce produit ?"
     )
   ) {
 
-    alert(
-      "Entre un nom et un prix."
-    );
-
     return;
 
   }
 
 
-  const unique =
-    checked(
-      "new-size-unique"
-    );
-
-
-  const sizes = {
-
-    S:
-      unique
-        ? false
-        : checked(
-            "new-size-s"
-          ),
-
-    M:
-      unique
-        ? false
-        : checked(
-            "new-size-m"
-          ),
-
-    L:
-      unique
-        ? false
-        : checked(
-            "new-size-l"
-          ),
-
-    UNIQUE:
-      unique
-
-  };
-
-
-  if (
-    !sizes.S &&
-    !sizes.M &&
-    !sizes.L &&
-    !sizes.UNIQUE
-  ) {
-
-    alert(
-      "Choisis au moins une taille disponible."
-    );
-
-    return;
-
-  }
-
-
-  const photoInput =
-    document.getElementById(
-      "new-photos"
-    );
-
-
-  let images =
-    [];
-
-
-  if (
-    photoInput?.files?.length
-  ) {
-
-    images =
-      await filesToDataURLs(
-        photoInput.files
+  const {
+    error
+  } =
+    await supabaseClient
+      .from(
+        "products"
+      )
+      .delete()
+      .eq(
+        "id",
+        id
       );
 
+
+  if (error) {
+
+    console.error(
+      error
+    );
+
+
+    alert(
+      "Suppression impossible."
+    );
+
+    return;
+
   }
 
 
-  products.push({
+  cart =
+    cart.filter(
+      function (item) {
 
-    id:
-      Date.now(),
+        return (
+          item.id !== id
+        );
 
-    name:
-      name,
-
-    price:
-      price,
-
-    description:
-      description ||
-      "Aucune description.",
-
-    images:
-      images,
-
-    sizes:
-      sizes
-
-  });
+      }
+    );
 
 
-  saveProducts();
+  saveCart();
 
+
+  await loadProducts();
+
+
+  renderProducts();
+
+  renderAdminProducts();
+
+  renderCart();
+
+
+  alert(
+    "Produit supprimé."
+  );
+
+}
+
+
+// ======================================================
+// CLEAR FORM
+// ======================================================
+
+function clearNewProductForm() {
 
   setValue(
     "new-name",
@@ -3000,120 +3495,73 @@ async function addProduct() {
   );
 
 
-  if (
-    photoInput
-  ) {
+  const photos =
+    document.getElementById(
+      "new-photos"
+    );
 
-    photoInput.value =
+
+  if (photos) {
+
+    photos.value =
       "";
 
   }
 
 
-  alert(
-    "Produit ajouté ✅"
-  );
-
-}
-
-
-// ==========================================
-// LIRE PLUSIEURS PHOTOS
-// ==========================================
-
-function filesToDataURLs(
-  files
-) {
-
-  return Promise.all(
-
-    Array
-      .from(files)
-      .map(
-        function (file) {
-
-          return new Promise(
-            function (
-              resolve,
-              reject
-            ) {
-
-              const reader =
-                new FileReader();
+  const s =
+    document.getElementById(
+      "new-size-s"
+    );
 
 
-              reader.onload =
-                function () {
-
-                  resolve(
-                    reader.result
-                  );
-
-                };
+  const m =
+    document.getElementById(
+      "new-size-m"
+    );
 
 
-              reader.onerror =
-                reject;
+  const l =
+    document.getElementById(
+      "new-size-l"
+    );
 
 
-              reader.readAsDataURL(
-                file
-              );
-
-            }
-          );
-
-        }
-      )
-
-  );
-
-}
+  const unique =
+    document.getElementById(
+      "new-size-unique"
+    );
 
 
-// ==========================================
-// SUPPRIMER PRODUIT
-// ==========================================
-
-function deleteProduct(
-  id
-) {
-
-  if (
-    !confirm(
-      "Supprimer ce produit ?"
-    )
-  ) {
-    return;
+  if (s) {
+    s.checked =
+      true;
   }
 
 
-  products =
-    products.filter(
-      product =>
-        product.id !== id
-    );
+  if (m) {
+    m.checked =
+      true;
+  }
 
 
-  cart =
-    cart.filter(
-      item =>
-        item.id !== id
-    );
+  if (l) {
+    l.checked =
+      true;
+  }
 
 
-  saveProducts();
-
-  saveCart();
-
-  renderCart();
+  if (unique) {
+    unique.checked =
+      false;
+  }
 
 }
 
 
-// ==========================================
+// ======================================================
 // OUTILS
-// ==========================================
+// ======================================================
 
 function formatPrice(
   price
@@ -3123,17 +3571,16 @@ function formatPrice(
     .NumberFormat(
       "fr-FR",
       {
-
         style:
           "currency",
 
         currency:
           "EUR"
-
       }
     )
     .format(
-      price
+      Number(price) ||
+      0
     );
 
 }
@@ -3150,7 +3597,8 @@ function valueOf(
       )
       ?.value ||
     ""
-  ).trim();
+  )
+    .trim();
 
 }
 
