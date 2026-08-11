@@ -9,7 +9,7 @@
     content="width=device-width, initial-scale=1, viewport-fit=cover"
   >
 
-  <meta name="theme-color" content="#050608">
+  <meta name="theme-color" content="#05070a">
 
   <title>ShopBassin</title>
 
@@ -21,7 +21,7 @@
 
 <body>
 
-  <!-- CHARGEMENT -->
+  <!-- LOADER -->
 
   <div id="loader">
 
@@ -91,13 +91,11 @@
           class="cart-button"
           onclick="showPage('panier')"
         >
-
           🛒
 
           <b id="cart-count">
             0
           </b>
-
         </button>
 
       </div>
@@ -225,6 +223,34 @@
           </p>
 
 
+          <div class="separator"></div>
+
+
+          <!-- TAILLES -->
+
+          <div class="size-section">
+
+            <div class="size-title-row">
+
+              <h3>
+                Taille
+              </h3>
+
+              <span id="selected-size-label">
+                Choisis une taille
+              </span>
+
+            </div>
+
+
+            <div
+              id="detail-sizes"
+              class="size-options"
+            ></div>
+
+          </div>
+
+
           <button
             id="detail-add"
             class="primary"
@@ -269,9 +295,6 @@
         class="cart-items"
       ></div>
 
-
-
-      <!-- MODE DE RÉCUPÉRATION -->
 
       <section class="panel">
 
@@ -336,8 +359,6 @@
       </section>
 
 
-
-      <!-- CLIENT -->
 
       <section class="panel">
 
@@ -424,8 +445,6 @@
       </section>
 
 
-
-      <!-- TOTAL -->
 
       <section class="panel total-panel">
 
@@ -781,6 +800,8 @@
 
 
 
+      <!-- CONTACTS -->
+
       <section class="admin-card">
 
         <h3>
@@ -819,6 +840,8 @@
       </section>
 
 
+
+      <!-- AJOUT PRODUIT -->
 
       <section class="admin-card">
 
@@ -869,6 +892,82 @@
         >
 
 
+        <!-- TAILLES NOUVEAU PRODUIT -->
+
+        <div class="admin-size-box">
+
+          <h4>
+            Tailles
+          </h4>
+
+
+          <label class="toggle-line">
+
+            <span>
+              S
+            </span>
+
+            <input
+              id="new-size-s"
+              type="checkbox"
+              checked
+            >
+
+          </label>
+
+
+          <label class="toggle-line">
+
+            <span>
+              M
+            </span>
+
+            <input
+              id="new-size-m"
+              type="checkbox"
+              checked
+            >
+
+          </label>
+
+
+          <label class="toggle-line">
+
+            <span>
+              L
+            </span>
+
+            <input
+              id="new-size-l"
+              type="checkbox"
+              checked
+            >
+
+          </label>
+
+
+          <label class="toggle-line unique-line">
+
+            <span>
+              Taille unique
+            </span>
+
+            <input
+              id="new-size-unique"
+              type="checkbox"
+            >
+
+          </label>
+
+
+          <p class="admin-hint">
+            Coche les tailles disponibles.
+            Si tu coches Taille unique, S/M/L seront ignorées.
+          </p>
+
+        </div>
+
+
         <button
           class="primary"
           onclick="addProduct()"
@@ -878,6 +977,9 @@
 
       </section>
 
+
+
+      <!-- PRODUITS EXISTANTS -->
 
       <section class="admin-card">
 
@@ -894,7 +996,7 @@
 
 
 
-    <!-- NAVIGATION -->
+    <!-- NAV -->
 
     <nav class="bottom-nav">
 
