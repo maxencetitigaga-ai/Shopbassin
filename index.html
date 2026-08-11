@@ -20,10 +20,7 @@
 
 <body>
 
-<!-- =========================
-     LOADER PREMIUM
-========================= -->
-
+<!-- LOADER -->
 <div id="loader">
 
   <div class="loader-box">
@@ -50,15 +47,10 @@
 </div>
 
 
-<!-- =========================
-     APPLICATION
-========================= -->
-
 <div id="app" class="app app-loading">
 
 
   <!-- HEADER -->
-
   <header class="header">
 
     <div class="brand">
@@ -99,7 +91,6 @@
         class="cart-top"
         onclick="showPage('panier')"
       >
-
         <span class="cart-symbol">
           ◉
         </span>
@@ -116,10 +107,7 @@
 
 
 
-  <!-- =========================
-       CATALOGUE
-  ========================== -->
-
+  <!-- CATALOGUE -->
   <main
     id="catalogue"
     class="page active"
@@ -181,10 +169,82 @@
 
 
 
-  <!-- =========================
-       PANIER
-  ========================== -->
+  <!-- FICHE PRODUIT -->
+  <main
+    id="produit"
+    class="page"
+  >
 
+    <button
+      class="back-button"
+      onclick="showPage('catalogue')"
+    >
+      ← Retour
+    </button>
+
+
+    <div class="product-detail-card">
+
+      <div class="product-detail-image">
+
+        <img
+          id="detail-product-image"
+          src="./6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png"
+          alt=""
+        >
+
+      </div>
+
+
+      <div class="product-detail-content">
+
+        <span class="mini-title">
+          SHOPBASSIN
+        </span>
+
+        <h2 id="detail-product-name">
+          Produit
+        </h2>
+
+        <div
+          id="detail-product-price"
+          class="product-detail-price"
+        >
+          0,00 €
+        </div>
+
+
+        <div class="detail-divider"></div>
+
+
+        <h3>
+          Description
+        </h3>
+
+        <p
+          id="detail-product-description"
+          class="product-description"
+        >
+        </p>
+
+
+        <button
+          id="detail-add-button"
+          class="primary-button"
+          type="button"
+        >
+          Ajouter au panier
+        </button>
+
+      </div>
+
+    </div>
+
+  </main>
+
+
+
+  <!-- PANIER -->
   <main
     id="panier"
     class="page"
@@ -219,8 +279,6 @@
     >
     </div>
 
-
-    <!-- MODE DE RÉCUPÉRATION -->
 
     <section class="checkout-section">
 
@@ -284,8 +342,6 @@
 
     </section>
 
-
-    <!-- INFORMATIONS CLIENT -->
 
     <section class="checkout-section">
 
@@ -378,9 +434,6 @@
     </section>
 
 
-
-    <!-- TOTAL -->
-
     <section class="order-summary">
 
       <div class="summary-row">
@@ -448,10 +501,7 @@
 
 
 
-  <!-- =========================
-       CONTACT
-  ========================== -->
-
+  <!-- CONTACT -->
   <main
     id="contact"
     class="page"
@@ -482,26 +532,11 @@
 
     <div class="social-list">
 
-
-      <!-- SNAPCHAT -->
-
       <div class="social-card">
 
         <div class="social-icon snapchat">
-
-          <svg
-            viewBox="0 0 24 24"
-            aria-hidden="true"
-          >
-
-            <path
-              d="M12 3c-3 0-4.7 2.3-4.7 5.3 0 .6.1 1.2.1 1.7-.6.3-1.2.6-1.8.8-.6.2-.7.9-.1 1.2.7.4 1.4.6 2 .8.2.7.7 1.2 1.4 1.5.7.4 1 .8 1.2 1.3.5-.1 1.2-.3 1.9-.3s1.4.2 1.9.3c.2-.5.5-.9 1.2-1.3.7-.3 1.2-.8 1.4-1.5.6-.2 1.3-.4 2-.8.6-.3.5-1-.1-1.2-.6-.2-1.2-.5-1.8-.8 0-.5.1-1.1.1-1.7C16.7 5.3 15 3 12 3Z"
-            />
-
-          </svg>
-
+          👻
         </div>
-
 
         <div>
 
@@ -518,40 +553,11 @@
       </div>
 
 
-
-      <!-- INSTAGRAM -->
-
       <div class="social-card">
 
         <div class="social-icon instagram">
-
-          <svg viewBox="0 0 24 24">
-
-            <rect
-              x="4"
-              y="4"
-              width="16"
-              height="16"
-              rx="5"
-            />
-
-            <circle
-              cx="12"
-              cy="12"
-              r="4"
-            />
-
-            <circle
-              cx="17"
-              cy="7"
-              r="1"
-              class="fill"
-            />
-
-          </svg>
-
+          ◎
         </div>
-
 
         <div>
 
@@ -568,23 +574,11 @@
       </div>
 
 
-
-      <!-- TELEGRAM -->
-
       <div class="social-card">
 
         <div class="social-icon telegram">
-
-          <svg viewBox="0 0 24 24">
-
-            <path
-              d="M20 4 3.7 10.3c-1.1.4-1.1 1.1-.2 1.4l4.2 1.3 1.6 5c.2.6.1.9.8.9.5 0 .8-.2 1-.4l2.3-2.2 4.7 3.5c.9.5 1.5.2 1.7-.8L22 5.5c.3-1.1-.4-1.7-2-1.5Z"
-            />
-
-          </svg>
-
+          ➤
         </div>
-
 
         <div>
 
@@ -606,10 +600,7 @@
 
 
 
-  <!-- =========================
-       INFOS
-  ========================== -->
-
+  <!-- INFOS -->
   <main
     id="infos"
     class="page"
@@ -638,15 +629,11 @@
     </div>
 
 
-
-    <!-- BOUTIQUE -->
-
     <div class="availability-card">
 
       <div class="availability-icon">
         ◉
       </div>
-
 
       <div class="availability-info">
 
@@ -660,7 +647,6 @@
 
       </div>
 
-
       <div
         id="shop-status"
         class="availability-status available"
@@ -671,15 +657,11 @@
     </div>
 
 
-
-    <!-- SUR PLACE -->
-
     <div class="availability-card">
 
       <div class="availability-icon">
         🏠
       </div>
-
 
       <div class="availability-info">
 
@@ -693,7 +675,6 @@
 
       </div>
 
-
       <div
         id="pickup-status"
         class="availability-status available"
@@ -704,15 +685,11 @@
     </div>
 
 
-
-    <!-- LIVRAISON -->
-
     <div class="availability-card">
 
       <div class="availability-icon">
         🚚
       </div>
-
 
       <div class="availability-info">
 
@@ -726,7 +703,6 @@
 
       </div>
 
-
       <div
         id="delivery-status"
         class="availability-status available"
@@ -736,29 +712,11 @@
 
     </div>
 
-
-
-    <div class="info-message">
-
-      <strong>
-        Livraison
-      </strong>
-
-      <p>
-        Arcachon, La Teste-de-Buch et Gujan-Mestras :
-        5 €. Plus loin : 10 €.
-      </p>
-
-    </div>
-
   </main>
 
 
 
-  <!-- =========================
-       GESTION ADMIN
-  ========================== -->
-
+  <!-- GESTION -->
   <main
     id="gestion"
     class="page admin-page"
@@ -781,21 +739,17 @@
       </h2>
 
       <p>
-        Cette page n'est pas affichée dans le menu public.
+        Modifie tes produits et leurs descriptions.
       </p>
 
     </div>
 
-
-
-    <!-- DISPONIBILITÉS -->
 
     <section class="admin-card">
 
       <h3>
         Disponibilités
       </h3>
-
 
       <div class="admin-setting">
 
@@ -877,59 +831,6 @@
     </section>
 
 
-
-    <!-- CONTACTS -->
-
-    <section class="admin-card">
-
-      <h3>
-        Contacts
-      </h3>
-
-
-      <label>
-        Snapchat
-      </label>
-
-      <input
-        id="admin-snapchat"
-        type="text"
-      >
-
-
-      <label>
-        Instagram
-      </label>
-
-      <input
-        id="admin-instagram"
-        type="text"
-      >
-
-
-      <label>
-        Telegram
-      </label>
-
-      <input
-        id="admin-telegram"
-        type="text"
-      >
-
-
-      <button
-        class="primary-button"
-        onclick="saveContacts()"
-      >
-        Enregistrer
-      </button>
-
-    </section>
-
-
-
-    <!-- AJOUT PRODUIT -->
-
     <section class="admin-card">
 
       <h3>
@@ -961,6 +862,17 @@
 
 
       <label>
+        Description
+      </label>
+
+      <textarea
+        id="new-product-description"
+        class="admin-textarea"
+        placeholder="Décris le produit..."
+      ></textarea>
+
+
+      <label>
         Photo
       </label>
 
@@ -978,17 +890,8 @@
         Ajouter le produit
       </button>
 
-
-      <p class="admin-warning">
-        Les photos ajoutées ici sont enregistrées uniquement
-        sur cet appareil pour le moment.
-      </p>
-
     </section>
 
-
-
-    <!-- PRODUITS ADMIN -->
 
     <section class="admin-card">
 
@@ -1005,10 +908,7 @@
 
 
 
-  <!-- =========================
-       NAVIGATION
-  ========================== -->
-
+  <!-- NAVIGATION -->
   <nav class="bottom-nav">
 
     <button
@@ -1077,7 +977,6 @@
   </nav>
 
 </div>
-
 
 <script src="./script.js"></script>
 
