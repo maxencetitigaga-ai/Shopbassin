@@ -1,13 +1,23 @@
 // ==========================================
-// SHOPBASSIN
+// SHOPBASSIN — SCRIPT COMPLET
 // ==========================================
 
 const LOGO =
   "6561E272-B3F3-4F41-9D0F-8187CF4FC91E.png";
 
 
-// CHANGE TON CODE ADMIN ICI
+// ==========================================
+// CODE ADMIN
+// ==========================================
+//
+// CHANGE TON CODE À 6 CHIFFRES ICI
+//
 const ADMIN_CODE = "483726";
+
+
+// Temps nécessaire pour ouvrir l'admin
+// 1500 = 1,5 seconde
+const ADMIN_LONG_PRESS_TIME = 1500;
 
 
 const tg =
@@ -31,7 +41,7 @@ if (tg) {
 
 
 // ==========================================
-// DEFAULT DATA
+// DONNÉES PAR DÉFAUT
 // ==========================================
 
 const DEFAULT_PRODUCTS = [
@@ -82,7 +92,7 @@ const DEFAULT_CONTACTS = {
 
 
 // ==========================================
-// STATE
+// VARIABLES
 // ==========================================
 
 let products = [];
@@ -101,13 +111,13 @@ let orderMode = "pickup";
 
 let adminUnlocked = false;
 
-let logoTapCount = 0;
+let adminPressTimer = null;
 
-let logoTapTimer = null;
+let adminLongPressTriggered = false;
 
 
 // ==========================================
-// LOADER
+// ÉCRAN DE CHARGEMENT
 // ==========================================
 
 window.addEventListener(
@@ -129,20 +139,16 @@ window.addEventListener(
       function () {
 
         if (loader) {
-
           loader.classList.add(
             "hide"
           );
-
         }
 
 
         if (app) {
-
           app.classList.remove(
             "app-loading"
           );
-
         }
 
       },
@@ -153,7 +159,8 @@ window.addEventListener(
 );
 
 
-// Sécurité loader
+// Sécurité : le loader disparaît
+// même en cas de petit bug
 
 setTimeout(
   function () {
@@ -170,12 +177,16 @@ setTimeout(
 
 
     if (loader) {
-      loader.classList.add("hide");
+      loader.classList.add(
+        "hide"
+      );
     }
 
 
     if (app) {
-      app.classList.remove("app-loading");
+      app.classList.remove(
+        "app-loading"
+      );
     }
 
   },
@@ -184,7 +195,7 @@ setTimeout(
 
 
 // ==========================================
-// START
+// DÉMARRAGE
 // ==========================================
 
 document.addEventListener(
@@ -218,12 +229,9 @@ document.addEventListener(
 
 
 // ==========================================
-// SECRET ADMIN
+// ADMIN SECRET
+// APPUI LONG SUR LE LOGO
 // ==========================================
-//
-// APPUIE 5 FOIS RAPIDEMENT
-// SUR TON LOGO EN HAUT
-//
 
 function setupSecretAdmin() {
 
@@ -236,46 +244,141 @@ function setupSecretAdmin() {
   if (!logo) return;
 
 
-  logo.addEventListener(
-    "click",
-    function () {
+  // Empêche le menu iPhone
+  // d'apparaître lors d'un appui long
+  logo.style.webkitTouchCallout =
+    "none";
 
-      logoTapCount++;
+  logo.style.userSelect =
+    "none";
+
+  logo.style.webkitUserSelect =
+    "none";
+
+
+  logo.addEventListener(
+    "contextmenu",
+    function (event) {
+
+      event.preventDefault();
+
+    }
+  );
+
+
+  // ============================
+  // IPHONE / TACTILE
+  // ============================
+
+  logo.addEventListener(
+    "touchstart",
+    function (event) {
+
+      adminLongPressTriggered =
+        false;
 
 
       clearTimeout(
-        logoTapTimer
+        adminPressTimer
       );
 
 
-      logoTapTimer =
+      adminPressTimer =
         setTimeout(
           function () {
 
-            logoTapCount = 0;
+            adminLongPressTriggered =
+              true;
+
+            openAdmin();
 
           },
-          2500
+          ADMIN_LONG_PRESS_TIME
         );
 
+    },
+    {
+      passive: true
+    }
+  );
 
-      if (
-        logoTapCount >= 5
-      ) {
 
-        logoTapCount = 0;
+  logo.addEventListener(
+    "touchend",
+    cancelAdminPress
+  );
 
-        unlockAdmin();
 
-      }
+  logo.addEventListener(
+    "touchcancel",
+    cancelAdminPress
+  );
+
+
+  logo.addEventListener(
+    "touchmove",
+    cancelAdminPress
+  );
+
+
+  // ============================
+  // SOURIS / ORDINATEUR
+  // ============================
+
+  logo.addEventListener(
+    "mousedown",
+    function () {
+
+      adminLongPressTriggered =
+        false;
+
+
+      clearTimeout(
+        adminPressTimer
+      );
+
+
+      adminPressTimer =
+        setTimeout(
+          function () {
+
+            adminLongPressTriggered =
+              true;
+
+            openAdmin();
+
+          },
+          ADMIN_LONG_PRESS_TIME
+        );
 
     }
+  );
+
+
+  logo.addEventListener(
+    "mouseup",
+    cancelAdminPress
+  );
+
+
+  logo.addEventListener(
+    "mouseleave",
+    cancelAdminPress
   );
 
 }
 
 
-function unlockAdmin() {
+function cancelAdminPress() {
+
+  clearTimeout(
+    adminPressTimer
+  );
+
+}
+
+
+function openAdmin() {
 
   if (!adminUnlocked) {
 
@@ -298,7 +401,8 @@ function unlockAdmin() {
     }
 
 
-    adminUnlocked = true;
+    adminUnlocked =
+      true;
 
   }
 
@@ -307,7 +411,9 @@ function unlockAdmin() {
 
   renderAdminProducts();
 
-  showPage("gestion");
+  showPage(
+    "gestion"
+  );
 
 }
 
@@ -320,6 +426,17 @@ function showPage(
   pageId,
   button = null
 ) {
+
+  // La gestion reste protégée
+  if (
+    pageId === "gestion" &&
+    !adminUnlocked
+  ) {
+
+    return;
+
+  }
+
 
   document
     .querySelectorAll(".page")
@@ -400,16 +517,30 @@ function showPage(
   }
 
 
+  if (
+    pageId === "gestion"
+  ) {
+
+    fillAdminContacts();
+
+    renderAdminProducts();
+
+  }
+
+
   window.scrollTo({
+
     top: 0,
+
     behavior: "smooth"
+
   });
 
 }
 
 
 // ==========================================
-// PRODUCTS STORAGE
+// PRODUITS
 // ==========================================
 
 function loadProducts() {
@@ -431,7 +562,7 @@ function loadProducts() {
             )
           );
 
-  } catch {
+  } catch (error) {
 
     products =
       JSON.parse(
@@ -447,10 +578,22 @@ function loadProducts() {
 
 function saveProducts() {
 
-  localStorage.setItem(
-    "sb-products",
-    JSON.stringify(products)
-  );
+  try {
+
+    localStorage.setItem(
+      "sb-products",
+      JSON.stringify(
+        products
+      )
+    );
+
+  } catch (error) {
+
+    alert(
+      "Impossible d'enregistrer. La photo est peut-être trop lourde."
+    );
+
+  }
 
 
   renderProducts();
@@ -461,7 +604,7 @@ function saveProducts() {
 
 
 // ==========================================
-// PRODUCT CATALOGUE
+// CATALOGUE
 // ==========================================
 
 function renderProducts() {
@@ -489,8 +632,8 @@ function renderProducts() {
         )
         ?.value || ""
     )
-    .toLowerCase()
-    .trim();
+      .toLowerCase()
+      .trim();
 
 
   const filtered =
@@ -523,7 +666,7 @@ function renderProducts() {
 
         <img
           src="./${LOGO}"
-          alt=""
+          alt="ShopBassin"
         >
 
         <h3>
@@ -597,7 +740,9 @@ function renderProducts() {
                   class="add-button"
                   onclick="addToCart(${product.id})"
                 >
+
                   Ajouter au panier
+
                 </button>
 
               </div>
@@ -614,7 +759,7 @@ function renderProducts() {
 
 
 // ==========================================
-// CART
+// PANIER
 // ==========================================
 
 function loadCart() {
@@ -628,7 +773,7 @@ function loadCart() {
         )
       ) || [];
 
-  } catch {
+  } catch (error) {
 
     cart = [];
 
@@ -641,7 +786,9 @@ function saveCart() {
 
   localStorage.setItem(
     "sb-cart",
-    JSON.stringify(cart)
+    JSON.stringify(
+      cart
+    )
   );
 
 
@@ -654,8 +801,11 @@ function addToCart(id) {
 
   const product =
     products.find(
-      product =>
-        product.id === id
+      function (product) {
+
+        return product.id === id;
+
+      }
     );
 
 
@@ -664,8 +814,11 @@ function addToCart(id) {
 
   const existing =
     cart.find(
-      item =>
-        item.id === id
+      function (item) {
+
+        return item.id === id;
+
+      }
     );
 
 
@@ -698,7 +851,7 @@ function addToCart(id) {
           "light"
         );
 
-    } catch {}
+    } catch (error) {}
 
   }
 
@@ -709,8 +862,11 @@ function removeFromCart(id) {
 
   const item =
     cart.find(
-      item =>
-        item.id === id
+      function (item) {
+
+        return item.id === id;
+
+      }
     );
 
 
@@ -727,8 +883,11 @@ function removeFromCart(id) {
 
     cart =
       cart.filter(
-        item =>
-          item.id !== id
+        function (item) {
+
+          return item.id !== id;
+
+        }
       );
 
   }
@@ -754,12 +913,17 @@ function updateCartCount() {
 
   counter.textContent =
     cart.reduce(
-      (
+      function (
         total,
         item
-      ) =>
-        total +
-        item.quantity,
+      ) {
+
+        return (
+          total +
+          item.quantity
+        );
+
+      },
       0
     );
 
@@ -767,7 +931,7 @@ function updateCartCount() {
 
 
 // ==========================================
-// RENDER CART
+// AFFICHAGE PANIER
 // ==========================================
 
 function renderCart() {
@@ -791,7 +955,7 @@ function renderCart() {
 
         <img
           src="./${LOGO}"
-          alt=""
+          alt="ShopBassin"
         >
 
         <h3>
@@ -826,6 +990,7 @@ function renderCart() {
 
                   <img
                     src="${image}"
+                    alt=""
                     onerror="this.src='./${LOGO}'"
                   >
 
@@ -871,7 +1036,7 @@ function renderCart() {
 
 
 // ==========================================
-// ORDER MODE
+// MODE LIVRAISON / SUR PLACE
 // ==========================================
 
 function setOrderMode(
@@ -957,21 +1122,24 @@ function updateOrderMode() {
 
 
 // ==========================================
-// DELIVERY PRICES
+// PRIX
 // ==========================================
 
 function getSubtotal() {
 
   return cart.reduce(
-    (
+    function (
       total,
       item
-    ) =>
+    ) {
 
-      total +
-      item.price *
-      item.quantity,
+      return (
+        total +
+        item.price *
+        item.quantity
+      );
 
+    },
     0
   );
 
@@ -1030,26 +1198,32 @@ function updateTotals() {
 
   setText(
     "cart-subtotal",
-    formatPrice(subtotal)
+    formatPrice(
+      subtotal
+    )
   );
 
 
   setText(
     "delivery-price",
-    formatPrice(delivery)
+    formatPrice(
+      delivery
+    )
   );
 
 
   setText(
     "cart-total",
-    formatPrice(total)
+    formatPrice(
+      total
+    )
   );
 
 }
 
 
 // ==========================================
-// ORDER
+// COMMANDE
 // ==========================================
 
 async function prepareOrder() {
@@ -1124,7 +1298,10 @@ async function prepareOrder() {
       .trim();
 
 
-  if (!name || !phone) {
+  if (
+    !name ||
+    !phone
+  ) {
 
     alert(
       "Entre ton nom et ton numéro de téléphone."
@@ -1294,7 +1471,6 @@ TOTAL : ${formatPrice(total)}
 Merci de confirmer ma commande.`;
 
 
-
   try {
 
     await navigator
@@ -1305,13 +1481,13 @@ Merci de confirmer ma commande.`;
 
 
     alert(
-      "Commande prête ✅\nLe message a été copié. Telegram va s'ouvrir."
+      "Commande prête ✅"
     );
 
 
     openOrderTelegram();
 
-  } catch {
+  } catch (error) {
 
     alert(message);
 
@@ -1321,7 +1497,7 @@ Merci de confirmer ma commande.`;
 
 
 // ==========================================
-// OPEN TELEGRAM
+// OUVRIR TELEGRAM
 // ==========================================
 
 function openOrderTelegram() {
@@ -1349,7 +1525,9 @@ function openOrderTelegram() {
     "function"
   ) {
 
-    tg.openTelegramLink(url);
+    tg.openTelegramLink(
+      url
+    );
 
   } else {
 
@@ -1362,7 +1540,7 @@ function openOrderTelegram() {
 
 
 // ==========================================
-// AVAILABILITY
+// DISPONIBILITÉS
 // ==========================================
 
 function loadAvailability() {
@@ -1410,14 +1588,17 @@ function readBoolean(
   }
 
 
-  return value === "true";
+  return (
+    value === "true"
+  );
 
 }
 
 
 function setShopOpen(value) {
 
-  shopOpen = value;
+  shopOpen =
+    value;
 
 
   localStorage.setItem(
@@ -1433,7 +1614,8 @@ function setShopOpen(value) {
 
 function setPickupAvailable(value) {
 
-  pickupAvailable = value;
+  pickupAvailable =
+    value;
 
 
   localStorage.setItem(
@@ -1574,7 +1756,7 @@ function loadContacts() {
         ...DEFAULT_CONTACTS
       };
 
-  } catch {
+  } catch (error) {
 
     contacts =
       {
@@ -1671,7 +1853,7 @@ function saveContacts() {
 
 
 // ==========================================
-// ADMIN PRODUCTS
+// ADMIN PRODUITS
 // ==========================================
 
 function renderAdminProducts() {
@@ -1755,8 +1937,13 @@ function saveAdminProduct(id) {
 
   const product =
     products.find(
-      product =>
-        product.id === id
+      function (product) {
+
+        return (
+          product.id === id
+        );
+
+      }
     );
 
 
@@ -1812,7 +1999,7 @@ function saveAdminProduct(id) {
 
 
 // ==========================================
-// ADD PRODUCT + PHOTO
+// AJOUT PRODUIT + PHOTO
 // ==========================================
 
 function addAdminProduct() {
@@ -1859,9 +2046,11 @@ function addAdminProduct() {
         id:
           Date.now(),
 
-        name,
+        name:
+          name,
 
-        price,
+        price:
+          price,
 
         image:
           image || ""
@@ -1901,8 +2090,7 @@ function addAdminProduct() {
 
   const file =
     photoInput
-      ?.files
-      ?.[0];
+      ?.files?.[0];
 
 
   if (!file) {
@@ -1950,15 +2138,25 @@ function deleteProduct(id) {
 
   products =
     products.filter(
-      product =>
-        product.id !== id
+      function (product) {
+
+        return (
+          product.id !== id
+        );
+
+      }
     );
 
 
   cart =
     cart.filter(
-      item =>
-        item.id !== id
+      function (item) {
+
+        return (
+          item.id !== id
+        );
+
+      }
     );
 
 
@@ -1972,43 +2170,10 @@ function deleteProduct(id) {
 
 
 // ==========================================
-// PRODUCT SAVE
+// OUTILS
 // ==========================================
 
-function saveProducts() {
-
-  try {
-
-    localStorage.setItem(
-      "sb-products",
-      JSON.stringify(
-        products
-      )
-    );
-
-  } catch {
-
-    alert(
-      "Impossible d'enregistrer. La photo est peut-être trop lourde."
-    );
-
-  }
-
-
-  renderProducts();
-
-  renderAdminProducts();
-
-}
-
-
-// ==========================================
-// HELPERS
-// ==========================================
-
-function formatPrice(
-  price
-) {
+function formatPrice(price) {
 
   return new Intl
     .NumberFormat(
@@ -2074,7 +2239,9 @@ function getInput(id) {
 
   return (
     document
-      .getElementById(id)
+      .getElementById(
+        id
+      )
       ?.value || ""
   ).trim();
 
@@ -2110,9 +2277,7 @@ function escapeHTML(value) {
 }
 
 
-function escapeAttribute(
-  value
-) {
+function escapeAttribute(value) {
 
   return escapeHTML(
     value
