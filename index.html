@@ -18,9 +18,12 @@
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
+
 <body>
 
-  <!-- LOADER -->
+  <!-- =========================
+       LOADER
+  ========================== -->
 
   <div id="loader">
 
@@ -45,10 +48,20 @@
   </div>
 
 
-  <div id="app" class="app app-hidden">
+
+  <!-- =========================
+       APPLICATION
+  ========================== -->
+
+  <div
+    id="app"
+    class="app app-hidden"
+  >
 
 
-    <!-- HEADER -->
+    <!-- =========================
+         HEADER
+    ========================== -->
 
     <header class="header">
 
@@ -63,9 +76,13 @@
 
         <div>
 
-          <small>SHOPBASSIN</small>
+          <small>
+            SHOPBASSIN
+          </small>
 
-          <strong>Premium</strong>
+          <strong>
+            Premium
+          </strong>
 
         </div>
 
@@ -101,7 +118,9 @@
 
 
 
-    <!-- CATALOGUE -->
+    <!-- =========================
+         CATALOGUE
+    ========================== -->
 
     <main
       id="catalogue"
@@ -163,7 +182,9 @@
 
 
 
-    <!-- FICHE PRODUIT -->
+    <!-- =========================
+         FICHE PRODUIT
+    ========================== -->
 
     <main
       id="produit"
@@ -181,7 +202,7 @@
       <article class="detail-card">
 
 
-        <!-- GALERIE -->
+        <!-- GALERIE PHOTOS -->
 
         <div
           id="detail-gallery"
@@ -198,6 +219,7 @@
             id="gallery-prev"
             class="gallery-arrow gallery-prev"
             onclick="previousProductImage()"
+            type="button"
           >
             ‹
           </button>
@@ -207,6 +229,7 @@
             id="gallery-next"
             class="gallery-arrow gallery-next"
             onclick="nextProductImage()"
+            type="button"
           >
             ›
           </button>
@@ -228,11 +251,15 @@
         ></div>
 
 
+
+        <!-- INFOS PRODUIT -->
+
         <div class="detail-body">
 
           <small class="blue-label">
             SHOPBASSIN
           </small>
+
 
           <h2 id="detail-name">
             Produit
@@ -254,11 +281,13 @@
             Description
           </h3>
 
+
           <p id="detail-description">
           </p>
 
 
           <div class="separator"></div>
+
 
 
           <!-- TAILLES -->
@@ -289,6 +318,7 @@
           <button
             id="detail-add"
             class="primary"
+            type="button"
           >
             Ajouter au panier
           </button>
@@ -301,7 +331,9 @@
 
 
 
-    <!-- PANIER -->
+    <!-- =========================
+         PANIER
+    ========================== -->
 
     <main
       id="panier"
@@ -314,9 +346,11 @@
           SHOPBASSIN
         </small>
 
+
         <h2>
           Ton panier
         </h2>
+
 
         <p>
           Vérifie ta commande et choisis ton mode de récupération.
@@ -331,6 +365,9 @@
       ></div>
 
 
+
+      <!-- RÉCUPÉRATION -->
+
       <section class="panel">
 
         <h3>
@@ -344,9 +381,12 @@
             id="pickup-mode"
             class="mode-button active"
             onclick="setOrderMode('pickup')"
+            type="button"
           >
 
-            <span>🏠</span>
+            <span>
+              🏠
+            </span>
 
             <div>
 
@@ -367,9 +407,12 @@
             id="delivery-mode"
             class="mode-button"
             onclick="setOrderMode('delivery')"
+            type="button"
           >
 
-            <span>🚚</span>
+            <span>
+              🚚
+            </span>
 
             <div>
 
@@ -391,6 +434,8 @@
 
 
 
+      <!-- INFORMATIONS CLIENT -->
+
       <section class="panel">
 
         <h3>
@@ -406,6 +451,7 @@
           id="customer-name"
           type="text"
           placeholder="Ex : Maxence"
+          autocomplete="name"
         >
 
 
@@ -417,6 +463,7 @@
           id="customer-phone"
           type="tel"
           placeholder="06..."
+          autocomplete="tel"
         >
 
 
@@ -458,6 +505,7 @@
             id="delivery-address"
             type="text"
             placeholder="Numéro et rue"
+            autocomplete="street-address"
           >
 
 
@@ -476,6 +524,8 @@
       </section>
 
 
+
+      <!-- TOTAL -->
 
       <section class="panel total-panel">
 
@@ -530,6 +580,7 @@
         <button
           class="primary"
           onclick="prepareOrder()"
+          type="button"
         >
           Valider ma commande
         </button>
@@ -540,7 +591,9 @@
 
 
 
-    <!-- CONTACT -->
+    <!-- =========================
+         CONTACT
+    ========================== -->
 
     <main
       id="contact"
@@ -553,9 +606,11 @@
           SHOPBASSIN
         </small>
 
+
         <h2>
           Contact
         </h2>
+
 
         <p>
           Retrouve ShopBassin sur les réseaux.
@@ -566,11 +621,15 @@
 
       <div class="contacts">
 
+
+        <!-- SNAPCHAT -->
+
         <div class="contact-card">
 
           <div class="snap-icon">
             👻
           </div>
+
 
           <div>
 
@@ -579,7 +638,7 @@
             </small>
 
             <strong id="contact-snap">
-              ton_snap
+              —
             </strong>
 
           </div>
@@ -587,11 +646,15 @@
         </div>
 
 
+
+        <!-- INSTAGRAM -->
+
         <div class="contact-card">
 
           <div class="insta-icon">
             ◎
           </div>
+
 
           <div>
 
@@ -600,7 +663,7 @@
             </small>
 
             <strong id="contact-insta">
-              @instagram
+              —
             </strong>
 
           </div>
@@ -608,11 +671,15 @@
         </div>
 
 
+
+        <!-- TELEGRAM -->
+
         <div class="contact-card">
 
           <div class="telegram-icon">
             ➤
           </div>
+
 
           <div>
 
@@ -621,7 +688,7 @@
             </small>
 
             <strong id="contact-telegram">
-              @shopbassinstore_bot
+              —
             </strong>
 
           </div>
@@ -634,7 +701,9 @@
 
 
 
-    <!-- INFOS -->
+    <!-- =========================
+         INFOS
+    ========================== -->
 
     <main
       id="infos"
@@ -654,11 +723,15 @@
       </div>
 
 
+
+      <!-- BOUTIQUE -->
+
       <div class="status-card">
 
         <span class="status-icon">
           ●
         </span>
+
 
         <div>
 
@@ -672,6 +745,7 @@
 
         </div>
 
+
         <b
           id="shop-status"
           class="badge available"
@@ -682,11 +756,15 @@
       </div>
 
 
+
+      <!-- SUR PLACE -->
+
       <div class="status-card">
 
         <span class="status-icon">
           🏠
         </span>
+
 
         <div>
 
@@ -700,6 +778,7 @@
 
         </div>
 
+
         <b
           id="pickup-status"
           class="badge available"
@@ -710,11 +789,15 @@
       </div>
 
 
+
+      <!-- LIVRAISON -->
+
       <div class="status-card">
 
         <span class="status-icon">
           🚚
         </span>
+
 
         <div>
 
@@ -727,6 +810,7 @@
           </strong>
 
         </div>
+
 
         <b
           id="delivery-status"
@@ -741,7 +825,9 @@
 
 
 
-    <!-- ADMIN -->
+    <!-- =========================
+         GESTION ADMIN
+    ========================== -->
 
     <main
       id="gestion"
@@ -758,7 +844,12 @@
           Gestion
         </h2>
 
+        <p>
+          Produits, photos, tailles, disponibilités et contacts.
+        </p>
+
       </div>
+
 
 
       <!-- DISPONIBILITÉS -->
@@ -776,13 +867,17 @@
 
         <div class="admin-actions">
 
-          <button onclick="setShopOpen(true)">
+          <button
+            onclick="setShopOpen(true)"
+            type="button"
+          >
             Ouvrir
           </button>
 
           <button
             class="red"
             onclick="setShopOpen(false)"
+            type="button"
           >
             Fermer
           </button>
@@ -791,18 +886,22 @@
 
 
         <p>
-          Sur place
+          Sur place à Arcachon
         </p>
 
         <div class="admin-actions">
 
-          <button onclick="setPickupAvailable(true)">
+          <button
+            onclick="setPickupAvailable(true)"
+            type="button"
+          >
             Disponible
           </button>
 
           <button
             class="red"
             onclick="setPickupAvailable(false)"
+            type="button"
           >
             Indisponible
           </button>
@@ -816,13 +915,17 @@
 
         <div class="admin-actions">
 
-          <button onclick="setDeliveryAvailable(true)">
+          <button
+            onclick="setDeliveryAvailable(true)"
+            type="button"
+          >
             Disponible
           </button>
 
           <button
             class="red"
             onclick="setDeliveryAvailable(false)"
+            type="button"
           >
             Indisponible
           </button>
@@ -846,28 +949,41 @@
           Snapchat
         </label>
 
-        <input id="admin-snap">
+        <input
+          id="admin-snap"
+          type="text"
+          placeholder="Ton Snapchat"
+        >
 
 
         <label>
           Instagram
         </label>
 
-        <input id="admin-insta">
+        <input
+          id="admin-insta"
+          type="text"
+          placeholder="@toninstagram"
+        >
 
 
         <label>
           Telegram
         </label>
 
-        <input id="admin-telegram">
+        <input
+          id="admin-telegram"
+          type="text"
+          placeholder="@tontelegram"
+        >
 
 
         <button
           class="primary"
           onclick="saveContacts()"
+          type="button"
         >
-          Enregistrer
+          Enregistrer les contacts
         </button>
 
       </section>
@@ -890,6 +1006,7 @@
         <input
           id="new-name"
           type="text"
+          placeholder="Nom du produit"
         >
 
 
@@ -901,6 +1018,8 @@
           id="new-price"
           type="number"
           step="0.01"
+          min="0"
+          placeholder="29.90"
         >
 
 
@@ -911,8 +1030,12 @@
         <textarea
           id="new-description"
           rows="5"
+          placeholder="Description du produit..."
         ></textarea>
 
+
+
+        <!-- PHOTOS MULTIPLES -->
 
         <label>
           Photos
@@ -931,6 +1054,7 @@
         </p>
 
 
+
         <!-- TAILLES -->
 
         <div class="admin-size-box">
@@ -942,7 +1066,9 @@
 
           <label class="toggle-line">
 
-            <span>S</span>
+            <span>
+              S
+            </span>
 
             <input
               id="new-size-s"
@@ -955,7 +1081,9 @@
 
           <label class="toggle-line">
 
-            <span>M</span>
+            <span>
+              M
+            </span>
 
             <input
               id="new-size-m"
@@ -968,7 +1096,9 @@
 
           <label class="toggle-line">
 
-            <span>L</span>
+            <span>
+              L
+            </span>
 
             <input
               id="new-size-l"
@@ -998,6 +1128,7 @@
         <button
           class="primary"
           onclick="addProduct()"
+          type="button"
         >
           Ajouter le produit
         </button>
@@ -1011,11 +1142,33 @@
       <section class="admin-card">
 
         <h3>
-          Produits
+          Produits existants
         </h3>
+
 
         <div id="admin-products">
         </div>
+
+      </section>
+
+
+
+      <!-- DÉCONNEXION -->
+
+      <section class="admin-card">
+
+        <h3>
+          Session administrateur
+        </h3>
+
+
+        <button
+          class="primary"
+          onclick="logoutAdmin()"
+          type="button"
+        >
+          Se déconnecter
+        </button>
 
       </section>
 
@@ -1023,7 +1176,9 @@
 
 
 
-    <!-- NAV -->
+    <!-- =========================
+         NAVIGATION
+    ========================== -->
 
     <nav class="bottom-nav">
 
@@ -1031,6 +1186,7 @@
         class="nav-item active"
         data-page="catalogue"
         onclick="showPage('catalogue', this)"
+        type="button"
       >
 
         <img
@@ -1047,6 +1203,7 @@
         class="nav-item"
         data-page="panier"
         onclick="showPage('panier', this)"
+        type="button"
       >
 
         <img
@@ -1063,6 +1220,7 @@
         class="nav-item"
         data-page="contact"
         onclick="showPage('contact', this)"
+        type="button"
       >
 
         <img
@@ -1079,6 +1237,7 @@
         class="nav-item"
         data-page="infos"
         onclick="showPage('infos', this)"
+        type="button"
       >
 
         <img
@@ -1094,6 +1253,16 @@
 
   </div>
 
+
+
+  <!-- =========================
+       SUPABASE
+  ========================== -->
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+
+  <!-- TON SCRIPT -->
 
   <script src="script.js"></script>
 
